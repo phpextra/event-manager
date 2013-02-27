@@ -1,0 +1,181 @@
+<?php
+
+namespace Skajdo\EventManager;
+
+use Skajdo\EventManager\Listener;
+use Skajdo\EventManager\Listener\ListenerInterface;
+use Skajdo\EventManager\Event\EventInterface;
+use Skajdo\EventManager\Event;
+use Skajdo\EventManager\Exception;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+
+/**
+ * Advanced event manager
+ *
+ * <p>Example usage:</p>
+ * <code>
+ * $e = new SomeDummyEvent(); // implements Event
+ * $l = new SomeDummyListener(); // implements Listener, has method dummy(SomeDummyEvent $eve)
+ * $em = new Manager();
+ * $em->addListener($l);
+ * $em->triggerEvent($e); // this will run SomeDummyListener::dummy((SomeDummyEvent) obj)
+ *
+ * <p>You can also define priorities for your listeneres. Default priority is 0</p>
+ * <code>
+ * /**
+ *  * @priority 100
+ *  * /
+ * public function onSuperEvent(SuperEventExample $event){ ...
+ * </code>
+ *
+ * @author      Jacek Kobus
+ * @category    EventManager
+ * @package     App_EventManager
+ */
+class EventManager implements LoggerAwareInterface
+{
+	/**
+	 * Array containing listeners with their corresponding methods for each event
+	 * @var array
+	 */
+	protected $eventTriggers = array();
+
+	/**
+	 * @var string
+	 */
+	protected static $listenerInterfaceClass = 'ListenerInterface';
+
+	/**
+	 * @var string
+	 */
+	protected static $eventInterfaceClass = 'EventInterface';
+
+	/**
+	 * Whenever to throw exceptions cought from listeners or not
+	 * @var bool
+	 */
+	protected $throwExceptions = true;
+
+	/**
+	 * @var \Psr\Log\LoggerInterface
+	 */
+	protected $logger;
+
+	/**
+	 * Trigger listeners for given event
+	 * @param  EventInterface $event
+	 * @throws Exception
+	 * @return Manager
+	 */
+	public function triggerEvent(EventInterface $event)
+	{
+		$eventClassName = get_class($event);
+		if(isset($this->eventTriggers[$eventClassName])){
+			$queue = $this->eventTriggers[$eventClassName];
+			foreach($queue as $id => $data){
+				$object = $data[0];
+				$method = $data[1];
+
+				try {
+					call_user_func(array($object, $method), $event);
+				}catch(Exception $e){
+
+					$msg = sprintf('Listener (%s#%s) threw an exception (%s) with message: "%s"',
+						get_class($object) . '::' . $method, $id, $e, $e->getMessage()
+					);
+
+					$ee = new Exception($msg, 0, $e);
+					$ee->setListener($object);
+
+					if($this->hasLogger()){
+						$this->logger->error($msg, LogLevel::ERROR);
+                    }
+
+					if($this->getThrowExceptions())
+						throw $ee;
+				}
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Add event listener
+	 * @param ListenerInterface $listener
+	 * @return EventManager
+	 */
+	public function addListener(ListenerInterface $listener)
+	{
+		$a = new \Zend\Code\Reflection\ClassReflection($listenerClass = get_class($listener));
+		foreach($a->getMethods() as $method){
+			/* @var $method \Zend\Code\Reflection\MethodReflection */
+
+			// only one parameter - event
+			if($method->getNumberOfParameters() > 1)
+				continue;
+
+			/* @var $param \Zend\Code\Reflection\ParameterReflection */
+			$param = current($method->getParameters());
+
+			if(!($eventClass = $param->getClass()))
+				continue;
+
+			$eventClassName = $eventClass->getName();
+			if(!in_array(self::$eventInterfaceClass, class_implements($eventClassName, false)))
+				continue;
+
+			$priority = 0;
+			if($method->getDocComment()){
+				$priorityTag = $method->getDocblock()->getTag('priority');
+				if($priorityTag){
+					$priority = (int) $priorityTag->getDescription();
+				}
+			}
+
+			if(!isset($this->eventTriggers[$eventClassName])){
+				$queue = new \Zend\Stdlib\SplPriorityQueue();
+				$this->eventTriggers[$eventClassName] = $queue;
+			}else{
+				$queue = $this->eventTriggers[$eventClassName];
+			}
+
+			$queue->insert(array($listener, $method->getName()), $priority);
+		}
+
+		return $this;
+	}
+
+	public function setThrowExceptions($throwExceptions)
+	{
+		$this->throwExceptions = $throwExceptions;
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getThrowExceptions()
+	{
+		return $this->throwExceptions;
+	}
+
+    /**
+     * @return bool
+     */
+    protected function hasLogger()
+    {
+        return $this->logger !== null;
+    }
+
+    /**
+     * @param \Psr\Log\LoggerInterface $logger
+     * @return null|EventManager
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+        return $this;
+    }
+}

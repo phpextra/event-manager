@@ -1,0 +1,14 @@
+{
+    "name": "skajdo/event-manager",
+    "description": "Event manager based on reflecion and annotations",
+    "authors": [
+        {
+            "name": "Jacek Kobus",
+            "email": "kobus.jacek@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+
+    }
+}
