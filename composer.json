@@ -1,12 +1,22 @@
 {
     "name": "skajdo/event-manager",
     "description": "Event manager based on reflection and annotations",
+	"keywords": ["event manager", "event", "listener", "observer", "psr-0"],
+	"license": "WTFPL",
+	"homepage": "http://jkobus.github.com/skajdo-test-suite/",
+	"support": {
+		"issues": "https://github.com/jack-ks/skajdo-test-suite/issues",
+		"source": "https://github.com/jack-ks/skajdo-test-suite"
+	},
     "authors": [
         {
             "name": "Jacek Kobus",
             "email": "kobus.jacek@gmail.com"
         }
     ],
+	"autoload": {
+		"psr-0": {"Skajdo": "src/"}
+	},
     "minimum-stability": "dev",
     "require": {
 		"zendframework/zend-stdlib": "*",
