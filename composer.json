@@ -1,6 +1,6 @@
 {
     "name": "skajdo/event-manager",
-    "description": "Event manager based on reflecion and annotations",
+    "description": "Event manager based on reflection and annotations",
     "authors": [
         {
             "name": "Jacek Kobus",
@@ -9,6 +9,12 @@
     ],
     "minimum-stability": "dev",
     "require": {
+		"zendframework/zend-stdlib": "*",
+        "psr/log": "1.0.0",
+        "zendframework/zend-code": "*"
+    },
 
-    }
+	"require-dev": {
+		"skajdo/test-suite": "dev-unstable"
+	}
 }

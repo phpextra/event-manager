@@ -1,0 +1,39 @@
+<project name="SkajdoTestSuite" default="build">
+
+    <target name="build" depends="prepare,composer,test-suite"/>
+
+    <target name="clean" description="Cleanup build artifacts">
+        <delete dir="${basedir}/build/api"/>
+        <delete dir="${basedir}/build/code-browser"/>
+        <delete dir="${basedir}/build/coverage"/>
+        <delete dir="${basedir}/build/doc"/>
+        <delete dir="${basedir}/build/logs"/>
+        <delete dir="${basedir}/build/pdepend"/>
+        <delete dir="${basedir}/vendor"/>
+        <delete file="${basedir}/composer.phar"/>
+        <delete file="${basedir}/composer.lock"/>
+    </target>
+    <target name="prepare" depends="clean" description="Prepare for build">
+        <mkdir dir="${basedir}/build/api"/>
+        <mkdir dir="${basedir}/build/code-browser"/>
+        <mkdir dir="${basedir}/build/coverage"/>
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
+    </target>
+
+    <target name="composer" description="Dependency Manager for PHP">
+        <exec executable="php" failonerror="true">
+			<arg line="/usr/local/bin/composer update -n -v --dev"/>
+        </exec>
+    </target>
+
+    <!--php run-tests.php run -s "./" -f junit -d "../build/logs/junit.xml"-->
+
+    <target name="test-suite" description="Skajdo Test Suite">
+        <exec dir="${basedir}/tests" executable="php" failonerror="true">
+            <arg line="run-tests.php run -s ./ -f junit -d ${basedir}/build/logs/junit.xml"/>
+        </exec>
+    </target>
+
+
+</project>

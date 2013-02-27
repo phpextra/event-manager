@@ -1,7 +1,6 @@
 <?php
 
 namespace Skajdo\EventManager\Listener;
-
 use Skajdo\EventManager\Event\EventInterface;
 
 /**
@@ -14,7 +13,8 @@ use Skajdo\EventManager\Event\EventInterface;
 interface ListenerInterface
 {
     /**
-     * Call listener
+     * Run listener
+     *
      * @param \Skajdo\EventManager\Event\EventInterface $event
      * @return void
      */

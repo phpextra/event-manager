@@ -1,9 +1,7 @@
 <?php
 
 namespace Skajdo\EventManager\Listener;
-
 use Skajdo\EventManager\Event\EventInterface;
-
 
 /**
  * Abstract listener class

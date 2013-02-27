@@ -9,7 +9,6 @@ use Skajdo\EventManager\Event;
 use Skajdo\EventManager\Exception;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 /**
  * Advanced event manager
@@ -56,7 +55,7 @@ class EventManager implements LoggerAwareInterface
 	 * Whenever to throw exceptions cought from listeners or not
 	 * @var bool
 	 */
-	protected $throwExceptions = true;
+	protected $throwExceptions = false;
 
 	/**
 	 * @var \Psr\Log\LoggerInterface
@@ -67,7 +66,7 @@ class EventManager implements LoggerAwareInterface
 	 * Trigger listeners for given event
 	 * @param  EventInterface $event
 	 * @throws Exception
-	 * @return Manager
+	 * @return EventManager
 	 */
 	public function triggerEvent(EventInterface $event)
 	{
@@ -90,11 +89,12 @@ class EventManager implements LoggerAwareInterface
 					$ee->setListener($object);
 
 					if($this->hasLogger()){
-						$this->logger->error($msg, LogLevel::ERROR);
+						$this->logger->error($msg, array('exception' => $ee));
                     }
 
-					if($this->getThrowExceptions())
+					if($this->getThrowExceptions()){
 						throw $ee;
+                    }
 				}
 			}
 		}
@@ -110,9 +110,8 @@ class EventManager implements LoggerAwareInterface
 	{
 		$a = new \Zend\Code\Reflection\ClassReflection($listenerClass = get_class($listener));
 		foreach($a->getMethods() as $method){
-			/* @var $method \Zend\Code\Reflection\MethodReflection */
 
-			// only one parameter - event
+			/* @var $method \Zend\Code\Reflection\MethodReflection */
 			if($method->getNumberOfParameters() > 1)
 				continue;
 
@@ -147,13 +146,25 @@ class EventManager implements LoggerAwareInterface
 		return $this;
 	}
 
-	public function setThrowExceptions($throwExceptions)
+    /**
+     * If this is set to true all exceptions will be thrown
+     * and the queue will be interrupted (incomplete).
+     *
+     * Default to FALSE
+     *
+     * @param $throwExceptions
+     * @return EventManager
+     */
+    public function setThrowExceptions($throwExceptions)
 	{
 		$this->throwExceptions = $throwExceptions;
 		return $this;
 	}
 
 	/**
+     * Tell if current instance of event manager will break the queue
+     * if an exception will be thrown from listener.
+     *
 	 * @return boolean
 	 */
 	public function getThrowExceptions()
@@ -171,7 +182,7 @@ class EventManager implements LoggerAwareInterface
 
     /**
      * @param \Psr\Log\LoggerInterface $logger
-     * @return null|EventManager
+     * @return EventManager
      */
     public function setLogger(LoggerInterface $logger)
     {

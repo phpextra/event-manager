@@ -11,12 +11,5 @@ namespace Skajdo\EventManager\Event;
  */
 class AbstractEvent implements EventInterface
 {
-	/**
-	 * Tell if current event is cancellable
-	 * @return bool
-	 */
-	final public function isCancellable()
-	{
-		return ($this instanceof CancellableEvent);
-	}
+
 }

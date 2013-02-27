@@ -2,11 +2,8 @@
 
 namespace Skajdo\EventManager\Listener;
 
-use Skajdo\EventManager\Event\EventInterface;
-
-
 /**
- * Abstract listener class
+ * Default listener
  *
  * @author      Jacek Kobus
  * @category    App

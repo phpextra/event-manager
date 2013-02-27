@@ -13,5 +13,5 @@
  * @category    App
  * @package     App_EventManager
  */
-class Queue extends App_Util_PriorityQueue
+class Queue extends \Zend\Stdlib\PriorityQueue
 {}
