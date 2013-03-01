@@ -1,5 +1,5 @@
 #Skajdo Event Manager ![WTFPL License](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-2.png) [![Build Status](https://travis-ci.org/jack-ks/skajdo-test-suite.png?branch=master)](https://travis-ci.org/jack-ks/skajdo-test-suite)
-##Event Managment made the fun way
+##Event Managment made simple
 
 PSR-0 compliant, lightweight & tested.
 Start using events under one minute - no initial setup required. It's **that** easy.
