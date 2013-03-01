@@ -1,5 +1,7 @@
 <?php
 
+namespace Skajdo\EventManager;
+
 /**
  * Priority queue.
  *

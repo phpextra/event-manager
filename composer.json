@@ -15,7 +15,7 @@
         }
     ],
 	"autoload": {
-		"psr-0": {"Skajdo": "src/"}
+		"psr-0": {"Skajdo\EventManager": "src/"}
 	},
     "minimum-stability": "dev",
     "require": {

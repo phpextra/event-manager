@@ -42,16 +42,6 @@ class EventManager implements LoggerAwareInterface
 	protected $eventTriggers = array();
 
 	/**
-	 * @var string
-	 */
-	protected static $listenerInterfaceClass = 'ListenerInterface';
-
-	/**
-	 * @var string
-	 */
-	protected static $eventInterfaceClass = 'EventInterface';
-
-	/**
 	 * Whenever to throw exceptions cought from listeners or not
 	 * @var bool
 	 */
@@ -73,7 +63,10 @@ class EventManager implements LoggerAwareInterface
 		$eventClassName = get_class($event);
 		if(isset($this->eventTriggers[$eventClassName])){
 			$queue = $this->eventTriggers[$eventClassName];
-			foreach($queue as $id => $data){
+
+            /* @var Queue $queue */
+
+			foreach($queue->getIterator() as $id => $data){
 				$object = $data[0];
 				$method = $data[1];
 
@@ -122,24 +115,29 @@ class EventManager implements LoggerAwareInterface
 				continue;
 
 			$eventClassName = $eventClass->getName();
-			if(!in_array(self::$eventInterfaceClass, class_implements($eventClassName, false)))
+			if(!in_array('Skajdo\EventManager\Event\EventInterface', class_implements($eventClassName, false)))
 				continue;
 
-			$priority = 0;
-			if($method->getDocComment()){
-				$priorityTag = $method->getDocblock()->getTag('priority');
-				if($priorityTag){
-					$priority = (int) $priorityTag->getDescription();
+            /**
+             * This is a workaround for zend code's bugged get description ...
+             * At the moment ZF's 2 code library is not good to be depend on.
+             */
+            $priority = 0;
+			if($method->getDocComment() !== false){
+                $matches = array();
+				if(preg_match('#@priority ([\d]+)#', $method->getDocComment(), $matches)){
+                    if(count($matches) == 2){
+                        $priority = (int) $matches[1];
+                    }
 				}
 			}
 
 			if(!isset($this->eventTriggers[$eventClassName])){
-				$queue = new \Zend\Stdlib\SplPriorityQueue();
+				$queue = new Queue();
 				$this->eventTriggers[$eventClassName] = $queue;
 			}else{
 				$queue = $this->eventTriggers[$eventClassName];
 			}
-
 			$queue->insert(array($listener, $method->getName()), $priority);
 		}
 
