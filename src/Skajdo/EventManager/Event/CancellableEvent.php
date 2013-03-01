@@ -8,8 +8,6 @@ namespace Skajdo\EventManager\Event;
  * cancellable interface.
  *
  * @author      Jacek Kobus
- * @category    App
- * @package     App_EventManager
  */
 class CancellableEvent extends Event implements CancellableEventInterface
 {
@@ -39,6 +37,7 @@ class CancellableEvent extends Event implements CancellableEventInterface
     final public function setIsCancelled()
     {
         $this->isCancelled = true;
+
         return $this;
     }
 

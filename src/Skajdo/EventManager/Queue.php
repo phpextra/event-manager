@@ -12,8 +12,7 @@ namespace Skajdo\EventManager;
  * as it's avilable only in 5.3 and above.
  *
  * @author      Jacek Kobus
- * @category    App
- * @package     App_EventManager
  */
 class Queue extends \Zend\Stdlib\PriorityQueue
-{}
+{
+}

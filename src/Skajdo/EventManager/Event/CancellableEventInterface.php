@@ -6,8 +6,6 @@ namespace Skajdo\EventManager\Event;
  * Represents cancellable event
  *
  * @author      Jacek Kobus
- * @category    App
- * @package     App_EventManager
  */
 interface CancellableEventInterface extends EventInterface
 {

@@ -27,8 +27,6 @@
         </exec>
     </target>
 
-    <!--php run-tests.php run -s "./" -f junit -d "../build/logs/junit.xml"-->
-
     <target name="test-suite" description="Skajdo Test Suite">
         <exec dir="${basedir}/tests" executable="php" failonerror="true">
             <arg line="run-tests.php run -s ./ -f junit -d ${basedir}/build/logs/junit.xml"/>

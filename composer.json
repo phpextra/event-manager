@@ -1,6 +1,6 @@
 {
     "name": "skajdo/event-manager",
-    "description": "Event manager based on reflection and annotations",
+    "description": "Event manager based on reflection, annotations and priority queue.",
 	"keywords": ["event manager", "event", "listener", "observer", "psr-0"],
 	"license": "WTFPL",
 	"homepage": "http://jkobus.github.com/skajdo-test-suite/",
@@ -15,7 +15,7 @@
         }
     ],
 	"autoload": {
-		"psr-0": {"Skajdo\EventManager": "src/"}
+		"psr-0": {"Skajdo\\EventManager": "src/"}
 	},
     "minimum-stability": "dev",
     "require": {

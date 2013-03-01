@@ -17,6 +17,10 @@ class BasicFunctionalityTest extends Fixture
         $manager->addListener($listener1)->addListener($listener2);
         $manager->triggerEvent($event);
 
+        /**
+         * DummyListener1 will be called first as it was added as first - FIFO order
+         */
+
         $this->assert()->isIdentical($event->sum, 155);
 
     }

@@ -30,119 +30,125 @@ use Psr\Log\LoggerInterface;
  * </code>
  *
  * @author      Jacek Kobus
- * @category    EventManager
- * @package     App_EventManager
  */
 class EventManager implements LoggerAwareInterface
 {
-	/**
-	 * Array containing listeners with their corresponding methods for each event
-	 * @var array
-	 */
-	protected $eventTriggers = array();
+    /**
+     * Array containing listeners with their corresponding methods for each event
+     * @var array
+     */
+    protected $eventTriggers = array();
 
-	/**
-	 * Whenever to throw exceptions cought from listeners or not
-	 * @var bool
-	 */
-	protected $throwExceptions = false;
+    /**
+     * Whenever to throw exceptions cought from listeners or not
+     * @var bool
+     */
+    protected $throwExceptions = false;
 
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	protected $logger;
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
 
-	/**
-	 * Trigger listeners for given event
-	 * @param  EventInterface $event
-	 * @throws Exception
-	 * @return EventManager
-	 */
-	public function triggerEvent(EventInterface $event)
-	{
-		$eventClassName = get_class($event);
-		if(isset($this->eventTriggers[$eventClassName])){
-			$queue = $this->eventTriggers[$eventClassName];
+    /**
+     * Trigger listeners for given event
+     * @param  EventInterface $event
+     * @throws Exception
+     * @return EventManager
+     */
+    public function triggerEvent(EventInterface $event)
+    {
+        $eventClassName = get_class($event);
+        if (isset($this->eventTriggers[$eventClassName])) {
+            $queue = $this->eventTriggers[$eventClassName];
 
             /* @var Queue $queue */
 
-			foreach($queue->getIterator() as $id => $data){
-				$object = $data[0];
-				$method = $data[1];
+            foreach ($queue->getIterator() as $id => $data) {
+                $object = $data[0];
+                $method = $data[1];
 
-				try {
-					call_user_func(array($object, $method), $event);
-				}catch(Exception $e){
+                try {
+                    call_user_func(array($object, $method), $event);
+                } catch (Exception $e) {
 
-					$msg = sprintf('Listener (%s#%s) threw an exception (%s) with message: "%s"',
-						get_class($object) . '::' . $method, $id, $e, $e->getMessage()
-					);
+                    $msg = sprintf(
+                        'Listener (%s#%s) threw an exception (%s) with message: "%s"',
+                        get_class($object) . '::' . $method,
+                        $id,
+                        $e,
+                        $e->getMessage()
+                    );
 
-					$ee = new Exception($msg, 0, $e);
-					$ee->setListener($object);
+                    $ee = new Exception($msg, 0, $e);
+                    $ee->setListener($object);
 
-					if($this->hasLogger()){
-						$this->logger->error($msg, array('exception' => $ee));
+                    if ($this->hasLogger()) {
+                        $this->logger->error($msg, array('exception' => $ee));
                     }
 
-					if($this->getThrowExceptions()){
-						throw $ee;
+                    if ($this->getThrowExceptions()) {
+                        throw $ee;
                     }
-				}
-			}
-		}
-		return $this;
-	}
+                }
+            }
+        }
 
-	/**
-	 * Add event listener
-	 * @param ListenerInterface $listener
-	 * @return EventManager
-	 */
-	public function addListener(ListenerInterface $listener)
-	{
-		$a = new \Zend\Code\Reflection\ClassReflection($listenerClass = get_class($listener));
-		foreach($a->getMethods() as $method){
+        return $this;
+    }
 
-			/* @var $method \Zend\Code\Reflection\MethodReflection */
-			if($method->getNumberOfParameters() > 1)
-				continue;
+    /**
+     * Add event listener
+     * @param ListenerInterface $listener
+     * @return EventManager
+     */
+    public function addListener(ListenerInterface $listener)
+    {
+        $a = new \Zend\Code\Reflection\ClassReflection($listenerClass = get_class($listener));
+        foreach ($a->getMethods() as $method) {
 
-			/* @var $param \Zend\Code\Reflection\ParameterReflection */
-			$param = current($method->getParameters());
+            /* @var $method \Zend\Code\Reflection\MethodReflection */
+            if ($method->getNumberOfParameters() > 1) {
+                continue;
+            }
 
-			if(!($eventClass = $param->getClass()))
-				continue;
+            /* @var $param \Zend\Code\Reflection\ParameterReflection */
+            $param = current($method->getParameters());
 
-			$eventClassName = $eventClass->getName();
-			if(!in_array('Skajdo\EventManager\Event\EventInterface', class_implements($eventClassName, false)))
-				continue;
+            if (!($eventClass = $param->getClass())) {
+                continue;
+            }
+
+            $eventClassName = $eventClass->getName();
+            if (!in_array('Skajdo\EventManager\Event\EventInterface', class_implements($eventClassName, false))) {
+                continue;
+            }
 
             /**
              * This is a workaround for zend code's bugged get description ...
              * At the moment ZF's 2 code library is not good to be depend on.
              */
             $priority = 0;
-			if($method->getDocComment() !== false){
+            if ($method->getDocComment() !== false) {
                 $matches = array();
-				if(preg_match('#@priority ([\d]+)#', $method->getDocComment(), $matches)){
-                    if(count($matches) == 2){
-                        $priority = (int) $matches[1];
+                if (preg_match('#@priority ([\d]+)#', $method->getDocComment(), $matches)) {
+                    if (count($matches) == 2) {
+                        $priority = (int)$matches[1];
                     }
-				}
-			}
+                }
+            }
 
-			if(!isset($this->eventTriggers[$eventClassName])){
-				$queue = new Queue();
-				$this->eventTriggers[$eventClassName] = $queue;
-			}else{
-				$queue = $this->eventTriggers[$eventClassName];
-			}
-			$queue->insert(array($listener, $method->getName()), $priority);
-		}
+            if (!isset($this->eventTriggers[$eventClassName])) {
+                $queue = new Queue();
+                $this->eventTriggers[$eventClassName] = $queue;
+            } else {
+                $queue = $this->eventTriggers[$eventClassName];
+            }
+            $queue->insert(array($listener, $method->getName()), $priority);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * If this is set to true all exceptions will be thrown
@@ -154,21 +160,22 @@ class EventManager implements LoggerAwareInterface
      * @return EventManager
      */
     public function setThrowExceptions($throwExceptions)
-	{
-		$this->throwExceptions = $throwExceptions;
-		return $this;
-	}
+    {
+        $this->throwExceptions = $throwExceptions;
 
-	/**
+        return $this;
+    }
+
+    /**
      * Tell if current instance of event manager will break the queue
      * if an exception will be thrown from listener.
      *
-	 * @return boolean
-	 */
-	public function getThrowExceptions()
-	{
-		return $this->throwExceptions;
-	}
+     * @return boolean
+     */
+    public function getThrowExceptions()
+    {
+        return $this->throwExceptions;
+    }
 
     /**
      * @return bool
@@ -185,6 +192,7 @@ class EventManager implements LoggerAwareInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+
         return $this;
     }
 }

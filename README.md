@@ -19,7 +19,7 @@ JSON:
 
 ```json
 "require": {
-    "skajdo/test-suite":"*"
+    "skajdo/event-manager":"*"
 }
 ```
 
@@ -27,7 +27,7 @@ JSON:
 ##Updating to the lastest version
 
 ```
-> composer update skajdo/test-suite
+> composer update skajdo/event-manager
 ```
 
 ##Testing
