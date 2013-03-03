@@ -2,20 +2,13 @@
 
 namespace Skajdo\EventManager\Listener;
 
-use Skajdo\EventManager\Event\EventInterface;
-
 /**
  * Abstract listener class
+ * Listener does not require any specific methods. Any method with event as it first param is treated
+ * as listener and it will be executed as soon as event will be triggered.
  *
  * @author      Jacek Kobus
  */
 interface ListenerInterface
 {
-    /**
-     * Run listener
-     *
-     * @param \Skajdo\EventManager\Event\EventInterface $event
-     * @return void
-     */
-    public function run(EventInterface $event);
 }

@@ -7,7 +7,7 @@ namespace Skajdo\EventManager\Listener;
  *
  * @author      Jacek Kobus
  */
-class Listener extends AbstractListener
+class Listener implements ListenerInterface
 {
 
 }

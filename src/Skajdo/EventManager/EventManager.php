@@ -115,7 +115,7 @@ class EventManager implements LoggerAwareInterface
             /* @var $param \Zend\Code\Reflection\ParameterReflection */
             $param = current($method->getParameters());
 
-            if (!($eventClass = $param->getClass())) {
+            if (!$param || !($eventClass = $param->getClass())) {
                 continue;
             }
 
