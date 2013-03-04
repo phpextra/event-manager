@@ -125,8 +125,8 @@ class EventManager implements LoggerAwareInterface
             }
 
             /**
-             * This is a workaround for zend code's bugged get description ...
-             * At the moment ZF's 2 code library is not good to be depend on.
+             * This is a workaround for zend code's bugged getDescription ...
+             * At the moment ZF's 2 code library is not good to depend on.
              */
             $priority = 0;
             if ($method->getDocComment() !== false) {
