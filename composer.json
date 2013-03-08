@@ -19,8 +19,8 @@
 	},
     "minimum-stability": "dev",
     "require": {
+		"psr/log": "1.0.0",
 		"zendframework/zend-stdlib": "*",
-        "psr/log": "1.0.0",
         "zendframework/zend-code": "*"
     },
 
