@@ -127,21 +127,6 @@ echo ($car->headlights == true) ? 'HEADLIGHTS ARE ON' : 'HEADLIGHTS ARE OFF'; //
 ```
 
 
-
-
- *
-<p>You can also define priorities for your listeneres. Default priority is 0</p>
-<code>
-
-/**
- * @priority 100
- */
-public function onSuperEvent(SuperEventExample $event){
-
-}
-</code>
-
-
 ##Contributing
 
 All code contributions must go through a pull request.  
