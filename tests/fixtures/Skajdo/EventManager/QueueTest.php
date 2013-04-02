@@ -13,7 +13,7 @@ class QueueTest extends Fixture
         $queue = new Queue();
 
         $queue->insert('e', -100);
-        $queue->insert('a', 20); // 3 FIFO - first come in first come out
+        $queue->insert('a', 20); // 3 FIFO - first in first out
         $queue->insert('b', 20); // 4
         $queue->insert('c', 30); // 2
         $queue->insert('d', 40); // 1
