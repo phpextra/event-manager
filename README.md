@@ -31,10 +31,10 @@ JSON:
 
 ##Testing
 
-We are using skajdo-test-suite in our application. To install it run:
+We are using skajdo-test-suite in our application. To install and run use:
 
 ```
-> composer update skajdo/test-suite --dev
+> composer update skajdo/test-suite & php tests/run-tests.php run -s ./tests
 ```
 
 ## Usage example
@@ -125,6 +125,17 @@ echo ($car->headlights == true) ? 'HEADLIGHTS ARE ON' : 'HEADLIGHTS ARE OFF'; //
 
 
 ```
+
+##Changelog
+
+1.0.1
+
+* added closure support
+* priority can be overriden while adding listener
+
+1.0.0
+
+* first relase
 
 
 ##Contributing
