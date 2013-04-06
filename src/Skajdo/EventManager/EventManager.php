@@ -99,11 +99,22 @@ class EventManager implements LoggerAwareInterface
 
     /**
      * Add event listener
-     * @param ListenerInterface $listener
+     * @param ListenerInterface|\Closure $listener
+     * @param int $priority Optional; overrides other priority settings
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return EventManager
      */
-    public function addListener(ListenerInterface $listener)
+    public function addListener($listener, $priority = null)
     {
+        if($listener instanceof \Closure){
+            throw new \RuntimeException('Not implemented yet');
+        }
+
+        if(!$listener instanceof \Skajdo\EventManager\Listener\Listener){
+            throw new \InvalidArgumentException('Listener must implement the ListenerInterface or it must be a Closure');
+        }
+
         $a = new \Zend\Code\Reflection\ClassReflection($listenerClass = get_class($listener));
         foreach ($a->getMethods() as $method) {
 
@@ -128,14 +139,21 @@ class EventManager implements LoggerAwareInterface
              * This is a workaround for zend code's bugged getDescription ...
              * At the moment ZF's 2 code library is not good to depend on.
              */
-            $priority = 0;
-            if ($method->getDocComment() !== false) {
+            if ($method->getDocComment() !== false && $priority === null ) {
                 $matches = array();
-                if (preg_match('#@priority ([\d]+)#', $method->getDocComment(), $matches)) {
+                if (preg_match('#@priority ([\d|\w]+)#', $method->getDocComment(), $matches)) {
                     if (count($matches) == 2) {
-                        $priority = (int)$matches[1];
+                        if(is_numeric($matches[1])){
+                            $priority = (int)$matches[1];
+                        }else{
+                            $priority = Priority::getPriorityByName($matches[1]);
+                        }
                     }
                 }
+            }
+
+            if($priority === null){
+                $priority = Priority::NORMAL;
             }
 
             if (!isset($this->eventTriggers[$eventClassName])) {
