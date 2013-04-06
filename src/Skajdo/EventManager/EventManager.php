@@ -67,6 +67,7 @@ class EventManager implements LoggerAwareInterface
      * @param  EventInterface $event
      * @throws Exception
      * @return EventManager
+     * @return \Skajdo\EventManager\EventManager
      */
     public function triggerEvent(EventInterface $event)
     {
@@ -105,45 +106,49 @@ class EventManager implements LoggerAwareInterface
                 }
             }
         }
-
         return $this;
     }
 
     /**
      * Add event listener
+     *
      * @param ListenerInterface|\Closure $listener
      * @param int $priority Optional; overrides other priority settings
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws \RuntimeException Listener is not listening to any event
+     * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
      * @return EventManager
      */
     public function addListener($listener, $priority = null)
     {
+        // special treatment for closures
         if($listener instanceof \Closure){
-            throw new \RuntimeException('Not implemented yet');
+            $closure = new \ReflectionFunction($listener);
+            /* @var $param \Zend\Code\Reflection\ParameterReflection */
+            $param = current($closure->getParameters());
+            if (!$param || !($eventClassName = $this->_getEventClassName($param))) {
+                throw new \RuntimeException('Given closure does not listen to any known event');
+            }
+            $this->_addListener($listener, '__invoke', $eventClassName, $priority);
+            return $this;
         }
 
         if(!$listener instanceof \Skajdo\EventManager\Listener\Listener){
-            throw new \InvalidArgumentException('Listener must implement the ListenerInterface or it must be a Closure');
+            throw new \InvalidArgumentException(sprintf(
+                'Listener must implement the ListenerInterface or it must be an instance of Closure but %s given', get_class($listener)
+            ));
         }
 
+        $listenerIsListeningToEvent = false;
         $a = new ClassReflection($listenerClass = get_class($listener));
         foreach ($a->getMethods() as $method) {
 
             /* @var $method \Zend\Code\Reflection\MethodReflection */
-            if ($method->getNumberOfParameters() > 1) {
+            if (($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
                 continue;
             }
 
             /* @var $param \Zend\Code\Reflection\ParameterReflection */
-            $param = current($method->getParameters());
-
-            if (!$param || !($eventClass = $param->getClass())) {
-                continue;
-            }
-
-            $eventClassName = $eventClass->getName();
-            if (!in_array('Skajdo\EventManager\Event\EventInterface', class_implements($eventClassName, false))) {
+            if (($eventClassName = $this->_getEventClassName($param)) === null) {
                 continue;
             }
 
@@ -153,7 +158,7 @@ class EventManager implements LoggerAwareInterface
              */
             if ($method->getDocComment() !== false && $priority === null ) {
                 $matches = array();
-                if (preg_match('#@priority ([\d|\w]+)#', $method->getDocComment(), $matches)) {
+                if (preg_match('#@priority ((-?\d+)|\w+)#', $method->getDocComment(), $matches)) {
                     if (count($matches) == 2) {
                         if(is_numeric($matches[1])){
                             $priority = (int)$matches[1];
@@ -163,21 +168,65 @@ class EventManager implements LoggerAwareInterface
                     }
                 }
             }
+            $listenerIsListeningToEvent = true;
+            $this->_addListener($listener, $method->getName(), $eventClassName, $priority);
+        }
 
-            if($priority === null){
-                $priority = Priority::NORMAL;
-            }
-
-            if (!isset($this->eventTriggers[$eventClassName])) {
-                $queue = new Queue();
-                $this->eventTriggers[$eventClassName] = $queue;
-            } else {
-                $queue = $this->eventTriggers[$eventClassName];
-            }
-            $queue->insert(array($listener, $method->getName()), $priority);
+        if(!$listenerIsListeningToEvent){
+            throw new \RuntimeException('Given Listener does not listen to any known event');
         }
 
         return $this;
+    }
+
+    /**
+     * Internal method for adding listeners
+     *
+     * @param $listener
+     * @param $listenerMethodName
+     * @param $eventClassName
+     * @param null $priority
+     * @return EventManager
+     */
+    protected function _addListener($listener, $listenerMethodName, $eventClassName, $priority = null)
+    {
+        if($priority === null){
+            $priority = Priority::NORMAL;
+        }
+
+        // mirror priorities; negative priorities will be pushed back to the queue
+        // its more natural to give bigger value for more important things
+        // in queue its different, first elements have the lowest value.
+//        $priority = $priority * (-1);
+
+        if (!isset($this->eventTriggers[$eventClassName])) {
+            $queue = new Queue();
+            $this->eventTriggers[$eventClassName] = $queue;
+        } else {
+            $queue = $this->eventTriggers[$eventClassName];
+        }
+        $queue->insert(array($listener, $listenerMethodName), $priority);
+        return $this;
+    }
+
+    /**
+     * Return event class name for given method/function parameter
+     *
+     * @param \ReflectionParameter $param
+     * @return null|string
+     */
+    protected function _getEventClassName(\ReflectionParameter $param)
+    {
+        if (!($eventClass = $param->getClass())) {
+            return null;
+        }
+
+        $eventClassName = $eventClass->getName();
+        if (!in_array('Skajdo\EventManager\Event\EventInterface', class_implements($eventClassName, false))) {
+            return null;
+        }
+
+        return $eventClassName;
     }
 
     /**

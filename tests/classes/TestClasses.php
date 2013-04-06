@@ -21,7 +21,7 @@ class DummyListener1 extends Listener
      * Long desc
      *
      * @param DummyCancellableEvent $event
-     * @priority 200
+     * @priority 100
      */
     public function onDummyEvent(DummyCancellableEvent $event){
         $event->sum = $event->sum * 10;
@@ -34,7 +34,7 @@ class DummyListener2 extends Listener
     protected $sum = 0;
 
     /**
-     * @priority 200
+     * @priority -1000
      * @param DummyCancellableEvent $event
      */
     public function onDummyEvent(DummyCancellableEvent $event){
@@ -43,8 +43,12 @@ class DummyListener2 extends Listener
         //$this->sum = $event->sum + $this->sum;
     }
 
-//    public function onDummyEvent2(DummyCancellableEvent2 $event){
-//        $event->sum = 15 + 5;
-//        //$this->sum = $event->sum * 2;
-//    }
+    /**
+     * @priority highest
+     * @param \DummyCancellableEvent|\DummyCancellableEvent2 $event
+     */
+    public function onDummyEvent2(DummyCancellableEvent $event){
+        $event->sum = $event->sum * 5;
+        $event->events[] = get_class($this) . ' * 5';
+    }
 }
