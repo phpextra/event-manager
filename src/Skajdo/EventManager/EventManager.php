@@ -132,7 +132,7 @@ class EventManager implements LoggerAwareInterface
             return $this;
         }
 
-        if(!$listener instanceof \Skajdo\EventManager\Listener\Listener){
+        if(!$listener instanceof \Skajdo\EventManager\Listener\ListenerInterface){
             throw new \InvalidArgumentException(sprintf(
                 'Listener must implement the ListenerInterface or it must be an instance of Closure but %s given', get_class($listener)
             ));

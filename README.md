@@ -1,4 +1,4 @@
-#Skajdo Event Manager (v1.0.0) ![WTFPL License](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-2.png) [![Build Status](https://travis-ci.org/jack-ks/skajdo-test-suite.png?branch=master)](https://travis-ci.org/jack-ks/skajdo-test-suite)
+#Skajdo Event Manager (v1.0.2) ![WTFPL License](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-2.png) [![Build Status](https://travis-ci.org/jack-ks/skajdo-test-suite.png?branch=master)](https://travis-ci.org/jack-ks/skajdo-test-suite)
 ##Event Managment made simple
 
 PSR-0 compliant, lightweight & tested.
@@ -127,6 +127,10 @@ echo ($car->headlights == true) ? 'HEADLIGHTS ARE ON' : 'HEADLIGHTS ARE OFF'; //
 ```
 
 ##Changelog
+
+1.0.2
+
+* bugfix
 
 1.0.1
 
