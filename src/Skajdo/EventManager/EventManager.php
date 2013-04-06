@@ -9,6 +9,7 @@ use Skajdo\EventManager\Event;
 use Skajdo\EventManager\Exception;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Zend\Code\Reflection\ClassReflection;
 
 /**
  * Advanced event manager
@@ -51,7 +52,18 @@ class EventManager implements LoggerAwareInterface
     protected $logger;
 
     /**
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger = null)
+    {
+        if($logger !== null){
+            $this->setLogger($logger);
+        }
+    }
+
+    /**
      * Trigger listeners for given event
+     *
      * @param  EventInterface $event
      * @throws Exception
      * @return EventManager
@@ -115,7 +127,7 @@ class EventManager implements LoggerAwareInterface
             throw new \InvalidArgumentException('Listener must implement the ListenerInterface or it must be a Closure');
         }
 
-        $a = new \Zend\Code\Reflection\ClassReflection($listenerClass = get_class($listener));
+        $a = new ClassReflection($listenerClass = get_class($listener));
         foreach ($a->getMethods() as $method) {
 
             /* @var $method \Zend\Code\Reflection\MethodReflection */
@@ -172,7 +184,7 @@ class EventManager implements LoggerAwareInterface
      * If this is set to true all exceptions will be thrown
      * and the queue will be interrupted (incomplete).
      *
-     * Default to FALSE
+     * Defaults to FALSE
      *
      * @param $throwExceptions
      * @return EventManager
@@ -180,7 +192,6 @@ class EventManager implements LoggerAwareInterface
     public function setThrowExceptions($throwExceptions)
     {
         $this->throwExceptions = $throwExceptions;
-
         return $this;
     }
 
@@ -210,7 +221,6 @@ class EventManager implements LoggerAwareInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-
         return $this;
     }
 }
