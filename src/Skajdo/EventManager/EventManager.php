@@ -3,6 +3,7 @@
 namespace Skajdo\EventManager;
 
 use Skajdo\EventManager\Listener;
+use Psr\Log\NullLogger;
 use Skajdo\EventManager\Listener\ListenerInterface;
 use Skajdo\EventManager\Event\EventInterface;
 use Skajdo\EventManager\Event;
@@ -81,25 +82,26 @@ class EventManager implements LoggerAwareInterface
                 $object = $data[0];
                 $method = $data[1];
 
+                $listenerName = sprintf('#%s (%s::%s)', $id, get_class($object), $method);
+
                 try {
+
+                    $this->getLogger()->debug(sprintf('%s calling %s', $eventClassName, $listenerName));
+                    $profileStart = microtime(true);
                     call_user_func(array($object, $method), $event);
+                    $profileEnd = bcsub(microtime(true), $profileStart, 6);
+                    $this->getLogger()->debug(sprintf('%s calling %s took %s sec', $eventClassName, $listenerName, $profileEnd));
+
                 } catch (Exception $e) {
 
                     $msg = sprintf(
-                        'Listener (%s#%s) threw an exception (%s) with message: "%s"',
-                        get_class($object) . '::' . $method,
-                        $id,
-                        $e,
-                        $e->getMessage()
+                        'Listener %s threw an exception (%s) with message: "%s"',
+                        $listenerName, get_class($e), $e->getMessage()
                     );
 
                     $ee = new Exception($msg, 0, $e);
                     $ee->setListener($object);
-
-                    if ($this->hasLogger()) {
-                        $this->logger->error($msg, array('exception' => $ee));
-                    }
-
+                    $this->getLogger()->error($msg, array('exception' => $ee));
                     if ($this->getThrowExceptions()) {
                         throw $ee;
                     }
@@ -194,17 +196,16 @@ class EventManager implements LoggerAwareInterface
             $priority = Priority::NORMAL;
         }
 
-        // mirror priorities; negative priorities will be pushed back to the queue
-        // its more natural to give bigger value for more important things
-        // in queue its different, first elements have the lowest value.
-//        $priority = $priority * (-1);
-
         if (!isset($this->eventTriggers[$eventClassName])) {
             $queue = new Queue();
             $this->eventTriggers[$eventClassName] = $queue;
         } else {
             $queue = $this->eventTriggers[$eventClassName];
         }
+
+        $listenerName = sprintf('%s::%s()', get_class($listener), $listenerMethodName);
+        $this->getLogger()->debug(sprintf('%s is now listening to %s with priority %s', $listenerName, $eventClassName, $priority));
+
         $queue->insert(array($listener, $listenerMethodName), $priority);
         return $this;
     }
@@ -240,6 +241,11 @@ class EventManager implements LoggerAwareInterface
      */
     public function setThrowExceptions($throwExceptions)
     {
+        if($throwExceptions == true){
+            $this->getLogger()->debug(sprintf('%s will now throw exceptions in case of listener failure', get_class($this)));
+        }else{
+            $this->getLogger()->debug(sprintf('%s will NOT THROW exceptions in case of listener failure', get_class($this)));
+        }
         $this->throwExceptions = $throwExceptions;
         return $this;
     }
@@ -256,15 +262,27 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
+     * @deprecated since 1.0.3 logger is always present (NullLogger)
      * @return bool
      */
     protected function hasLogger()
     {
-        return $this->logger !== null;
+        return $this->getLogger() !== null;
     }
 
     /**
-     * @param \Psr\Log\LoggerInterface $logger
+     * @return LoggerInterface
+     */
+    protected function getLogger()
+    {
+        if($this->logger === null){
+            $this->logger = new NullLogger();
+        }
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
      * @return EventManager
      */
     public function setLogger(LoggerInterface $logger)

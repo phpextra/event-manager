@@ -9,7 +9,16 @@ class BasicFunctionalityTest extends Fixture
 {
     public function testEventsAndListeners()
     {
+        $logs = array();
+
+        $logger = $this->mock('\Psr\Log\NullLogger');
+        $logger->shouldDeferMissing();
+        $logger->shouldReceive('log')->andReturnUsing(function($level, $message) use (&$logs){
+            $logs[] = $message;
+        });
+
         $manager = new EventManager();
+        $manager->setLogger($logger);
         $event = new \DummyCancellableEvent();
         $listener1 = new \DummyListener1();
         $listener2 = new \DummyListener2();
@@ -40,6 +49,7 @@ class BasicFunctionalityTest extends Fixture
             'Anonymous 2 - 6 (Closure)',
         );
 
+        $this->assert()->isIdentical(15, count($logs));
         $this->assert()->isIdentical($expectedEventFlow, $event->events);
         $this->assert()->isIdentical(859, $event->sum);
 
