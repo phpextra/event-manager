@@ -77,7 +77,6 @@ class EventManager implements LoggerAwareInterface
             $queue = $this->eventTriggers[$eventClassName];
 
             /* @var Queue $queue */
-
             foreach ($queue->getIterator() as $id => $data) {
                 $object = $data[0];
                 $method = $data[1];
@@ -107,6 +106,8 @@ class EventManager implements LoggerAwareInterface
                     }
                 }
             }
+        }else{
+            $this->getLogger()->debug(sprintf('%s has no listeners', $eventClassName));
         }
         return $this;
     }
