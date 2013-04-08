@@ -2,6 +2,7 @@
 
 namespace Skajdo\EventManager;
 use Skajdo\TestSuite\Fixture;
+use Skajdo\EventManager\Event\EventInterface;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 
@@ -26,9 +27,12 @@ class BasicFunctionalityTest extends Fixture
         $manager
             ->addListener($listener1)
             ->addListener($listener2)
-            ->addListener(function(\DummyCancellableEvent $event){
-                $event->sum = $event->sum + 11;
-                $event->events[] = 'Anonymous 1' . ' + 11 (Closure)';
+            ->addListener(function(EventInterface $event){
+                if($event instanceof \DummyCancellableEvent){
+                    $event->sum = $event->sum + 11;
+                    $event->events[] = 'Closure was listening to Dummy\'s parent and was triggered !';
+                    $event->events[] = 'Anonymous 1' . ' + 11 (Closure)';
+                }
             }, Priority::HIGH)
             ->addListener(function(\DummyCancellableEvent $event){
                 $event->sum = $event->sum - 6;
@@ -43,11 +47,14 @@ class BasicFunctionalityTest extends Fixture
 
         $expectedEventFlow = array(
             'DummyListener2 * 5',
+            'Closure was listening to Dummy\'s parent and was triggered !',
             'Anonymous 1 + 11 (Closure)',
             'DummyListener1 * 10',
             'DummyListener2 + 5',
             'Anonymous 2 - 6 (Closure)',
         );
+
+        var_dump($logs);
 
         $this->assert()->isIdentical(15, count($logs));
         $this->assert()->isIdentical($expectedEventFlow, $event->events);

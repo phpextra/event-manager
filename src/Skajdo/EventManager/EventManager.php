@@ -36,10 +36,9 @@ use Zend\Code\Reflection\ClassReflection;
 class EventManager implements LoggerAwareInterface
 {
     /**
-     * Array containing listeners with their corresponding methods for each event
-     * @var array
+     * @var Queue
      */
-    protected $eventTriggers = array();
+    protected $listenersQueue = array();
 
     /**
      * Whenever to throw exceptions cought from listeners or not
@@ -57,6 +56,7 @@ class EventManager implements LoggerAwareInterface
      */
     public function __construct(LoggerInterface $logger = null)
     {
+        $this->listenersQueue = new Queue();
         if($logger !== null){
             $this->setLogger($logger);
         }
@@ -73,23 +73,22 @@ class EventManager implements LoggerAwareInterface
     public function triggerEvent(EventInterface $event)
     {
         $eventClassName = get_class($event);
-        if (isset($this->eventTriggers[$eventClassName])) {
-            $queue = $this->eventTriggers[$eventClassName];
 
-            /* @var Queue $queue */
-            foreach ($queue->getIterator() as $id => $data) {
-                $object = $data[0];
-                $method = $data[1];
+        /* @var $queueItem QueueItem */
+        foreach($this->listenersQueue->getIterator() as $listenerId => $queueItem){
 
-                $listenerName = sprintf('#%s (%s::%s)', $id, get_class($object), $method);
+            if(is_a($event, $queueItem->getEventClass())){
+
+                $listener = $queueItem->getListener();
+                $method = $queueItem->getMethod();
+                $listenerName = sprintf('#%s %s::%s(%s $event)', $listenerId, get_class($listener), $method, $eventClassName);
 
                 try {
-
-                    $this->getLogger()->debug(sprintf('%s calling %s', $eventClassName, $listenerName));
+                    $this->getLogger()->debug(sprintf('Calling %s', $listenerName));
                     $profileStart = microtime(true);
-                    call_user_func(array($object, $method), $event);
-                    $profileEnd = bcsub(microtime(true), $profileStart, 6);
-                    $this->getLogger()->debug(sprintf('%s calling %s took %s sec', $eventClassName, $listenerName, $profileEnd));
+                    call_user_func(array($listener, $method), $event);
+                    $profileEnd = bcsub(microtime(true), $profileStart, 8);
+                    $this->getLogger()->debug(sprintf('%s took %s sec', $listenerName, $profileEnd));
 
                 } catch (Exception $e) {
 
@@ -99,15 +98,15 @@ class EventManager implements LoggerAwareInterface
                     );
 
                     $ee = new Exception($msg, 0, $e);
-                    $ee->setListener($object);
+                    $ee->setListener($listener);
                     $this->getLogger()->error($msg, array('exception' => $ee));
                     if ($this->getThrowExceptions()) {
                         throw $ee;
                     }
                 }
+            }else{
+                $this->getLogger()->debug(sprintf('%s has no listeners', $eventClassName));
             }
-        }else{
-            $this->getLogger()->debug(sprintf('%s has no listeners', $eventClassName));
         }
         return $this;
     }
@@ -197,22 +196,17 @@ class EventManager implements LoggerAwareInterface
             $priority = Priority::NORMAL;
         }
 
-        if (!isset($this->eventTriggers[$eventClassName])) {
-            $queue = new Queue();
-            $this->eventTriggers[$eventClassName] = $queue;
-        } else {
-            $queue = $this->eventTriggers[$eventClassName];
-        }
-
         $listenerName = sprintf('%s::%s()', get_class($listener), $listenerMethodName);
         $this->getLogger()->debug(sprintf('%s is now listening to %s with priority %s', $listenerName, $eventClassName, $priority));
 
-        $queue->insert(array($listener, $listenerMethodName), $priority);
+        $this->listenersQueue->insert(new QueueItem($listener, $listenerMethodName, $eventClassName, $priority), $priority);
         return $this;
     }
 
     /**
      * Return event class name for given method/function parameter
+     * This method will return NULL if the class given in parameter is not
+     * an EventInterface nor one of its subclasses.
      *
      * @param \ReflectionParameter $param
      * @return null|string
@@ -224,7 +218,8 @@ class EventManager implements LoggerAwareInterface
         }
 
         $eventClassName = $eventClass->getName();
-        if (!in_array('Skajdo\EventManager\Event\EventInterface', class_implements($eventClassName, false))) {
+        $requiredInterface = 'Skajdo\EventManager\Event\EventInterface';
+        if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
             return null;
         }
 

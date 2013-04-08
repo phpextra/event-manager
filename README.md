@@ -1,4 +1,4 @@
-#Skajdo Event Manager (v1.0.2) ![WTFPL License](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-2.png) [![Build Status](https://travis-ci.org/jack-ks/skajdo-test-suite.png?branch=master)](https://travis-ci.org/jack-ks/skajdo-test-suite)
+#Skajdo Event Manager ![WTFPL License](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-2.png) [![Build Status](https://travis-ci.org/jack-ks/skajdo-test-suite.png?branch=master)](https://travis-ci.org/jack-ks/skajdo-test-suite)
 ##Event Managment made simple
 
 PSR-0 compliant, lightweight & tested.
@@ -36,6 +36,14 @@ We are using skajdo-test-suite in our application. To install and run use:
 ```
 > composer update skajdo/test-suite & php tests/run-tests.php run -s ./tests
 ```
+
+##Features
+
+- You dont't have to remember event & listener names. Since both are your classes, simple built-in type hinting will work just fine.
+- Events and listeners can be anything. It can be a module, a bundle, maybe a form. This event manager will not ruin your design because ...
+- ... listener method names are not predefined - just type event class name as a method param and it will work. Both listener and event interfaces are ... empty.
+- You have many events and want a single listener to rule them all ? No problem. Just type class parent as expected event, for ex. `onSmthn(EventInterface $event)` and all existing events will be passed to your method.
+- Listener can be an anonymous function. It can simplify your work as you will not need to create separate classes for listeners unless you need it.
 
 ## Usage example
 
@@ -126,7 +134,64 @@ echo ($car->headlights == true) ? 'HEADLIGHTS ARE ON' : 'HEADLIGHTS ARE OFF'; //
 
 ```
 
+## Anonymous functions usage
+
+Above listener (`CarElectronics`) could be replaced with:
+
+```php
+
+<?php
+
+    $electronics = function(CarStartEvent $event){$event->getCar()->headlights = true;}
+    $car = new Car();
+    $car->em->addListener($electronics, Priority::NORMAL);
+    $car->start();
+    echo ($car->headlights == true) ? 'HEADLIGHTS ARE ON' : 'HEADLIGHTS ARE OFF'; // returns HEADLIGHTS ARE ON
+
+?>
+
+```
+
+## Adding catch-all listener
+
+Consider following scenario:
+
+
+    CarEvent implements EventInterface
+    CarStartEvent extends CarEvent
+    CarEngineStartEvent extends CarStartEvent
+
+
+Simple, right ? Now watch watch this:
+
+```php
+
+<?php
+
+abstract class MyListener implements ListenerInterface
+{
+    public function onAnyEvent(EventInterface $ev); // catches ALL events
+
+    public function onAnyCarEvent(CarEvent $ev); // catches CarEvent, CarStartEvent, CarEngineStartEvent
+
+    public function onCarOrEngineStart(CarStartEvent $ev); // catches CarStartEvent, CarEngineStartEvent
+
+    public function onEngineStart(CarStartEvent $ev); // catches CarEngineStartEvent
+}
+
+?>
+
+```
+
+Few lines of code are worth more than a milion words :-)
+
 ##Changelog
+
+1.0.3
+
+* added support for event inheritance
+* replaced multiple event-queues with one to make priority managment easier
+* updated readme
 
 1.0.2
 
@@ -160,10 +225,20 @@ Jacek Kobus - <kobus.jacek@gmail.com>
 
 ## License information
 
-    Copyright © 2013 Jacek Kobus <kobus.jacek@gmail.com>
+### From author
+
+    I chose WTFPL so you will not have to read ALL-CAPS license files.
+    But please, try not to clone my repository and re-post it as your own
+    because that is really fuc*ed up. Students are excluded from this rule as they would not understand it anyway.
+    Hope you will find this piece of code useful. Cheers !
+
+### License
+
     This work is free. You can redistribute it and/or modify it under the
     terms of the Do What The Fuck You Want To Public License, Version 2,
     as published by Sam Hocevar. See http://www.wtfpl.net/ for more details.
+
+### Disclaimer
 
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
