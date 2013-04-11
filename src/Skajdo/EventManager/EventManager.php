@@ -73,6 +73,8 @@ class EventManager implements LoggerAwareInterface
     public function triggerEvent(EventInterface $event)
     {
         $eventClassName = get_class($event);
+        $listenersFound = 0;
+        $loopStart = microtime(true);
 
         /* @var $queueItem QueueItem */
         foreach($this->listenersQueue->getIterator() as $listenerId => $queueItem){
@@ -104,10 +106,17 @@ class EventManager implements LoggerAwareInterface
                         throw $ee;
                     }
                 }
-            }else{
-                $this->getLogger()->debug(sprintf('%s has no listeners', $eventClassName));
+                $listenersFound++;
             }
         }
+
+        $loopEnd = bcsub(microtime(true), $loopStart, 8);
+        if($listenersFound == 0){
+            $this->getLogger()->debug(sprintf('%s has no listeners', $eventClassName));
+        }else{
+            $this->getLogger()->debug(sprintf('Event %s was completed for %s listener(s) in %s s', $eventClassName, $listenersFound, $loopEnd));
+        }
+
         return $this;
     }
 

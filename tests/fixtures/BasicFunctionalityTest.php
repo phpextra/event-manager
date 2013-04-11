@@ -54,7 +54,7 @@ class BasicFunctionalityTest extends Fixture
             'Anonymous 2 - 6 (Closure)',
         );
 
-        $this->assert()->isIdentical(15, count($logs));
+        $this->assert()->isIdentical(16, count($logs));
         $this->assert()->isIdentical($expectedEventFlow, $event->events);
         $this->assert()->isIdentical(859, $event->sum);
 
