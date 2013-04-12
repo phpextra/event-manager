@@ -31,6 +31,8 @@ class QueueItem
     protected $priority;
 
     /**
+     * Create new queue item
+     *
      * @param ListenerInterface|\Closure $listener
      * @param string $method
      * @param string $eventClass
@@ -39,10 +41,6 @@ class QueueItem
      */
     public function __construct($listener, $method, $eventClass, $priority = Priority::NORMAL)
     {
-//        if((!$listener instanceof ListenerInterface) && (!$listener instanceof \Closure)){
-//            throw new \InvalidArgumentException(sprintf('Listener must implement the ListenerInterface or it must be an instance of Closure but %s given', get_class($listener)));
-//        }
-
         $this->listener = $listener;
         $this->method = $method;
         $this->eventClass = $eventClass;

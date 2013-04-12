@@ -5,7 +5,7 @@ namespace Skajdo\EventManager;
 /**
  * Event priority ENUM class
  */
-class Priority
+final class Priority
 {
     const LOWEST    = -1000;
     const LOW       = -500;
