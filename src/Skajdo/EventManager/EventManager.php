@@ -47,6 +47,27 @@ class EventManager implements LoggerAwareInterface
     protected $throwExceptions = false;
 
     /**
+     * Currently running event
+     *
+     * @var EventInterface
+     */
+    protected $runningEvent = null;
+
+    /**
+     * Limit recursion
+     *
+     * @var int
+     */
+    protected $recurrencyLimit = 50;
+
+    /**
+     * Current recurrency level
+     *
+     * @var int
+     */
+    protected $recurrencyLevel = 0;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
@@ -72,6 +93,7 @@ class EventManager implements LoggerAwareInterface
      */
     public function triggerEvent(EventInterface $event)
     {
+        $this->runningEvent = $event;
         $eventClassName = get_class($event);
         $listenersFound = 0;
         $loopStart = microtime(true);
@@ -117,6 +139,7 @@ class EventManager implements LoggerAwareInterface
             $this->getLogger()->debug(sprintf('Event %s was completed for %s listener(s) in %s s', $eventClassName, $listenersFound, $loopEnd));
         }
 
+        $this->runningEvent = null;
         return $this;
     }
 
@@ -253,6 +276,16 @@ class EventManager implements LoggerAwareInterface
         }
         $this->throwExceptions = $throwExceptions;
         return $this;
+    }
+
+    /**
+     * Return event that is currently running or NULL if no event found
+     *
+     * @return null|EventInterface
+     */
+    public function getRunningEvent()
+    {
+        return $this->runningEvent;
     }
 
     /**
