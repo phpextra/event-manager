@@ -14,6 +14,13 @@ final class Priority
     const HIGHEST   = 1000;
 
     /**
+     * Special priority (lower than lowest);
+     * It should be used to monitor event results.
+     * No changes should be made in that event.
+     */
+    const MONITOR   = -1000000;
+
+    /**
      * Name to int mapping
      *
      * @var array
@@ -24,6 +31,7 @@ final class Priority
         'normal'    => self::NORMAL,
         'high'      => self::HIGH,
         'highest'   => self::HIGHEST,
+        'monitor'   => self::MONITOR,
     );
 
     /**
