@@ -147,9 +147,10 @@ class EventManager implements LoggerAwareInterface
      * Add event listener
      *
      * @param ListenerInterface|\Closure $listener
-     * @param int $priority Optional; overrides other priority settings
-     * @throws \RuntimeException Listener is not listening to any event
+     * @param null                       $priority
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
+     * @param int                        $priority Optional; overrides other priority settings
      * @return EventManager
      */
     public function addListener($listener, $priority = null)
@@ -160,9 +161,10 @@ class EventManager implements LoggerAwareInterface
             /* @var $param \Zend\Code\Reflection\ParameterReflection */
             $param = current($closure->getParameters());
             if (!$param || !($eventClassName = $this->_getEventClassName($param))) {
-                throw new \RuntimeException('Given closure does not listen to any known event');
+                $this->getLogger()->info(sprintf('Given closure does not listen to any known event'));
+            }else{
+                $this->_addListener($listener, '__invoke', $eventClassName, $priority);
             }
-            $this->_addListener($listener, '__invoke', $eventClassName, $priority);
             return $this;
         }
 
@@ -207,7 +209,7 @@ class EventManager implements LoggerAwareInterface
         }
 
         if(!$listenerIsListeningToEvent){
-            throw new \RuntimeException('Given Listener does not listen to any known event');
+            $this->getLogger()->info(sprintf('Given Listener (%s) does not listen to any known event', $listenerClass));
         }
 
         return $this;
