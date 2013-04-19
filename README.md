@@ -1,8 +1,8 @@
-#Skajdo Event Manager ![WTFPL License](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-2.png) [![Build Status](https://travis-ci.org/jack-ks/skajdo-test-suite.png?branch=master)](https://travis-ci.org/jack-ks/skajdo-test-suite)
+#Skajdo Event Manager [![Build Status](https://travis-ci.org/jack-ks/skajdo-test-suite.png?branch=master)](https://travis-ci.org/jack-ks/skajdo-test-suite)
 ##Event Managment made simple
 
 PSR-0 compliant, lightweight & tested.
-Start using events under one minute - no initial setup required. It's **that** easy.
+Start using events under one minute. It's **that** easy.
 
 Library is under active development and it aims to be **simple** and **fast**. All pull requests and bug reports are welcome.
 
@@ -18,7 +18,7 @@ JSON:
 
 ```json
 "require": {
-    "skajdo/event-manager":"1.0.0"
+    "skajdo/event-manager":"*"
 }
 ```
 
@@ -37,13 +37,20 @@ We are using skajdo-test-suite in our application. To install and run use:
 > composer update skajdo/test-suite & php tests/run-tests.php run -s ./tests
 ```
 
-##Features
+##Features - why would I want to use it ?
 
-- You dont't have to remember event & listener names. Since both are your classes, simple built-in type hinting will work just fine.
-- Events and listeners can be anything. It can be a module, a bundle, maybe a form. This event manager will not ruin your design because ...
-- ... listener method names are not predefined - just type event class name as a method param and it will work. Both listener and event interfaces are ... empty.
-- You have many events and want a single listener to rule them all ? No problem. Just type class parent as expected event, for ex. `onSmthn(EventInterface $event)` and all existing events will be passed to your method.
-- Listener can be an anonymous function. It can simplify your work as you will not need to create separate classes for listeners unless you need it.
+While most available event managers are based on events that are names, and some objects that carry information
+I chose different approach to get rid of those things. You do not need to define events as a list of some names.
+Each event is an object that you create and it will carry __whatever you want__. You only need to extend an empty interface, that's all.
+Listener is also an object (including closures); you do not need to know the name of an event while adding a listener to the stack.
+Manager will handle that for you, because while you wrote that listener, you already told what and when should be triggered.
+
+- code-completion friendly design; you dont't have to remember event & listener names. Since both are usually your project classes, simple built-in type hinting and cc will work just fine.
+- flexible and extensible; events and listeners can be anything. It can be a module, a bundle, maybe a form. This event manager will not ruin your design because listener method names are not predefined - just type event class name as a method param and it will work. Both listener and event interfaces are ... empty.
+- simple to use; remember only two methods: `addListener(ListenerInterface $l)` and `triggerEvent(EventInterface $event)`. You have many events and want a single listener to rule them all ? No problem. Just type class parent as expected event, for ex. `onSmthn(EventInterface $event)` and all existing events will be passed to your method.
+- supports cool language features; listener can be an anonymous function. It can simplify your work as you will not need to create separate classes for listeners unless you really want to.
+- log-aware; are you using monolog ? Yes, it is supported. All loggers using PSR-3 are supported;
+- clean code.
 
 ## Usage example
 
@@ -154,7 +161,7 @@ Above listener (`CarElectronics`) could be replaced with:
 
 ## Adding catch-all listener
 
-Consider following scenario:
+Consider the following scenario:
 
 
     CarEvent implements EventInterface
@@ -162,7 +169,7 @@ Consider following scenario:
     CarEngineStartEvent extends CarStartEvent
 
 
-Simple, right ? Now watch watch this:
+Simple, right ? Now watch this:
 
 ```php
 
@@ -184,6 +191,15 @@ abstract class MyListener implements ListenerInterface
 ```
 
 Few lines of code are worth more than a milion words :-)
+
+##To-Do
+
+* reformat log messages
+* recurrency check and monitor
+* propagation stop (need to be reconsidered)
+* more tests (or maybe use PHPUnit)
+* replace ZendCode with Doctrine Annotations or just use the default Reflection API
+
 
 ##Changelog
 
@@ -223,27 +239,7 @@ See **composer.json** for a full list of dependencies.
 
 Jacek Kobus - <kobus.jacek@gmail.com>
 
-## License information
+## License information (MIT)
 
-### From author
+    See the file LICENSE.txt for copying permission.
 
-    I chose WTFPL so you will not have to read ALL-CAPS license files.
-    But please, try not to clone my repository and re-post it as your own
-    because that is really fuc*ed up. Students are excluded from this rule as they would not understand it anyway.
-    Hope you will find this piece of code useful. Cheers !
-
-### License
-
-    This work is free. You can redistribute it and/or modify it under the
-    terms of the Do What The Fuck You Want To Public License, Version 2,
-    as published by Sam Hocevar. See http://www.wtfpl.net/ for more details.
-
-### Disclaimer
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

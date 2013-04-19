@@ -2,7 +2,7 @@
     "name": "skajdo/event-manager",
     "description": "Event manager based on reflection, annotations and priority queue.",
 	"keywords": ["event manager", "event", "listener", "observer", "psr-0"],
-	"license": "WTFPL",
+	"license": "MIT",
 	"homepage": "http://jkobus.github.com/skajdo-test-suite/",
 	"support": {
 		"issues": "https://github.com/jack-ks/skajdo-test-suite/issues",

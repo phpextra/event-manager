@@ -1,7 +1,11 @@
 <?php
 
-namespace Skajdo\EventManager;
+/**
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
+ * See the file LICENSE.txt for copying permission.
+ */
 
+namespace Skajdo\EventManager;
 use Skajdo\EventManager\Listener;
 use Psr\Log\NullLogger;
 use Skajdo\EventManager\Listener\ListenerInterface;
