@@ -150,11 +150,10 @@ class EventManager implements LoggerAwareInterface
     /**
      * Add event listener
      *
+     * @see Priority
      * @param ListenerInterface|\Closure $listener
-     * @param null                       $priority
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
      * @param int                        $priority Optional; overrides other priority settings
+     * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
      * @return EventManager
      */
     public function addListener($listener, $priority = null)
@@ -222,10 +221,12 @@ class EventManager implements LoggerAwareInterface
     /**
      * Internal method for adding listeners
      *
+     * @see Priority
      * @param $listener
      * @param $listenerMethodName
      * @param $eventClassName
-     * @param null $priority
+     * @param $listenerMethodName
+     * @param int $priority see Priority (enum)
      * @return EventManager
      */
     protected function _addListener($listener, $listenerMethodName, $eventClassName, $priority = null)
