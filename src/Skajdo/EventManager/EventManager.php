@@ -51,6 +51,27 @@ class EventManager implements LoggerAwareInterface
     protected $throwExceptions = false;
 
     /**
+     * Currently running event
+     *
+     * @var EventInterface
+     */
+    protected $runningEvent = null;
+
+    /**
+     * Limit recursion
+     *
+     * @var int
+     */
+    protected $recurrencyLimit = 50;
+
+    /**
+     * Current recurrency level
+     *
+     * @var int
+     */
+    protected $recurrencyLevel = 0;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
@@ -76,6 +97,7 @@ class EventManager implements LoggerAwareInterface
      */
     public function triggerEvent(EventInterface $event)
     {
+        $this->runningEvent = $event;
         $eventClassName = get_class($event);
         $listenersFound = 0;
         $loopStart = microtime(true);
@@ -121,6 +143,7 @@ class EventManager implements LoggerAwareInterface
             $this->getLogger()->debug(sprintf('Event %s was completed for %s listener(s) in %s s', $eventClassName, $listenersFound, $loopEnd));
         }
 
+        $this->runningEvent = null;
         return $this;
     }
 
@@ -128,9 +151,10 @@ class EventManager implements LoggerAwareInterface
      * Add event listener
      *
      * @param ListenerInterface|\Closure $listener
-     * @param int $priority Optional; overrides other priority settings
-     * @throws \RuntimeException Listener is not listening to any event
+     * @param null                       $priority
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
+     * @param int                        $priority Optional; overrides other priority settings
      * @return EventManager
      */
     public function addListener($listener, $priority = null)
@@ -141,13 +165,14 @@ class EventManager implements LoggerAwareInterface
             /* @var $param \Zend\Code\Reflection\ParameterReflection */
             $param = current($closure->getParameters());
             if (!$param || !($eventClassName = $this->_getEventClassName($param))) {
-                throw new \RuntimeException('Given closure does not listen to any known event');
+                $this->getLogger()->info(sprintf('Given closure does not listen to any known event'));
+            }else{
+                $this->_addListener($listener, '__invoke', $eventClassName, $priority);
             }
-            $this->_addListener($listener, '__invoke', $eventClassName, $priority);
             return $this;
         }
 
-        if(!$listener instanceof \Skajdo\EventManager\Listener\ListenerInterface){
+        if(!$listener instanceof ListenerInterface){
             throw new \InvalidArgumentException(sprintf(
                 'Listener must implement the ListenerInterface or it must be an instance of Closure but %s given', get_class($listener)
             ));
@@ -188,7 +213,7 @@ class EventManager implements LoggerAwareInterface
         }
 
         if(!$listenerIsListeningToEvent){
-            throw new \RuntimeException('Given Listener does not listen to any known event');
+            $this->getLogger()->info(sprintf('Given Listener (%s) does not listen to any known event', $listenerClass));
         }
 
         return $this;
@@ -257,6 +282,16 @@ class EventManager implements LoggerAwareInterface
         }
         $this->throwExceptions = $throwExceptions;
         return $this;
+    }
+
+    /**
+     * Return event that is currently running or NULL if no event found
+     *
+     * @return null|EventInterface
+     */
+    public function getRunningEvent()
+    {
+        return $this->runningEvent;
     }
 
     /**
