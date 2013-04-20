@@ -6,7 +6,7 @@
  */
 
 namespace Skajdo\EventManager;
-use Skajdo\EventManager\Listener\ListenerInterface;
+use Skajdo\EventManager\Listener\Listener;
 
 /**
  * Queue item.
@@ -16,7 +16,7 @@ use Skajdo\EventManager\Listener\ListenerInterface;
 class QueueItem
 {
     /**
-     * @var ListenerInterface|\Closure
+     * @var Listener|\Closure
      */
     protected $listener;
 
@@ -38,7 +38,7 @@ class QueueItem
     /**
      * Create new queue item
      *
-     * @param ListenerInterface|\Closure $listener
+     * @param Listener|\Closure $listener
      * @param string $method
      * @param string $eventClass
      * @param int $priority
@@ -69,7 +69,7 @@ class QueueItem
     }
 
     /**
-     * @param \Skajdo\EventManager\Listener\ListenerInterface $listener
+     * @param \Skajdo\EventManager\Listener\Listener $listener
      */
     public function setListener($listener)
     {
@@ -77,7 +77,7 @@ class QueueItem
     }
 
     /**
-     * @return \Skajdo\EventManager\Listener\ListenerInterface|\Closure
+     * @return \Skajdo\EventManager\Listener\Listener|\Closure
      */
     public function getListener()
     {

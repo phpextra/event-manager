@@ -47,7 +47,7 @@ Manager will handle that for you, because while you wrote that listener, you alr
 
 - code-completion friendly design; you dont't have to remember event & listener names. Since both are usually your project classes, simple built-in type hinting and cc will work just fine.
 - flexible and extensible; events and listeners can be anything. It can be a module, a bundle, maybe a form. This event manager will not ruin your design because listener method names are not predefined - just type event class name as a method param and it will work. Both listener and event interfaces are ... empty.
-- simple to use; remember only two methods: `addListener(ListenerInterface $l)` and `triggerEvent(EventInterface $event)`. You have many events and want a single listener to rule them all ? No problem. Just type class parent as expected event, for ex. `onSmthn(EventInterface $event)` and all existing events will be passed to your method.
+- simple to use; remember only two methods: `addListener(Listener $l)` and `triggerEvent(EventInterface $event)`. You have many events and want a single listener to rule them all ? No problem. Just type class parent as expected event, for ex. `onSmthn(EventInterface $event)` and all existing events will be passed to your method.
 - supports cool language features; listener can be an anonymous function. It can simplify your work as you will not need to create separate classes for listeners unless you really want to.
 - log-aware; are you using monolog ? Yes, it is supported. All loggers using PSR-3 are supported;
 - clean code.
@@ -63,7 +63,7 @@ Electronics will turn our headlights on.
 
 use \Skajdo\EventManager\EventManager;
 use \Skajdo\EventManager\Event\EventInterface;
-use \Skajdo\EventManager\Listener\ListenerInterface;
+use \Skajdo\EventManager\Listener\Listener;
 
 class Car {
 
@@ -119,7 +119,7 @@ class CarStartEvent implements EventInterface
     }
 }
 
-class CarElectronics implements ListenerInterface
+class CarElectronics implements Listener
 {
     /**
      * Turn the headlights on when the car starts
@@ -175,7 +175,7 @@ Simple, right ? Now watch this:
 
 <?php
 
-abstract class MyListener implements ListenerInterface
+abstract class MyListener implements Listener
 {
     public function onAnyEvent(EventInterface $ev); // catches ALL events
 
@@ -196,12 +196,27 @@ Few lines of code are worth more than a milion words :-)
 
 * reformat log messages
 * recurrency check and monitor
+* performance test
 * propagation stop (need to be reconsidered)
 * more tests (or maybe use PHPUnit)
 * replace ZendCode with Doctrine Annotations or just use the default Reflection API
 
 
 ##Changelog
+
+1.1.0
+
+* interface changes (ListenerInterface -> Listener, EventInterface -> Event)
+* cleaned up classes
+* added benchmark test (10150 listener calls < 0.8 sec)
+
+1.0.4
+
+* changed license to MIT
+* added EventManagerAware interface
+* readme update
+* added MONITOR priority
+* removed exception in case where listener is not listening to any known events (info-log instead)
 
 1.0.3
 

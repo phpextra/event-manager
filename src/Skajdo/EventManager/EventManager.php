@@ -210,7 +210,7 @@ class EventManager implements LoggerAwareInterface
         }
 
         if(!$listenerIsListeningToEvent){
-            $this->getLogger()->info(sprintf('Given Listener (%s) does not listen to any known event', $listenerClass));
+            $this->getLogger()->info(sprintf('Given Listener (%s) does not listen to any known events', $listenerClass));
         }
 
         return $this;
@@ -251,7 +251,7 @@ class EventManager implements LoggerAwareInterface
         }
 
         $eventClassName = $eventClass->getName();
-        $requiredInterface = 'Skajdo\EventManager\Event\Event';
+        $requiredInterface = 'Skajdo\EventManager\Event';
         if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
             return null;
         }
