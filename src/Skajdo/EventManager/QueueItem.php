@@ -6,7 +6,7 @@
  */
 
 namespace Skajdo\EventManager;
-use Skajdo\EventManager\Listener\Listener;
+use Skajdo\EventManager\Listener;
 
 /**
  * Queue item.
@@ -69,7 +69,7 @@ class QueueItem
     }
 
     /**
-     * @param \Skajdo\EventManager\Listener\Listener $listener
+     * @param \Skajdo\EventManager\Listener $listener
      */
     public function setListener($listener)
     {
@@ -77,7 +77,7 @@ class QueueItem
     }
 
     /**
-     * @return \Skajdo\EventManager\Listener\Listener|\Closure
+     * @return \Skajdo\EventManager\Listener|\Closure
      */
     public function getListener()
     {

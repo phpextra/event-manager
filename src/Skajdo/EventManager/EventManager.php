@@ -86,14 +86,28 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * Trigger listeners for given event
+     * @see EventManager::trigger()
+     * @deprecated since 1.1.1; use EventManager::trigger() instead
+     * @param Event $event
+     * @param null $preDispatchHook
+     * @param null $postDispatchHook
+     * @return EventManager
+     */
+    public function triggerEvent(Event $event, $preDispatchHook = null, $postDispatchHook = null){
+        return $this->trigger($event, $preDispatchHook, $postDispatchHook);
+    }
+
+    /**
+     * Trigger event; calls all listeners that listen to this event
      *
      * @param  Event $event
+     * @param callable $preDispatchHook A callable to be called before dispatching an event to a listener
+     * @param callable $postDispatchHook A callable to be called after dispatching an event to a listener
      * @throws Exception
      * @return EventManager
      * @return \Skajdo\EventManager\EventManager
      */
-    public function triggerEvent(Event $event)
+    public function trigger(Event $event, $preDispatchHook = null, $postDispatchHook = null)
     {
         $this->runningEvent = $event;
         $eventClassName = get_class($event);
@@ -110,11 +124,20 @@ class EventManager implements LoggerAwareInterface
                 $listenerName = sprintf('#%s %s::%s(%s $event)', $listenerId, get_class($listener), $method, $eventClassName);
 
                 try {
+
+                    if($preDispatchHook !== null){
+                        call_user_func_array($preDispatchHook, array($listener, $method, $event));
+                    }
+
                     $this->getLogger()->debug(sprintf('Calling %s', $listenerName));
                     $profileStart = microtime(true);
                     call_user_func(array($listener, $method), $event);
                     $profileEnd = bcsub(microtime(true), $profileStart, 8);
                     $this->getLogger()->debug(sprintf('%s took %s sec', $listenerName, $profileEnd));
+
+                    if($postDispatchHook !== null){
+                        call_user_func_array($postDispatchHook, array($listener, $method, $event));
+                    }
 
                 } catch (Exception $e) {
 
