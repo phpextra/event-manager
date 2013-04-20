@@ -5,7 +5,7 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager\Listener;
+namespace Skajdo\EventManager;
 
 /**
  * Abstract listener class
@@ -14,6 +14,6 @@ namespace Skajdo\EventManager\Listener;
  *
  * @author      Jacek Kobus
  */
-interface ListenerInterface
+interface Listener
 {
 }

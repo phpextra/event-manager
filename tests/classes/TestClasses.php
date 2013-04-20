@@ -1,20 +1,20 @@
 <?php
 
-use Skajdo\EventManager\Event\CancellableEvent;
+use Skajdo\EventManager\Event\AbstractCancellableEvent;
 use Skajdo\EventManager\Listener\Listener;
 
-class DummyCancellableEvent extends CancellableEvent
+class DummyCancellableEvent extends AbstractCancellableEvent
 {
     public $events = array();
     public $sum = 15;
 }
 
-class DummyCancellableEvent2 extends CancellableEvent
+class DummyCancellableEvent2 extends AbstractCancellableEvent
 {
     public $sum = 10;
 }
 
-class DummyListener1 extends Listener
+class DummyListener1 implements Listener
 {
     /**
      * Short desc
@@ -29,7 +29,7 @@ class DummyListener1 extends Listener
     }
 }
 
-class DummyListener2 extends Listener
+class DummyListener2 implements Listener
 {
     protected $sum = 0;
 

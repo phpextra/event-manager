@@ -8,8 +8,6 @@
 namespace Skajdo\EventManager;
 use Skajdo\EventManager\Listener;
 use Psr\Log\NullLogger;
-use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\Event\EventInterface;
 use Skajdo\EventManager\Event;
 use Skajdo\EventManager\Exception;
 use Psr\Log\LoggerAwareInterface;
@@ -53,7 +51,7 @@ class EventManager implements LoggerAwareInterface
     /**
      * Currently running event
      *
-     * @var EventInterface
+     * @var Event
      */
     protected $runningEvent = null;
 
@@ -90,12 +88,12 @@ class EventManager implements LoggerAwareInterface
     /**
      * Trigger listeners for given event
      *
-     * @param  EventInterface $event
+     * @param  Event $event
      * @throws Exception
      * @return EventManager
      * @return \Skajdo\EventManager\EventManager
      */
-    public function triggerEvent(EventInterface $event)
+    public function triggerEvent(Event $event)
     {
         $this->runningEvent = $event;
         $eventClassName = get_class($event);
@@ -151,7 +149,7 @@ class EventManager implements LoggerAwareInterface
      * Add event listener
      *
      * @see Priority
-     * @param ListenerInterface|\Closure $listener
+     * @param Listener|\Closure $listener
      * @param int                        $priority Optional; overrides other priority settings
      * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
      * @return EventManager
@@ -171,9 +169,9 @@ class EventManager implements LoggerAwareInterface
             return $this;
         }
 
-        if(!$listener instanceof ListenerInterface){
+        if(!$listener instanceof Listener){
             throw new \InvalidArgumentException(sprintf(
-                'Listener must implement the ListenerInterface or it must be an instance of Closure but %s given', get_class($listener)
+                'Listener must implement the Listener or it must be an instance of Closure but %s given', get_class($listener)
             ));
         }
 
@@ -222,19 +220,15 @@ class EventManager implements LoggerAwareInterface
      * Internal method for adding listeners
      *
      * @see Priority
-     * @param $listener
+     * @param Listener|\Closure $listener
      * @param $listenerMethodName
      * @param $eventClassName
      * @param $listenerMethodName
      * @param int $priority see Priority (enum)
      * @return EventManager
      */
-    protected function _addListener($listener, $listenerMethodName, $eventClassName, $priority = null)
+    protected function _addListener($listener, $listenerMethodName, $eventClassName, $priority = Priority::NORMAL)
     {
-        if($priority === null){
-            $priority = Priority::NORMAL;
-        }
-
         $listenerName = sprintf('%s::%s()', get_class($listener), $listenerMethodName);
         $this->getLogger()->debug(sprintf('%s is now listening to %s with priority %s', $listenerName, $eventClassName, $priority));
 
@@ -245,7 +239,7 @@ class EventManager implements LoggerAwareInterface
     /**
      * Return event class name for given method/function parameter
      * This method will return NULL if the class given in parameter is not
-     * an EventInterface nor one of its subclasses.
+     * an Event nor one of its subclasses.
      *
      * @param \ReflectionParameter $param
      * @return null|string
@@ -257,7 +251,7 @@ class EventManager implements LoggerAwareInterface
         }
 
         $eventClassName = $eventClass->getName();
-        $requiredInterface = 'Skajdo\EventManager\Event\EventInterface';
+        $requiredInterface = 'Skajdo\EventManager\Event\Event';
         if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
             return null;
         }
@@ -288,7 +282,7 @@ class EventManager implements LoggerAwareInterface
     /**
      * Return event that is currently running or NULL if no event found
      *
-     * @return null|EventInterface
+     * @return null|Event
      */
     public function getRunningEvent()
     {
@@ -304,15 +298,6 @@ class EventManager implements LoggerAwareInterface
     public function getThrowExceptions()
     {
         return $this->throwExceptions;
-    }
-
-    /**
-     * @deprecated since 1.0.3 logger is always present (NullLogger)
-     * @return bool
-     */
-    protected function hasLogger()
-    {
-        return $this->getLogger() !== null;
     }
 
     /**

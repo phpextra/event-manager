@@ -6,21 +6,15 @@
  */
 
 namespace Skajdo\EventManager\Event;
+use Skajdo\EventManager\Event;
 
 /**
  * Represents cancellable event
- * Every cancellable event should extend this class or implement the
- * cancellable interface.
  *
  * @author      Jacek Kobus
  */
-class CancellableEvent extends Event implements CancellableEventInterface
+interface CancellableEvent extends Event
 {
-    /**
-     * @var bool
-     */
-    private $isCancelled = false;
-
     /**
      * Tell if current event is cancelled
      * If the event is cancelled it cannot be undone.
@@ -29,31 +23,12 @@ class CancellableEvent extends Event implements CancellableEventInterface
      *
      * @return bool
      */
-    final public function isCancelled()
-    {
-        return $this->isCancelled === true;
-    }
+    public function isCancelled();
 
     /**
      * Cancel event
      *
-     * @return CancellableEventInterface
+     * @return $this
      */
-    final public function setIsCancelled()
-    {
-        $this->isCancelled = true;
-
-        return $this;
-    }
-
-    /**
-     * Tell if current event is cancelled
-     *
-     * @see CancellableEvent::isCancelled()
-     * @return bool
-     */
-    final public function getIsCancelled()
-    {
-        return $this->isCancelled();
-    }
+    public function setIsCancelled();
 }

@@ -2,7 +2,7 @@
 
 namespace Skajdo\EventManager;
 use Skajdo\TestSuite\Fixture;
-use Skajdo\EventManager\Event\EventInterface;
+use Skajdo\EventManager\Event;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 
@@ -27,7 +27,7 @@ class BasicFunctionalityTest extends Fixture
         $manager
             ->addListener($listener1)
             ->addListener($listener2)
-            ->addListener(function(EventInterface $event){
+            ->addListener(function(Event $event){
                 if($event instanceof \DummyCancellableEvent){
                     $event->sum = $event->sum + 11;
                     $event->events[] = 'Closure was listening to Dummy\'s parent and was triggered !';

@@ -7,12 +7,15 @@
 
 namespace Skajdo\EventManager\Listener;
 
+use Skajdo\EventManager\Listener as Test;
+
 /**
- * Default listener
+ * Abstract listener class
+ * Listener does not require any specific methods. Any method with event as it first param is treated
+ * as listener and it will be executed as soon as event will be triggered.
  *
  * @author      Jacek Kobus
  */
-class Listener implements ListenerInterface
+interface Listener extends Test
 {
-
 }

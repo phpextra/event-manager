@@ -5,14 +5,14 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager\Event;
+namespace Skajdo\EventManager;
 
 /**
  * Represents an event
  *
  * @author      Jacek Kobus
  */
-interface EventInterface
+interface Event
 {
 
 }
