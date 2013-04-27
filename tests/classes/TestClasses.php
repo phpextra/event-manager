@@ -1,7 +1,8 @@
 <?php
 
 use Skajdo\EventManager\Event\AbstractCancellableEvent;
-use Skajdo\EventManager\Listener\Listener;
+use Skajdo\EventManager\EventManager;
+use Skajdo\EventManager\Listener;
 
 class DummyCancellableEvent extends AbstractCancellableEvent
 {
@@ -12,6 +13,38 @@ class DummyCancellableEvent extends AbstractCancellableEvent
 class DummyCancellableEvent2 extends AbstractCancellableEvent
 {
     public $sum = 10;
+}
+
+/**
+ * Class InfiniteLoopCauser
+ */
+class InfiniteLoopCauser implements Listener
+{
+    /**
+     * @var Skajdo\EventManager\EventManager
+     */
+    protected $em;
+
+    /**
+     * @param EventManager $em
+     */
+    public function __construct(EventManager $em){
+        $this->em = $em;
+    }
+
+    /**
+     * @param DummyCancellableEvent $event
+     */
+    public function onDummyEvent(DummyCancellableEvent $event){
+        $em = $this->em;
+
+        $looper = function(DummyCancellableEvent $event) use ($em, &$looper){
+            $em->addListener($looper);
+            $em->trigger($event);
+        };
+        $this->em->addListener($looper);
+        $em->trigger($event);
+    }
 }
 
 class DummyListener1 implements Listener

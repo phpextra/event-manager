@@ -75,6 +75,11 @@ class EventManager implements LoggerAwareInterface
     protected $logger;
 
     /**
+     * @var CallGraph
+     */
+    protected $callGraph = null;
+
+    /**
      * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger = null)
@@ -103,6 +108,7 @@ class EventManager implements LoggerAwareInterface
      * @param  Event $event
      * @param callable $preDispatchHook A callable to be called before dispatching an event to a listener
      * @param callable $postDispatchHook A callable to be called after dispatching an event to a listener
+     * @throws \RuntimeException When infinite loop will be detected
      * @throws Exception
      * @return EventManager
      * @return \Skajdo\EventManager\EventManager
@@ -113,6 +119,20 @@ class EventManager implements LoggerAwareInterface
         $eventClassName = get_class($event);
         $listenersFound = 0;
         $loopStart = microtime(true);
+
+        if($this->callGraph === null){
+            $clearGraph = true;
+            $this->callGraph = new CallGraph();
+        }else{
+            $clearGraph = false;
+
+            if($this->callGraph->hasObject($event)){
+                $this->getLogger()->critical(sprintf('Recurrency on "%s" was detected and manager will exit', get_class($event)));
+                throw new \RuntimeException('Recurrency');
+            }else{
+                $this->callGraph->addObject($event);
+            }
+        }
 
         /* @var $queueItem QueueItem */
         foreach($this->listenersQueue->getIterator() as $listenerId => $queueItem){
@@ -155,6 +175,10 @@ class EventManager implements LoggerAwareInterface
                 }
                 $listenersFound++;
             }
+        }
+
+        if($clearGraph === true){
+            $this->callGraph = null;
         }
 
         $loopEnd = bcsub(microtime(true), $loopStart, 8);

@@ -59,4 +59,30 @@ class BasicFunctionalityTest extends Fixture
         $this->assert()->isIdentical(859, $event->sum);
 
     }
+
+    public function testInfiniteLoopDetection()
+    {
+        $logs = array();
+
+        $logger = $this->mock('\Psr\Log\NullLogger');
+        $logger->shouldDeferMissing();
+        $logger->shouldReceive('log')->andReturnUsing(function($level, $message) use (&$logs){
+                $logs[] = $message;
+            });
+
+        $manager = new EventManager();
+        $manager->setLogger($logger);
+        $manager->addListener(new \InfiniteLoopCauser($manager));
+
+        $event = new \DummyCancellableEvent();
+
+        try{
+            $manager->trigger($event);
+            throw new \Exception('Invalid');
+        }catch (\Exception $e){
+            $this->assert()->isInstanceOf('Exception', $e);
+            $this->assert()->isIdentical('Recurrency', $e->getMessage());
+        }
+
+    }
 }
