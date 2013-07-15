@@ -5,7 +5,7 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace Skajdo\EventManager\Event;
 
 /**
  * Represents an event

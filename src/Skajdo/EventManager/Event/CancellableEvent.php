@@ -6,7 +6,7 @@
  */
 
 namespace Skajdo\EventManager\Event;
-use Skajdo\EventManager\Event;
+use Skajdo\EventManager\Event\Event;
 
 /**
  * Represents cancellable event

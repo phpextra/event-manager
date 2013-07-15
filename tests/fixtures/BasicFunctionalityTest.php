@@ -2,7 +2,7 @@
 
 namespace Skajdo\EventManager;
 use Skajdo\TestSuite\Fixture;
-use Skajdo\EventManager\Event;
+use Skajdo\EventManager\Event\Event;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 
