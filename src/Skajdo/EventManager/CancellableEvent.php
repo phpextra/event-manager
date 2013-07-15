@@ -5,8 +5,8 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager\Event;
-use Skajdo\EventManager\Event\Event;
+namespace Skajdo\EventManager;
+use Skajdo\EventManager\Event;
 
 /**
  * Represents cancellable event

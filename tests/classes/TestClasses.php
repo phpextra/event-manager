@@ -1,6 +1,6 @@
 <?php
 
-use Skajdo\EventManager\Event\AbstractCancellableEvent;
+use Skajdo\EventManager\AbstractCancellableEvent;
 use Skajdo\EventManager\EventManager;
 use Skajdo\EventManager\Listener;
 

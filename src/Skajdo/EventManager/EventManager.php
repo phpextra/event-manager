@@ -8,7 +8,7 @@
 namespace Skajdo\EventManager;
 use Skajdo\EventManager\Listener;
 use Psr\Log\NullLogger;
-use Skajdo\EventManager\Event\Event;
+use Skajdo\EventManager\Event;
 use Skajdo\EventManager\Exception;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
