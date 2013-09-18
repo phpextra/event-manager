@@ -25,6 +25,6 @@
     },
 
 	"require-dev": {
-		"skajdo/test-suite": "dev-unstable"
+		"skajdo/test-suite": "*"
 	}
 }
