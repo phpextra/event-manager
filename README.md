@@ -183,7 +183,7 @@ abstract class MyListener implements Listener
 
     public function onCarOrEngineStart(CarStartEvent $ev); // catches CarStartEvent, CarEngineStartEvent
 
-    public function onEngineStart(CarStartEvent $ev); // catches CarEngineStartEvent
+    public function onEngineStart(CarEngineStartEvent $ev); // catches CarEngineStartEvent
 }
 
 ?>
