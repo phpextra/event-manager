@@ -1,37 +1,130 @@
-<project name="SkajdoTestSuite" default="build">
-
-    <target name="build" depends="prepare,composer,test-suite"/>
+<project name="SkajdoEventManager" default="build">
+    <!-- phpunit,phpdoc, -->
+    <target name="build" depends="prepare,composer-validate,composer-update,lint,phpcs-ci,pdepend,phpmd-ci,phploc,test-suite,phpcpd,phpcb,samidoc"/>
 
     <target name="clean" description="Cleanup build artifacts">
-        <delete dir="${basedir}/build/api"/>
         <delete dir="${basedir}/build/code-browser"/>
         <delete dir="${basedir}/build/coverage"/>
-        <delete dir="${basedir}/build/doc"/>
         <delete dir="${basedir}/build/logs"/>
         <delete dir="${basedir}/build/pdepend"/>
-        <delete dir="${basedir}/vendor"/>
-        <delete file="${basedir}/composer.phar"/>
-        <delete file="${basedir}/composer.lock"/>
+        <delete dir="${basedir}/composer.phar"/>
     </target>
+
     <target name="prepare" depends="clean" description="Prepare for build">
+        <mkdir dir="${basedir}/vendor"/>
         <mkdir dir="${basedir}/build/api"/>
         <mkdir dir="${basedir}/build/code-browser"/>
         <mkdir dir="${basedir}/build/coverage"/>
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/pdepend"/>
-    </target>
 
-    <target name="composer" description="Dependency Manager for PHP">
         <exec executable="php" failonerror="true">
-			<arg line="/usr/local/bin/composer update -n -v --dev"/>
+            <arg line="-v"/>
+        </exec>
+
+    </target>
+
+    <target name="composer-validate" description="Dependency Manager for PHP">
+        <exec dir="${basedir}" executable="wget" failonerror="true">
+            <arg line="-nc http://getcomposer.org/composer.phar" />
+        </exec>
+        <exec dir="${basedir}" executable="php" failonerror="true">
+            <arg line="composer.phar validate -n -v --profile"/>
         </exec>
     </target>
 
-    <target name="test-suite" description="Skajdo Test Suite">
-        <exec dir="${basedir}/tests" executable="php" failonerror="true">
-            <arg line="run-tests.php run -s ./ -f junit -d ${basedir}/build/logs/junit.xml"/>
+    <target name="composer-update" description="Dependency Manager for PHP" depends="composer-validate">
+        <exec dir="${basedir}" executable="php" failonerror="true">
+            <arg line="composer.phar update -n -v --profile"/>
+        </exec>
+        <exec dir="${basedir}" executable="php" failonerror="true">
+            <arg line="composer.phar show --installed -n -v --profile"/>
         </exec>
     </target>
 
+    <target name="lint" description="Perform syntax check of sourcecode files">
+        <apply executable="php" failonerror="true">
+            <arg value="-l"/>
+            <fileset dir="${basedir}/src">
+                <include name="**/*.php"/>
+                <modified/>
+            </fileset>
+        </apply>
+    </target>
+
+    <target name="phpcs-ci" description="Code sniffer">
+        <exec executable="phpcs">
+            <!--<arg value="-v" />-->
+            <!--<arg value="- -standard=Symfony2" />-->
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+            <arg value="--standard=${basedir}/build/phpcs.xml" />
+            <arg path="${basedir}/src" />
+        </exec>
+    </target>
+
+    <target name="phploc" description="Measure project size using PHPLOC">
+        <exec executable="phploc">
+            <arg value="--log-csv"/>
+            <arg value="${basedir}/build/logs/phploc.csv"/>
+            <arg path="${basedir}/src"/>
+        </exec>
+    </target>
+
+    <target name="pdepend" description="Calculate software metrics using PHP_Depend" depends="lint">
+        <exec executable="pdepend">
+            <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml"/>
+            <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg"/>
+            <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg"/>
+            <arg value="--ignore=${basedir}/vendor/*"/>
+            <arg path="${basedir}/src"/>
+        </exec>
+    </target>
+
+    <target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
+        <exec executable="phpmd">
+            <arg path="${basedir}/src"/>
+            <arg value="xml"/>
+            <arg value="${basedir}/build/phpmd.xml"/>
+            <arg value="--reportfile"/>
+            <arg value="${basedir}/build/logs/pmd.xml"/>
+            <arg value="--exclude"/>
+            <arg value="${basedir}/vendor/*"/>
+        </exec>
+    </target>
+
+    <target name="phpcpd" description="Find duplicate code using PHPCPD" depends="lint">
+        <exec executable="phpcpd">
+            <arg value="--verbose" />
+            <arg value="--log-pmd" />
+            <arg value="${basedir}/build/logs/pmd-cpd.xml" />
+            <!--<arg value="- -exclude"/>-->
+            <!--<arg value="${basedir}/tests/"/>-->
+            <arg path="${basedir}/src" />
+        </exec>
+    </target>
+
+    <target name="test-suite" description="Skajdo Test Suite" depends="lint">
+        <exec dir="${basedir}" executable="php" failonerror="true">
+            <arg line="${basedir}/tests/run-tests.php run -f junit -d ${basedir}/build/logs/junit.xml"/>
+        </exec>
+    </target>
+
+    <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
+        <exec executable="phpcb">
+            <arg value="--log" />
+            <arg path="${basedir}/build/logs" />
+            <arg value="--source" />
+            <arg path="${basedir}/src" />
+            <arg value="--output" />
+            <arg path="${basedir}/build/code-browser" />
+        </exec>
+    </target>
+
+    <target name="samidoc" description="SAMI API documentation generator" depends="lint">
+        <exec dir="${basedir}" executable="php" failonerror="false">
+            <arg line="${basedir}/vendor/sami/sami/sami.php update ${basedir}/build/sami-config.php"/>
+        </exec>
+    </target>
 
 </project>
