@@ -37,7 +37,7 @@ class PerformanceTest extends Fixture
         $stop = bcsub(microtime(true), $start, 6);
 
         // 10150 calls must run under 0.8
-        $this->assert()->isIdentical(-1, bccomp($stop, 0.8, 6));
+        $this->assert()->isIdentical(-1, bccomp($stop, 1, 6));
 
     }
 }
