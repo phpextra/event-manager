@@ -24,7 +24,8 @@
         "zendframework/zend-code": "*"
     },
 
-	"require-dev": {
-		"skajdo/test-suite": "*"
-	}
+    "require-dev": {
+        "skajdo/test-suite": "*",
+        "sami/sami": "v1.2"
+    }
 }
