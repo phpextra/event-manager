@@ -18,5 +18,5 @@ return new Sami($iterator, array(
     'build_dir'            => __DIR__ . '/api',
     'cache_dir'            => __DIR__ . '/cache',
     'default_opened_level' => 2,
-    'simulate_namespaces' => true,
+//    'simulate_namespaces' => true,
 ));
