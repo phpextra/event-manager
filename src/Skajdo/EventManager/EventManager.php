@@ -98,7 +98,8 @@ class EventManager implements LoggerAwareInterface
      * @param null $postDispatchHook
      * @return EventManager
      */
-    public function triggerEvent(Event $event, $preDispatchHook = null, $postDispatchHook = null){
+    public function triggerEvent(Event $event, $preDispatchHook = null, $postDispatchHook = null)
+    {
         return $this->trigger($event, $preDispatchHook, $postDispatchHook);
     }
 
