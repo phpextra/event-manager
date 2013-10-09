@@ -258,3 +258,7 @@ Jacek Kobus - <kobus.jacek@gmail.com>
 
     See the file LICENSE.txt for copying permission.
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jkobus/skajdo-event-manager/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
