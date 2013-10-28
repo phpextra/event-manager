@@ -7,6 +7,8 @@
 
 namespace Skajdo\EventManager;
 
+use Zend\Stdlib\PriorityQueue;
+
 /**
  * Priority queue.
  *
@@ -18,6 +20,6 @@ namespace Skajdo\EventManager;
  *
  * @author      Jacek Kobus
  */
-class Queue extends \Zend\Stdlib\PriorityQueue
+class Queue extends PriorityQueue
 {
 }

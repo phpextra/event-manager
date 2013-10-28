@@ -1,3 +1,4 @@
+tests/reports/*
 .idea
 composer.lock
 vendor

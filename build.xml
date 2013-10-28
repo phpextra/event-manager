@@ -106,7 +106,7 @@
 
     <target name="test-suite" description="Skajdo Test Suite" depends="lint">
         <exec dir="${basedir}" executable="php" failonerror="true">
-            <arg line="${basedir}/tests/run-tests.php run -f junit -d ${basedir}/build/logs/junit.xml"/>
+            <arg line="${basedir}/tests/run.php --src ${basedir}/src --log-junit ${basedir}/build/logs/junit.xml --coverage-clover ${basedir}/build/logs/clover.xml --coverage-html ${basedir}/build/logs/clover"/>
         </exec>
     </target>
 

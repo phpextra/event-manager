@@ -1,9 +1,9 @@
 <?php
 
 namespace Skajdo\EventManager;
-use Skajdo\TestSuite\Fixture;
+use Skajdo\TestSuite\Test\TestFixture;
 
-class QueueTest extends Fixture
+class QueueTest extends TestFixture
 {
     public function setUp(){}
     public function tearDown(){}

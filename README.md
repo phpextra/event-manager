@@ -34,7 +34,7 @@ JSON:
 We are using skajdo-test-suite in our application. To install and run use:
 
 ```
-> composer update skajdo/test-suite & php tests/run-tests.php run -s ./tests
+> composer update skajdo/test-suite & php tests/run.php
 ```
 
 ##Features - why would I want to use it ?

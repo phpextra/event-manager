@@ -1,17 +1,18 @@
 <?php
 
 namespace Skajdo\EventManager;
-use Skajdo\TestSuite\Fixture;
+use Mockery\Mock;
+use Skajdo\TestSuite\Test\TestFixture;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 
-class BasicFunctionalityTest extends Fixture
+class BasicFunctionalityTest extends TestFixture
 {
     public function testEventsAndListeners()
     {
         $logs = array();
 
-        $logger = $this->mock('\Psr\Log\NullLogger');
+        $logger = \Mockery::mock('\Psr\Log\NullLogger');
         $logger->shouldDeferMissing();
         $logger->shouldReceive('log')->andReturnUsing(function($level, $message) use (&$logs){
             $logs[] = $message;
@@ -38,7 +39,7 @@ class BasicFunctionalityTest extends Fixture
                 $event->events[] = 'Anonymous 2' . ' - 6 (Closure)';
             }, Priority::LOWEST)
         ;
-        $manager->triggerEvent($event);
+        $manager->trigger($event);
 
         /**
          * DummyListener1 will be called first as it was added as first - FIFO order
@@ -63,7 +64,7 @@ class BasicFunctionalityTest extends Fixture
     {
         $logs = array();
 
-        $logger = $this->mock('\Psr\Log\NullLogger');
+        $logger = \Mockery::mock('\Psr\Log\NullLogger');
         $logger->shouldDeferMissing();
         $logger->shouldReceive('log')->andReturnUsing(function($level, $message) use (&$logs){
                 $logs[] = $message;
