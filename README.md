@@ -1,4 +1,6 @@
-#Skajdo Event Manager [![Build Status](https://travis-ci.org/jack-ks/skajdo-test-suite.png?branch=master)](https://travis-ci.org/jack-ks/skajdo-test-suite)
+#Skajdo Event Manager
+[![Build Status](https://travis-ci.org/jkobus/skajdo-event-manager.png?branch=master)](https://travis-ci.org/jkobus/skajdo-event-manager)
+
 ##Event Managment made simple
 
 PSR-0 compliant, lightweight & tested.
