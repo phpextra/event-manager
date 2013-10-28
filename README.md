@@ -256,7 +256,7 @@ See **composer.json** for a full list of dependencies.
 
 Jacek Kobus - <kobus.jacek@gmail.com>
 
-## License information (MIT)
+## License information
 
     See the file LICENSE.txt for copying permission.
 
