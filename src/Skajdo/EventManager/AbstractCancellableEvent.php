@@ -14,7 +14,7 @@ namespace Skajdo\EventManager;
  *
  * @author      Jacek Kobus
  */
-class AbstractCancellableEvent implements CancellableEvent
+class AbstractCancellableEvent extends Event implements CancellableEventInterface
 {
     /**
      * @var bool

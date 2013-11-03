@@ -1,5 +1,6 @@
 #Skajdo Event Manager
 [![Build Status](https://travis-ci.org/jkobus/skajdo-event-manager.png?branch=master)](https://travis-ci.org/jkobus/skajdo-event-manager)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jkobus/skajdo-event-manager/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 ##Event Managment made simple
 
@@ -259,8 +260,4 @@ Jacek Kobus - <kobus.jacek@gmail.com>
 ## License information
 
     See the file LICENSE.txt for copying permission.
-
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jkobus/skajdo-event-manager/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

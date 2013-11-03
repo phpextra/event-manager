@@ -14,6 +14,6 @@ namespace Skajdo\EventManager;
  *
  * @author      Jacek Kobus
  */
-class Listener implements ListenerInterface
+interface ListenerInterface
 {
 }

@@ -18,7 +18,7 @@ class DummyCancellableEvent2 extends AbstractCancellableEvent
 /**
  * Class InfiniteLoopCauser
  */
-class InfiniteLoopCauser implements Listener
+class InfiniteLoopCauser extends Listener
 {
     /**
      * @var Skajdo\EventManager\EventManager
@@ -47,7 +47,7 @@ class InfiniteLoopCauser implements Listener
     }
 }
 
-class DummyListener1 implements Listener
+class DummyListener1 extends Listener
 {
     /**
      * Short desc
@@ -62,7 +62,7 @@ class DummyListener1 implements Listener
     }
 }
 
-class DummyListener2 implements Listener
+class DummyListener2 extends Listener
 {
     protected $sum = 0;
 

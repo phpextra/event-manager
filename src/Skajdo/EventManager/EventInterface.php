@@ -12,7 +12,7 @@ namespace Skajdo\EventManager;
  *
  * @author      Jacek Kobus
  */
-class Event implements EventInterface
+interface EventInterface
 {
 
 }

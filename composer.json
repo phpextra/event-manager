@@ -20,7 +20,7 @@
     "minimum-stability": "dev",
     "require": {
         "php":">=5.3.0",
-		"psr/log": "1.0.0",
+		"psr/log": "~1.0",
 		"mockery/mockery": "~0.8",
 		"zendframework/zend-stdlib": "*",
         "zendframework/zend-code": "*"
