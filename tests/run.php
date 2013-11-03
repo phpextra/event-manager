@@ -13,7 +13,7 @@ if(PHP_SAPI != 'cli'){
     $engine = TestSuite::createEngine();
 
     if($engine->isCodeCoverageEnabled()){
-        $filter = $engine->getCodeCoverageAnalyzer()->getCodeCoverageEngine()->filter();
+        $filter = $engine->getCodeCoverage()->filter();
         $filter->addDirectoryToWhitelist(realpath(__DIR__ . '/../src'));
     }
 
@@ -38,10 +38,10 @@ if(PHP_SAPI != 'cli'){
 
     if($engine->isCodeCoverageEnabled()){
         $coverageHtml = new PHP_CodeCoverage_Report_HTML();
-        $coverageHtml->process($engine->getCodeCoverageAnalyzer()->getCodeCoverageEngine(), __DIR__ . '/reports/coverage');
+        $coverageHtml->process($engine->getCodeCoverage(), __DIR__ . '/reports/coverage');
 
         $coverageClover = new PHP_CodeCoverage_Report_Clover();
-        $coverageClover->process($engine->getCodeCoverageAnalyzer()->getCodeCoverageEngine(), __DIR__ . '/reports/clover.xml');
+        $coverageClover->process($engine->getCodeCoverage(), __DIR__ . '/reports/clover.xml');
     }
 
 }else{
