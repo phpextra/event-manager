@@ -7,8 +7,6 @@
 
 namespace Skajdo\EventManager;
 
-use Skajdo\EventManager\Listener;
-
 /**
  * Queue item.
  *

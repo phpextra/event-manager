@@ -2,18 +2,15 @@
 
 use Skajdo\EventManager\AbstractCancellableEvent;
 use Skajdo\EventManager\EventManager;
-use Skajdo\EventManager\Listener;
 use Skajdo\EventManager\ListenerInterface;
 
 class DummyCancellableEvent extends AbstractCancellableEvent
 {
     public $events = array();
-    public $sum = 15;
 }
 
-class DummyCancellableEvent2 extends AbstractCancellableEvent
+class DummyCancellableEvent2 extends DummyCancellableEvent
 {
-    public $sum = 10;
 }
 
 /**
@@ -48,41 +45,41 @@ class InfiniteLoopCauser implements ListenerInterface
     }
 }
 
+/**
+ * Class DummyListener1
+ */
 class DummyListener1 implements ListenerInterface
 {
     /**
      * Short desc
      * Long desc
      *
-     * @param DummyCancellableEvent $event
      * @priority 100
+     * @param \DummyCancellableEvent $event
      */
     public function onDummyEvent(DummyCancellableEvent $event){
-        $event->sum = $event->sum * 10;
-        $event->events[] = get_class($this) . ' * 10';
+        $event->events[] = 'Dummy 1';
     }
 }
 
+/**
+ * Class DummyListener2
+ */
 class DummyListener2 implements ListenerInterface
 {
-    protected $sum = 0;
-
     /**
      * @priority -1000
-     * @param DummyCancellableEvent $event
+     * @param \DummyCancellableEvent $event
      */
     public function onDummyEvent(DummyCancellableEvent $event){
-        $event->sum = $event->sum + 5;
-        $event->events[] = get_class($this) . ' + 5';
-        //$this->sum = $event->sum + $this->sum;
+        $event->events[] = 'Dummy 2 Event 1';
     }
 
     /**
      * @priority highest
-     * @param \DummyCancellableEvent|\DummyCancellableEvent2 $event
+     * @param \DummyCancellableEvent2 $event
      */
-    public function onDummyEvent2(DummyCancellableEvent $event){
-        $event->sum = $event->sum * 5;
-        $event->events[] = get_class($this) . ' * 5';
+    public function onDummyEvent2(DummyCancellableEvent2 $event){
+        $event->events[] = 'Dummy 2 Event 2';
     }
 }

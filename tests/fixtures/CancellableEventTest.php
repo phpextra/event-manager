@@ -9,7 +9,6 @@ class CancellableEventTest extends TestFixture
     {
         $event = new CancellableEvent();
         $event->setIsCancelled();
-
         $this->assert()->isTrue($event->isCancelled());
     }
 }

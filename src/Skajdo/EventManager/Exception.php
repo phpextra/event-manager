@@ -7,7 +7,6 @@
 
 namespace Skajdo\EventManager;
 
-use Skajdo\EventManager\Event;
 use Skajdo\EventManager\ListenerInterface;
 
 /**
@@ -47,7 +46,7 @@ class Exception extends \Exception
     }
 
     /**
-     * @param \Skajdo\EventManager\Event $event
+     * @param \Skajdo\EventManager\EventInterface $event
      * @return $this
      */
     public function setEvent($event)
@@ -58,7 +57,7 @@ class Exception extends \Exception
     }
 
     /**
-     * @return \Skajdo\EventManager\Event
+     * @return \Skajdo\EventManager\EventInterface
      */
     public function getEvent()
     {

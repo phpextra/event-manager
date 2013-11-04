@@ -7,9 +7,7 @@
 
 namespace Skajdo\EventManager;
 
-use Skajdo\EventManager\Listener;
 use Psr\Log\NullLogger;
-use Skajdo\EventManager\Event;
 use Skajdo\EventManager\Exception;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -26,7 +24,7 @@ use Zend\Code\Reflection\ClassReflection;
  * $em->addListener($l);
  * $em->triggerEvent($e); // this will run SomeDummyListener::dummy((SomeDummyEvent) obj)
  *
- * <p>You can also define priorities for your listeneres. Default priority is 0</p>
+ * <p>You can also define priorities for your listeners. Default priority is 0</p>
  * <code>
  * /**
  *  * @priority 100
@@ -44,7 +42,7 @@ class EventManager implements LoggerAwareInterface
     protected $listenersQueue = array();
 
     /**
-     * Whenever to throw exceptions cought from listeners or not
+     * Whenever to throw exceptions caught from listeners or not
      * @var bool
      */
     protected $throwExceptions = false;
@@ -52,7 +50,7 @@ class EventManager implements LoggerAwareInterface
     /**
      * Currently running event
      *
-     * @var Event
+     * @var EventInterface
      */
     protected $runningEvent = null;
 
@@ -145,13 +143,7 @@ class EventManager implements LoggerAwareInterface
 
                 $listener = $queueItem->getListener();
                 $method = $queueItem->getMethod();
-                $listenerName = sprintf(
-                    '#%s %s::%s(%s $event)',
-                    $listenerId,
-                    get_class($listener),
-                    $method,
-                    $eventClassName
-                );
+                $listenerName = sprintf('#%s %s::%s(%s $event)', $listenerId, get_class($listener), $method, $eventClassName);
 
                 try {
 
@@ -209,10 +201,12 @@ class EventManager implements LoggerAwareInterface
 
     /**
      * Add event listener
+     * Priority used in doc comments can be overridden by setting the $priority
+     * Otherwise the setting from the doc comment will be used.
      *
      * @see Priority
-     * @param Listener|\Closure $listener
-     * @param int $priority Optional; overrides other priority settings
+     * @param ListenerInterface|\Closure $listener
+     * @param int $priority Defaults to NORMAL(0)
      * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
      * @return EventManager
      */
@@ -223,6 +217,7 @@ class EventManager implements LoggerAwareInterface
             $closure = new \ReflectionFunction($listener);
             /* @var $param \Zend\Code\Reflection\ParameterReflection */
             $param = current($closure->getParameters());
+
             if (!$param || !($eventClassName = $this->_getEventClassName($param))) {
                 $this->getLogger()->info(sprintf('Given closure does not listen to any known event'));
             } else {
@@ -241,6 +236,7 @@ class EventManager implements LoggerAwareInterface
 
         $listenerIsListeningToEvent = false;
         $a = new ClassReflection($listenerClass = get_class($listener));
+
         foreach ($a->getMethods() as $method) {
 
             /* @var $method \Zend\Code\Reflection\MethodReflection */
@@ -257,9 +253,11 @@ class EventManager implements LoggerAwareInterface
              * This is a workaround for zend code's bugged getDescription ...
              * At the moment ZF's 2 code library is not good to depend on.
              */
+
             if ($method->getDocComment() !== false && $priority === null) {
                 $matches = array();
-                if (preg_match('#@priority ((-?\d+)|\w+)#', $method->getDocComment(), $matches)) {
+
+                if (preg_match('#@priority (-?\d+|\w+)#', $method->getDocComment(), $matches)) {
                     if (count($matches) == 2) {
                         if (is_numeric($matches[1])) {
                             $priority = (int)$matches[1];
@@ -269,6 +267,7 @@ class EventManager implements LoggerAwareInterface
                     }
                 }
             }
+
             $listenerIsListeningToEvent = true;
             $this->_addListener($listener, $method->getName(), $eventClassName, $priority);
         }
@@ -282,28 +281,24 @@ class EventManager implements LoggerAwareInterface
         return $this;
     }
 
-    protected function addClosure(\Closure $closure)
-    {
-
-    }
-
     /**
      * Internal method for adding listeners
      *
      * @see Priority
-     * @param Listener|\Closure $listener
+     * @param ListenerInterface|\Closure $listener
      * @param $listenerMethodName
      * @param $eventClassName
      * @param $listenerMethodName
-     * @param int $priority see Priority (enum)
+     * @param int $priority Defaults to normal (int)0
      * @return EventManager
      */
-    protected function _addListener($listener, $listenerMethodName, $eventClassName, $priority = Priority::NORMAL)
+    protected function _addListener($listener, $listenerMethodName, $eventClassName, $priority = null)
     {
+        if($priority === null){
+            $priority = Priority::NORMAL;
+        }
         $listenerName = sprintf('%s::%s()', get_class($listener), $listenerMethodName);
-        $this->getLogger()->debug(
-            sprintf('%s is now listening to %s with priority %s', $listenerName, $eventClassName, $priority)
-        );
+        $this->getLogger()->debug(sprintf('%s is now listening to %s with priority %s', $listenerName, $eventClassName, $priority));
 
         $this->listenersQueue->insert(
             new QueueItem($listener, $listenerMethodName, $eventClassName, $priority),
@@ -364,7 +359,7 @@ class EventManager implements LoggerAwareInterface
     /**
      * Return event that is currently running or NULL if no event is running
      *
-     * @return null|Event
+     * @return null|EventInterface
      */
     public function getRunningEvent()
     {
