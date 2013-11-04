@@ -3,6 +3,7 @@
 use Skajdo\EventManager\AbstractCancellableEvent;
 use Skajdo\EventManager\EventManager;
 use Skajdo\EventManager\Listener;
+use Skajdo\EventManager\ListenerInterface;
 
 class DummyCancellableEvent extends AbstractCancellableEvent
 {
@@ -18,7 +19,7 @@ class DummyCancellableEvent2 extends AbstractCancellableEvent
 /**
  * Class InfiniteLoopCauser
  */
-class InfiniteLoopCauser extends Listener
+class InfiniteLoopCauser implements ListenerInterface
 {
     /**
      * @var Skajdo\EventManager\EventManager
@@ -47,7 +48,7 @@ class InfiniteLoopCauser extends Listener
     }
 }
 
-class DummyListener1 extends Listener
+class DummyListener1 implements ListenerInterface
 {
     /**
      * Short desc
@@ -62,7 +63,7 @@ class DummyListener1 extends Listener
     }
 }
 
-class DummyListener2 extends Listener
+class DummyListener2 implements ListenerInterface
 {
     protected $sum = 0;
 

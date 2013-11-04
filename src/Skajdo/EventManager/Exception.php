@@ -8,7 +8,7 @@
 namespace Skajdo\EventManager;
 
 use Skajdo\EventManager\Event;
-use Skajdo\EventManager\Listener;
+use Skajdo\EventManager\ListenerInterface;
 
 /**
  * Event manager exception
@@ -18,17 +18,17 @@ use Skajdo\EventManager\Listener;
 class Exception extends \Exception
 {
     /**
-     * @var Listener
+     * @var ListenerInterface
      */
     protected $listener;
 
     /**
-     * @var Event
+     * @var EventInterface
      */
     protected $event;
 
     /**
-     * @param Listener $listener
+     * @param ListenerInterface $listener
      * @return $this
      */
     public function setListener($listener)
@@ -39,7 +39,7 @@ class Exception extends \Exception
     }
 
     /**
-     * @return Listener
+     * @return ListenerInterface
      */
     public function getListener()
     {

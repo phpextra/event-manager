@@ -3,6 +3,7 @@
 namespace Skajdo\EventManager;
 use Mockery\Mock;
 use Skajdo\TestSuite\Test\TestFixture;
+use Zend\EventManager\EventInterface;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 
@@ -27,7 +28,7 @@ class BasicFunctionalityTest extends TestFixture
         $manager
             ->addListener($listener1)
             ->addListener($listener2)
-            ->addListener(function(Event $event){
+            ->addListener(function(EventInterface $event){
                 if($event instanceof \DummyCancellableEvent){
                     $event->sum = $event->sum + 11;
                     $event->events[] = 'Closure was listening to Dummy\'s parent and was triggered !';
@@ -53,6 +54,8 @@ class BasicFunctionalityTest extends TestFixture
             'DummyListener2 + 5',
             'Anonymous 2 - 6 (Closure)',
         );
+
+        var_dump($event->events);
 
         $this->assert()->isIdentical(16, count($logs));
         $this->assert()->isIdentical($expectedEventFlow, $event->events);

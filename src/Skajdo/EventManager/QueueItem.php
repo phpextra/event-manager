@@ -17,7 +17,7 @@ use Skajdo\EventManager\Listener;
 class QueueItem
 {
     /**
-     * @var Listener|\Closure
+     * @var ListenerInterface|\Closure
      */
     protected $listener;
 
@@ -39,7 +39,7 @@ class QueueItem
     /**
      * Create new queue item
      *
-     * @param Listener|\Closure $listener
+     * @param ListenerInterface|\Closure $listener
      * @param string $method
      * @param string $eventClass
      * @param int $priority
@@ -70,7 +70,7 @@ class QueueItem
     }
 
     /**
-     * @param \Skajdo\EventManager\Listener $listener
+     * @param \Skajdo\EventManager\ListenerInterface $listener
      */
     public function setListener($listener)
     {
@@ -78,7 +78,7 @@ class QueueItem
     }
 
     /**
-     * @return \Skajdo\EventManager\Listener|\Closure
+     * @return \Skajdo\EventManager\ListenerInterface|\Closure
      */
     public function getListener()
     {
