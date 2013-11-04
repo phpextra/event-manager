@@ -76,7 +76,7 @@ class DummyListener2 implements ListenerInterface
     }
 
     /**
-     * @priority highest
+     * @priority high
      * @param \DummyCancellableEvent2 $event
      */
     public function onDummyEvent2(DummyCancellableEvent2 $event){

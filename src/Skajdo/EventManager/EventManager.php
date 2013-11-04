@@ -254,16 +254,15 @@ class EventManager implements LoggerAwareInterface
              * At the moment ZF's 2 code library is not good to depend on.
              */
 
-            if ($method->getDocComment() !== false && $priority === null) {
-                $matches = array();
+            if($method->getDocBlock() !== false){
+                /** @var $tag \Zend\Code\Reflection\DocBlock\Tag\GenericTag */
+                $tag = $method->getDocBlock()->getTag('priority');
 
-                if (preg_match('#@priority (-?\d+|\w+)#', $method->getDocComment(), $matches)) {
-                    if (count($matches) == 2) {
-                        if (is_numeric($matches[1])) {
-                            $priority = (int)$matches[1];
-                        } else {
-                            $priority = Priority::getPriorityByName($matches[1]);
-                        }
+                if($tag !== false){
+                    if(is_numeric($tag->getContent())){
+                        $priority = (int)$tag->getContent();
+                    }else{
+                        $priority = Priority::getPriorityByName($tag->getContent());
                     }
                 }
             }
@@ -273,9 +272,7 @@ class EventManager implements LoggerAwareInterface
         }
 
         if (!$listenerIsListeningToEvent) {
-            $this->getLogger()->info(
-                sprintf('Given Listener (%s) does not listen to any known events', $listenerClass)
-            );
+            $this->getLogger()->info(sprintf('Given Listener (%s) does not listen to any known events', $listenerClass));
         }
 
         return $this;
@@ -299,11 +296,7 @@ class EventManager implements LoggerAwareInterface
         }
         $listenerName = sprintf('%s::%s()', get_class($listener), $listenerMethodName);
         $this->getLogger()->debug(sprintf('%s is now listening to %s with priority %s', $listenerName, $eventClassName, $priority));
-
-        $this->listenersQueue->insert(
-            new QueueItem($listener, $listenerMethodName, $eventClassName, $priority),
-            $priority
-        );
+        $this->listenersQueue->insert(new QueueItem($listener, $listenerMethodName, $eventClassName, $priority), $priority);
 
         return $this;
     }

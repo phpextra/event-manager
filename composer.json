@@ -23,7 +23,7 @@
 		"psr/log": "~1.0",
 		"mockery/mockery": "~0.8",
 		"zendframework/zend-stdlib": "*",
-        "zendframework/zend-code": "*"
+        "zendframework/zend-code": "~2.2"
     },
 
     "require-dev": {
