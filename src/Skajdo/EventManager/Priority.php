@@ -12,18 +12,18 @@ namespace Skajdo\EventManager;
  */
 final class Priority
 {
-    const LOWEST    = -1000;
-    const LOW       = -500;
-    const NORMAL    = 0;
-    const HIGH      = 500;
-    const HIGHEST   = 1000;
+    const LOWEST = -1000;
+    const LOW = -500;
+    const NORMAL = 0;
+    const HIGH = 500;
+    const HIGHEST = 1000;
 
     /**
      * Special priority (lower than lowest);
      * It should be used to monitor event results.
      * No changes should be made in that event.
      */
-    const MONITOR   = -1000000;
+    const MONITOR = -1000000;
 
     /**
      * Name to int mapping
@@ -31,12 +31,12 @@ final class Priority
      * @var array
      */
     protected static $nameToPriority = array(
-        'lowest'    => self::LOWEST,
-        'low'       => self::LOW,
-        'normal'    => self::NORMAL,
-        'high'      => self::HIGH,
-        'highest'   => self::HIGHEST,
-        'monitor'   => self::MONITOR,
+        'lowest' => self::LOWEST,
+        'low' => self::LOW,
+        'normal' => self::NORMAL,
+        'high' => self::HIGH,
+        'highest' => self::HIGHEST,
+        'monitor' => self::MONITOR,
     );
 
     /**
@@ -49,9 +49,10 @@ final class Priority
     public static function getPriorityByName($priorityName)
     {
         $priorityName = strtolower($priorityName);
-        if(!isset(self::$nameToPriority[$priorityName])){
+        if (!isset(self::$nameToPriority[$priorityName])) {
             throw new \InvalidArgumentException(sprintf('Unknown priority name given: "%s"', $priorityName));
         }
+
         return self::$nameToPriority[$priorityName];
     }
 }

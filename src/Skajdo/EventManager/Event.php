@@ -8,8 +8,7 @@
 namespace Skajdo\EventManager;
 
 /**
- * Represents an event
- *
+ * @see EventInterface
  * @author      Jacek Kobus
  */
 class Event implements EventInterface

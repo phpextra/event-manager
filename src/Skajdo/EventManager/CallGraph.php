@@ -31,6 +31,7 @@ class CallGraph implements \Countable
     {
         $this->count++;
         $this->calls[] = $object;
+
         return $this;
     }
 
@@ -50,6 +51,7 @@ class CallGraph implements \Countable
     {
         $this->count = 0;
         $this->calls = array();
+
         return $this;
     }
 

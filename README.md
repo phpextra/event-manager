@@ -197,6 +197,7 @@ Few lines of code are worth more than a milion words :-)
 
 ##To-Do
 
+* update readme
 * reformat log messages
 * recurrency check and monitor
 * performance test

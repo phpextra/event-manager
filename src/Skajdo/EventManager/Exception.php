@@ -34,6 +34,7 @@ class Exception extends \Exception
     public function setListener($listener)
     {
         $this->listener = $listener;
+
         return $this;
     }
 
@@ -52,6 +53,7 @@ class Exception extends \Exception
     public function setEvent($event)
     {
         $this->event = $event;
+
         return $this;
     }
 
