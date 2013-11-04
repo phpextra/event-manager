@@ -94,12 +94,12 @@ class EventManager implements LoggerAwareInterface
     /**
      * @see EventManager::trigger()
      * @deprecated since 1.1.1; use EventManager::trigger() instead
-     * @param Event $event
-     * @param null $preDispatchHook
-     * @param null $postDispatchHook
+     * @param \Skajdo\EventManager\EventInterface $event
+     * @param callable $preDispatchHook
+     * @param callable $postDispatchHook
      * @return EventManager
      */
-    public function triggerEvent(Event $event, $preDispatchHook = null, $postDispatchHook = null)
+    public function triggerEvent(EventInterface $event, $preDispatchHook = null, $postDispatchHook = null)
     {
         return $this->trigger($event, $preDispatchHook, $postDispatchHook);
     }
@@ -107,7 +107,7 @@ class EventManager implements LoggerAwareInterface
     /**
      * Trigger event; calls all listeners that listen to this event
      *
-     * @param  Event $event
+     * @param EventInterface $event
      * @param callable $preDispatchHook A callable to be called before dispatching an event to a listener
      * @param callable $postDispatchHook A callable to be called after dispatching an event to a listener
      * @throws \RuntimeException When infinite loop will be detected
@@ -115,7 +115,7 @@ class EventManager implements LoggerAwareInterface
      * @return EventManager
      * @return \Skajdo\EventManager\EventManager
      */
-    public function trigger(Event $event, $preDispatchHook = null, $postDispatchHook = null)
+    public function trigger(EventInterface $event, $preDispatchHook = null, $postDispatchHook = null)
     {
         $this->runningEvent = $event;
         $eventClassName = get_class($event);
