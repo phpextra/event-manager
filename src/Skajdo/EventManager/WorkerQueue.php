@@ -20,6 +20,6 @@ use Zend\Stdlib\PriorityQueue;
  *
  * @author      Jacek Kobus
  */
-class Queue extends PriorityQueue
+class WorkerQueue extends PriorityQueue
 {
 }

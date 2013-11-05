@@ -95,7 +95,9 @@ class BasicFunctionalityTest extends TestFixture
 
     public function testEventManagerDetectsRecurrencyInListeners()
     {
-        $this->eventManager->addListener(new \InfiniteLoopCauser($this->eventManager));
+        $this->eventManager
+            ->setThrowExceptions(true)
+            ->addListener(new \InfiniteLoopCauser($this->eventManager));
         $event = new \DummyCancellableEvent();
 
         try{

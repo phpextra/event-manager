@@ -10,7 +10,7 @@ class QueueTest extends TestFixture
 
     public function testQueueOrder()
     {
-        $queue = new Queue();
+        $queue = new WorkerQueue();
 
         $queue->insert('e', -100);
         $queue->insert('a', 20); // 3 FIFO - first in first out

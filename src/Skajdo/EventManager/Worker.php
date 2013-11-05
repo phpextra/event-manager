@@ -12,7 +12,7 @@ namespace Skajdo\EventManager;
  *
  * @author Jacek Kobus
  */
-class QueueItem
+class Worker
 {
     /**
      * @var ListenerInterface|\Closure
@@ -35,7 +35,7 @@ class QueueItem
     protected $priority;
 
     /**
-     * Create new queue item
+     * Create new worker that will wake-up listener using event
      *
      * @param ListenerInterface|\Closure $listener
      * @param string $method
@@ -45,10 +45,37 @@ class QueueItem
      */
     public function __construct($listener, $method, $eventClass, $priority = Priority::NORMAL)
     {
-        $this->listener = $listener;
-        $this->method = $method;
-        $this->eventClass = $eventClass;
-        $this->priority = $priority;
+        $this->setListener($listener);
+        $this->setMethod($method);
+        $this->setEventClass($eventClass);
+        $this->setPriority($priority);
+    }
+
+    /**
+     * @param EventInterface $event
+     * @return WorkerResult
+     */
+    public function run(EventInterface $event)
+    {
+        try{
+            $start = microtime(true);
+            call_user_func(array($this->getListener(), $this->getMethod()), $event);
+            $timeTaken = bcsub(microtime(true), $start, 10);
+            return new WorkerResult(WorkerResultStatus::SUCCESS, $timeTaken);
+        }catch (\Exception $e){
+            return new WorkerResult(WorkerResultStatus::FAILURE, null, $e);
+        }
+    }
+
+    /**
+     * Tell if current worker is listening to given event type
+     *
+     * @param EventInterface $event
+     * @return bool
+     */
+    public function isListeningTo(EventInterface $event)
+    {
+        return is_a($event, $this->getEventClass());
     }
 
     /**
@@ -114,5 +141,4 @@ class QueueItem
     {
         return $this->priority;
     }
-
 }

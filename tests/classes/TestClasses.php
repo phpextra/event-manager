@@ -35,12 +35,6 @@ class InfiniteLoopCauser implements ListenerInterface
      */
     public function onDummyEvent(DummyCancellableEvent $event){
         $em = $this->em;
-
-        $looper = function(DummyCancellableEvent $event) use ($em, &$looper){
-            $em->addListener($looper);
-            $em->trigger($event);
-        };
-        $this->em->addListener($looper);
         $em->trigger($event);
     }
 }
