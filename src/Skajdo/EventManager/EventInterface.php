@@ -14,5 +14,4 @@ namespace Skajdo\EventManager;
  */
 interface EventInterface
 {
-
 }

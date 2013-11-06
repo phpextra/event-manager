@@ -5,7 +5,7 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace Skajdo\EventManager\Worker;
 
 use Zend\Stdlib\PriorityQueue;
 
@@ -20,6 +20,6 @@ use Zend\Stdlib\PriorityQueue;
  *
  * @author      Jacek Kobus
  */
-class Queue extends PriorityQueue
+class WorkerQueue extends PriorityQueue
 {
 }

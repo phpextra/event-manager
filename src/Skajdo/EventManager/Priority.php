@@ -40,6 +40,23 @@ final class Priority
     );
 
     /**
+     * Get human readable priority name
+     *
+     * @param $priority
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    public static function getPriorityName($priority)
+    {
+        $priorityToName = array_flip(self::$nameToPriority);
+        if (!isset($priorityToName[$priority])) {
+            throw new \InvalidArgumentException(sprintf('Unknown priority given: "%s"', $priority));
+        }
+
+        return $priorityToName[$priority];
+    }
+
+    /**
      * Get priority integer value by priority name
      *
      * @param string $priorityName

@@ -1,7 +1,7 @@
 <?php
 
 namespace Skajdo\EventManager;
-use Mockery\Mock;
+use Skajdo\EventManager\Listener\AnonymousListener;
 use Skajdo\TestSuite\Test\TestFixture;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
@@ -64,15 +64,15 @@ class BasicFunctionalityTest extends TestFixture
         $listener1 = new \DummyListener1();
         $listener2 = new \DummyListener2();
 
-        $listener3 = function(EventInterface $event){
+        $listener3 = new AnonymousListener(function(EventInterface $event){
             if($event instanceof \DummyCancellableEvent){
                 $event->events[] = 'Closure 1';
             }
-        };
+        });
 
-        $listener4 = function(\DummyCancellableEvent $event){
+        $listener4 = new AnonymousListener(function(\DummyCancellableEvent $event){
             $event->events[] = 'Closure 2';
-        };
+        });
 
         $this->eventManager
             ->addListener($listener1)
@@ -95,7 +95,9 @@ class BasicFunctionalityTest extends TestFixture
 
     public function testEventManagerDetectsRecurrencyInListeners()
     {
-        $this->eventManager->addListener(new \InfiniteLoopCauser($this->eventManager));
+        $this->eventManager
+            ->setThrowExceptions(true)
+            ->addListener(new \InfiniteLoopCauser($this->eventManager));
         $event = new \DummyCancellableEvent();
 
         try{

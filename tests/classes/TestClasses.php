@@ -2,7 +2,7 @@
 
 use Skajdo\EventManager\AbstractCancellableEvent;
 use Skajdo\EventManager\EventManager;
-use Skajdo\EventManager\ListenerInterface;
+use Skajdo\EventManager\Listener\ListenerInterface;
 
 class DummyCancellableEvent extends AbstractCancellableEvent
 {
@@ -35,12 +35,6 @@ class InfiniteLoopCauser implements ListenerInterface
      */
     public function onDummyEvent(DummyCancellableEvent $event){
         $em = $this->em;
-
-        $looper = function(DummyCancellableEvent $event) use ($em, &$looper){
-            $em->addListener($looper);
-            $em->trigger($event);
-        };
-        $this->em->addListener($looper);
         $em->trigger($event);
     }
 }
