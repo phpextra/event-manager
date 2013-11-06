@@ -8,8 +8,9 @@ class Message
     const RECURRENCY_DETECTED = 'Recurrency on event "%s" was detected and manager will stop propagation of event';
 
     /**
+     * @see sprintf
      * @param string $message
-     * @param mixed $_ Use as many arguments as you want
+     * @param mixed $_
      * @return string
      */
     public static function format($message, $_)
@@ -23,6 +24,6 @@ class Message
             }
         }
 
-        return sprintf($message, $args);
+        return vsprintf($message, $args);
     }
 }
