@@ -2,7 +2,7 @@
 
 use Skajdo\EventManager\AbstractCancellableEvent;
 use Skajdo\EventManager\EventManager;
-use Skajdo\EventManager\ListenerInterface;
+use Skajdo\EventManager\Listener\ListenerInterface;
 
 class DummyCancellableEvent extends AbstractCancellableEvent
 {

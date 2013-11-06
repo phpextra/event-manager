@@ -7,13 +7,14 @@
 
 namespace Skajdo\EventManager;
 
-use Closure;
 use Psr\Log\NullLogger;
-use Skajdo\EventManager\Exception;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Skajdo\EventManager\Listener\AnonymousListener;
-use Zend\Code\Reflection\ClassReflection;
+use Skajdo\EventManager\Listener\ListenerProxy;
+use Skajdo\EventManager\Listener\ListenerInterface;
+use Skajdo\EventManager\Worker\Worker;
+use Skajdo\EventManager\Worker\WorkerFactory;
+use Skajdo\EventManager\Worker\WorkerQueue;
 
 /**
  * The event manager
@@ -78,14 +79,10 @@ class EventManager implements LoggerAwareInterface
     /**
      * @see EventManager::trigger()
      * @deprecated since 1.1.1; use EventManager::trigger() instead
-     * @param \Skajdo\EventManager\EventInterface $event
-     * @param callable $preDispatchHook
-     * @param callable $postDispatchHook
-     * @return EventManager
      */
     public function triggerEvent(EventInterface $event, $preDispatchHook = null, $postDispatchHook = null)
     {
-        return $this->trigger($event, $preDispatchHook, $postDispatchHook);
+        return $this->trigger($event);
     }
 
     /**
@@ -104,12 +101,7 @@ class EventManager implements LoggerAwareInterface
         $listenersFound = 0;
         $loopStart = microtime(true);
 
-        if($this->getCallGraph()->hasObject($event)){
-            $this->getLogger()->critical(sprintf('Recurrency on event "%s" was detected and manager will stop propagation of event', get_class($event)));
-            throw new \RuntimeException('Recurrency');
-        }else{
-            $this->callGraph->addObject($event);
-        }
+        $this->recurrencyCheck($event);
 
         /* @var $worker Worker */
         foreach ($this->workers->getIterator() as $workerId => $worker) {
@@ -147,153 +139,46 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
+     * @param EventInterface $event
+     * @throws \RuntimeException If recurrency was detected
+     */
+    protected function recurrencyCheck(EventInterface $event)
+    {
+        if($this->getCallGraph()->hasObject($event)){
+            $this->getLogger()->critical(sprintf('Recurrency on event "%s" was detected and manager will stop propagation of event', get_class($event)));
+            throw new \RuntimeException('Recurrency');
+        }else{
+            $this->callGraph->addObject($event);
+        }
+    }
+
+    /**
      * Add event listener
      * Priority used in doc comments can be overridden by setting the $priority
      * Otherwise the setting from the doc comment will be used.
      *
-     * @see Priority
-     * @param ListenerInterface|\Closure $listener
-     * @param int $priority Defaults to NORMAL(0)
-     * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
-     * @return EventManager
-     */
-    public function addListener($listener, $priority = null)
-    {
-
-//        $this->addWorker(WorkerFactory::create($listener));
-//
-//        if($listener instanceof AnonymousListener){
-//            if($priority){
-//                $listener->setPriority($priority);
-//            }
-//
-//            new Worker($listener, $listener->getMethodName(), $listener->getEventClassName(), $listener->getPriority());
-//
-//
-//        }
-
-        // special treatment for closures
-        if ($listener instanceof \Closure) {
-            $closure = new \ReflectionFunction($listener);
-            /* @var $param \Zend\Code\Reflection\ParameterReflection */
-            $param = current($closure->getParameters());
-
-            if (!$param || !($eventClassName = $this->_getEventClassName($param))) {
-                $this->getLogger()->info(sprintf('Given closure does not listen to any known event'));
-            } else {
-                $this->_addListener($listener, '__invoke', $eventClassName, $priority);
-            }
-
-            return $this;
-        }
-
-        if (!$listener instanceof ListenerInterface) {
-            throw new \InvalidArgumentException(sprintf(
-                'Listener must implement the Listener or it must be an instance of Closure but %s given',
-                get_class($listener)
-            ));
-        }
-
-        $listenerIsListeningToEvent = false;
-        $a = new ClassReflection($listenerClass = get_class($listener));
-
-        foreach ($a->getMethods() as $method) {
-
-            /* @var $method \Zend\Code\Reflection\MethodReflection */
-            if (($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
-                continue;
-            }
-
-            /* @var $param \Zend\Code\Reflection\ParameterReflection */
-            if (($eventClassName = $this->_getEventClassName($param)) === null) {
-                continue;
-            }
-
-            /**
-             * This is a workaround for zend code's bugged getDescription ...
-             * At the moment ZF's 2 code library is not good to depend on.
-             */
-
-            if($method->getDocBlock() !== false){
-                /** @var $tag \Zend\Code\Reflection\DocBlock\Tag\GenericTag */
-                $tag = $method->getDocBlock()->getTag('priority');
-
-                if($tag !== false){
-                    if(is_numeric($tag->getContent())){
-                        $priority = (int)$tag->getContent();
-                    }else{
-                        $priority = Priority::getPriorityByName($tag->getContent());
-                    }
-                }
-            }
-
-            $listenerIsListeningToEvent = true;
-            $this->_addListener($listener, $method->getName(), $eventClassName, $priority);
-        }
-
-        if (!$listenerIsListeningToEvent) {
-            $this->getLogger()->info(sprintf('Given Listener (%s) does not listen to any known events', $listenerClass));
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Worker $worker
+     * @param ListenerInterface $listener
+     * @param int $priority Default priority
      * @return $this
      */
-    protected function addWorker(Worker $worker)
+    public function addListener(ListenerInterface $listener, $priority = Priority::NORMAL)
     {
-        $this->getLogger()->debug(sprintf('Adding worker to the queue'));
-        $this->workers->insert($worker, $worker->getPriority());
-        return $this;
-    }
+        // normalize listener
+        $listener = new ListenerProxy($listener);
 
-    /**
-     * Internal method for adding listeners
-     *
-     * @deprecated
-     * @see Priority
-     * @param ListenerInterface|\Closure $listener
-     * @param $listenerMethodName
-     * @param $eventClassName
-     * @param $listenerMethodName
-     * @param int $priority Defaults to normal (int)0
-     * @return EventManager
-     */
-    protected function _addListener($listener, $listenerMethodName, $eventClassName, $priority = null)
-    {
-        if($priority === null){
-            $priority = Priority::NORMAL;
+        // create workers and add them to the worker queue
+        foreach($listener->getListenerMethods() as $method){
+
+            $worker = WorkerFactory::create($method);
+            if($worker->getPriority() === null){
+                $worker->setPriority($priority);
+            }
+
+            $this->getLogger()->debug(sprintf('Worker added to the Queue'));
+            $this->workers->insert($worker, $worker->getPriority());
         }
-        $listenerName = sprintf('%s::%s()', get_class($listener), $listenerMethodName);
-        $this->getLogger()->debug(sprintf('%s is now listening to %s with priority %s', $listenerName, $eventClassName, $priority));
-        $this->workers->insert(new Worker($listener, $listenerMethodName, $eventClassName, $priority), $priority);
 
         return $this;
-    }
-
-    /**
-     * Return event class name for given method/function parameter
-     * This method will return NULL if the class given in parameter is not
-     * an Event nor one of its subclasses.
-     *
-     * @param \ReflectionParameter $param
-     * @return null|string
-     */
-    protected function _getEventClassName(\ReflectionParameter $param)
-    {
-        if (!($eventClass = $param->getClass())) {
-            return null;
-        }
-
-        $eventClassName = $eventClass->getName();
-        $requiredInterface = 'Skajdo\EventManager\EventInterface';
-        if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
-            return null;
-        }
-
-        return $eventClassName;
     }
 
     /**
@@ -358,7 +243,7 @@ class EventManager implements LoggerAwareInterface
     /**
      * @return LoggerInterface
      */
-    protected function getLogger()
+    public function getLogger()
     {
         if ($this->logger === null) {
             $this->logger = new NullLogger();

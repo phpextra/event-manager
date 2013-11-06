@@ -1,6 +1,7 @@
 <?php
 
 namespace Skajdo\EventManager;
+use Skajdo\EventManager\Worker\WorkerQueue;
 use Skajdo\TestSuite\Test\TestFixture;
 
 class QueueTest extends TestFixture

@@ -5,7 +5,11 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace Skajdo\EventManager\Worker;
+
+use Skajdo\EventManager\EventInterface;
+use Skajdo\EventManager\Listener\ListenerInterface;
+use Skajdo\EventManager\Priority;
 
 /**
  * Queue item.
@@ -15,7 +19,7 @@ namespace Skajdo\EventManager;
 class Worker
 {
     /**
-     * @var ListenerInterface|\Closure
+     * @var ListenerInterface
      */
     protected $listener;
 
@@ -37,13 +41,13 @@ class Worker
     /**
      * Create new worker that will wake-up listener using event
      *
-     * @param ListenerInterface|\Closure $listener
+     * @param ListenerInterface $listener
      * @param string $method
      * @param string $eventClass
      * @param int $priority
      * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
      */
-    public function __construct($listener, $method, $eventClass, $priority = Priority::NORMAL)
+    public function __construct(ListenerInterface $listener, $method, $eventClass, $priority = Priority::NORMAL)
     {
         $this->setListener($listener);
         $this->setMethod($method);
@@ -95,15 +99,15 @@ class Worker
     }
 
     /**
-     * @param \Skajdo\EventManager\ListenerInterface $listener
+     * @param \Skajdo\EventManager\Listener\ListenerInterface $listener
      */
-    public function setListener($listener)
+    public function setListener(ListenerInterface $listener)
     {
         $this->listener = $listener;
     }
 
     /**
-     * @return \Skajdo\EventManager\ListenerInterface|\Closure
+     * @return \Skajdo\EventManager\Listener\ListenerInterface
      */
     public function getListener()
     {

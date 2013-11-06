@@ -7,7 +7,7 @@
 
 namespace Skajdo\EventManager;
 
-use Skajdo\EventManager\ListenerInterface;
+use Skajdo\EventManager\Listener\ListenerInterface;
 
 /**
  * Event manager exception
