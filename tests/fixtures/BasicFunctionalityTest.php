@@ -1,7 +1,6 @@
 <?php
 
 namespace Skajdo\EventManager;
-use Mockery\Mock;
 use Skajdo\EventManager\Listener\AnonymousListener;
 use Skajdo\TestSuite\Test\TestFixture;
 
@@ -90,9 +89,6 @@ class BasicFunctionalityTest extends TestFixture
             'Dummy 2 Event 1',
             'Closure 2',
         );
-
-
-        var_dump($this->logs, $event->events);
 
         $this->assert()->isIdentical($expectedLogs, $event->events);
     }

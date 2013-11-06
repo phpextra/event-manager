@@ -1,9 +1,11 @@
 <?php
 
-namespace Skajdo\EventManager\Listener;
+/**
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
+ * See the file LICENSE.txt for copying permission.
+ */
 
-use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\Priority;
+namespace Skajdo\EventManager\Listener;
 
 /**
  * Due to the nature of listeners a proxy object is required to create a

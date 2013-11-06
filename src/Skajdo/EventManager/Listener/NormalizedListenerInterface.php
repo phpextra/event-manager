@@ -1,8 +1,11 @@
 <?php
 
-namespace Skajdo\EventManager\Listener;
+/**
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
+ * See the file LICENSE.txt for copying permission.
+ */
 
-use Skajdo\EventManager\Listener\ListenerInterface;
+namespace Skajdo\EventManager\Listener;
 
 /**
  * Normalized listener that can return us a list of method to event pairs along with priority for each pair

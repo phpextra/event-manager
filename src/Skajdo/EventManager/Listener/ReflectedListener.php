@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
+ * See the file LICENSE.txt for copying permission.
+ */
+
 namespace Skajdo\EventManager\Listener;
 
 use Skajdo\EventManager\Priority;
@@ -9,7 +14,7 @@ use Zend\Code\Reflection\ClassReflection;
  * A wrapper for a basic listener that is created using reflection
  * Uses reflection to obtain information about what event listener is listening to.
  */
-class ReflectedListener implements NormalizedListenerInterface
+class ReflectedListener extends AbstractReflectedListener implements NormalizedListenerInterface
 {
     /**
      * @var ListenerInterface
@@ -49,7 +54,7 @@ class ReflectedListener implements NormalizedListenerInterface
         if($this->methods === null){
             $reflectedListener = new ClassReflection($listenerClass = get_class($this->listener));
             foreach ($reflectedListener->getMethods() as $method) {
-                $priority = Priority::NORMAL;
+                $priority = null;
                 /* @var $method \Zend\Code\Reflection\MethodReflection */
                 if (($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
                     continue;
@@ -78,24 +83,5 @@ class ReflectedListener implements NormalizedListenerInterface
             $methods = $this->methods;
         }
         return $methods;
-    }
-
-    /**
-     * @param \ReflectionParameter $param
-     * @return null|string
-     */
-    protected function getEventClassNameFromParam(\ReflectionParameter $param)
-    {
-        if (!($eventClass = $param->getClass())) {
-            return null;
-        }
-
-        $eventClassName = $eventClass->getName();
-        $requiredInterface = 'Skajdo\EventManager\EventInterface';
-        if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
-            return null;
-        }
-
-        return $eventClassName;
     }
 }

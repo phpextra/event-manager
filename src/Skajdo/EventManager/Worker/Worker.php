@@ -40,6 +40,7 @@ class Worker
 
     /**
      * Create new worker that will wake-up listener using event
+     * If priority is null the default (normal) will be used
      *
      * @param ListenerInterface $listener
      * @param string $method
@@ -47,8 +48,12 @@ class Worker
      * @param int $priority
      * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
      */
-    public function __construct(ListenerInterface $listener, $method, $eventClass, $priority = Priority::NORMAL)
+    public function __construct(ListenerInterface $listener, $method, $eventClass, $priority = null)
     {
+        if($priority === null){
+            $priority = Priority::NORMAL;
+        }
+
         $this->setListener($listener);
         $this->setMethod($method);
         $this->setEventClass($eventClass);

@@ -1,16 +1,20 @@
 <?php
 
+/**
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
+ * See the file LICENSE.txt for copying permission.
+ */
+
 namespace Skajdo\EventManager\Listener;
 
 use Closure;
 use Skajdo\EventManager\EventInterface;
-use Skajdo\EventManager\Priority;
 
 /**
  * A wrapper for closure listener
  * Uses reflection to obtain information about what event listener is listening to.
  */
-class AnonymousListener implements NormalizedListenerInterface, InvokableListenerInterface
+class AnonymousListener extends AbstractReflectedListener implements NormalizedListenerInterface, InvokableListenerInterface
 {
     /**
      * @var Closure
@@ -27,7 +31,7 @@ class AnonymousListener implements NormalizedListenerInterface, InvokableListene
      * @param $priority
      * @return \Skajdo\EventManager\Listener\AnonymousListener
      */
-    function __construct(Closure $closure, $priority = Priority::NORMAL)
+    function __construct(Closure $closure, $priority = null)
     {
         $this->closure = $closure;
         $this->priority = $priority;
@@ -72,20 +76,12 @@ class AnonymousListener implements NormalizedListenerInterface, InvokableListene
 
         /* @var $param \Zend\Code\Reflection\ParameterReflection */
         $param = current($closureReflection->getParameters());
-        $requiredInterface = 'Skajdo\EventManager\EventInterface';
 
         if($param){
-            if (!($eventClass = $param->getClass())) {
-                throw new \RuntimeException('Closure does not contain a reference to an event');
-            }
-
-            $eventClassName = $eventClass->getName();
-            if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
+            if (($eventClassName = $this->getEventClassNameFromParam($param)) === null) {
                 throw new \RuntimeException('Closure param must be an event');
             }
-
             return array(new ListenerMethod($this, 'invoke', $eventClassName, $this->priority));
-
         }
         return array();
     }

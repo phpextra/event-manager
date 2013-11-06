@@ -7,11 +7,11 @@
 
 namespace Skajdo\EventManager;
 
-use Psr\Log\NullLogger;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Skajdo\EventManager\Listener\ListenerProxy;
+use Psr\Log\NullLogger;
 use Skajdo\EventManager\Listener\ListenerInterface;
+use Skajdo\EventManager\Listener\ListenerProxy;
 use Skajdo\EventManager\Worker\Worker;
 use Skajdo\EventManager\Worker\WorkerFactory;
 use Skajdo\EventManager\Worker\WorkerQueue;
@@ -145,7 +145,7 @@ class EventManager implements LoggerAwareInterface
     protected function recurrencyCheck(EventInterface $event)
     {
         if($this->getCallGraph()->hasObject($event)){
-            $this->getLogger()->critical(sprintf('Recurrency on event "%s" was detected and manager will stop propagation of event', get_class($event)));
+            $this->getLogger()->critical(Message::format(Message::RECURRENCY_DETECTED, $event));
             throw new \RuntimeException('Recurrency');
         }else{
             $this->callGraph->addObject($event);
@@ -154,14 +154,13 @@ class EventManager implements LoggerAwareInterface
 
     /**
      * Add event listener
-     * Priority used in doc comments can be overridden by setting the $priority
-     * Otherwise the setting from the doc comment will be used.
+     * Priority used in the listener can be overridden by setting the $priority argument
      *
      * @param ListenerInterface $listener
      * @param int $priority Default priority
      * @return $this
      */
-    public function addListener(ListenerInterface $listener, $priority = Priority::NORMAL)
+    public function addListener(ListenerInterface $listener, $priority = null)
     {
         // normalize listener
         $listener = new ListenerProxy($listener);
@@ -170,7 +169,7 @@ class EventManager implements LoggerAwareInterface
         foreach($listener->getListenerMethods() as $method){
 
             $worker = WorkerFactory::create($method);
-            if($worker->getPriority() === null){
+            if($priority !== null){
                 $worker->setPriority($priority);
             }
 

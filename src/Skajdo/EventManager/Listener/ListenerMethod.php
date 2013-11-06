@@ -1,9 +1,11 @@
 <?php
 
-namespace Skajdo\EventManager\Listener;
+/**
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
+ * See the file LICENSE.txt for copying permission.
+ */
 
-use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\Priority;
+namespace Skajdo\EventManager\Listener;
 
 /**
  * Each listener can have many method to event pairs that are represented by this object.
@@ -37,7 +39,7 @@ class ListenerMethod
      * @param string $eventClassName
      * @param int $priority
      */
-    function __construct(ListenerInterface $listener, $methodName, $eventClassName, $priority = Priority::NORMAL)
+    function __construct(ListenerInterface $listener, $methodName, $eventClassName, $priority = null)
     {
         $this->listener = $listener;
         $this->eventClassName = $eventClassName;
