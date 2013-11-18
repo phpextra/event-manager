@@ -57,6 +57,7 @@ class WorkerResult
     }
 
     /**
+     * @see WorkerResultStatus
      * @return int
      */
     public function getStatus()
@@ -65,9 +66,9 @@ class WorkerResult
     }
 
     /**
-     * Get message returned by exception
+     * Get message returned by exception or null if no exception
      *
-     * @return null|string
+     * @return string
      */
     public function getMessage()
     {
@@ -78,7 +79,9 @@ class WorkerResult
     }
 
     /**
-     * @return null|string
+     * Returns null if no exception
+     *
+     * @return string
      */
     public function getExceptionClass()
     {

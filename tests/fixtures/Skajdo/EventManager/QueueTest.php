@@ -1,15 +1,12 @@
 <?php
 
 namespace Skajdo\EventManager;
+
 use Skajdo\EventManager\Worker\WorkerQueue;
-use Skajdo\TestSuite\Test\TestFixture;
 
-class QueueTest extends TestFixture
+class QueueTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp(){}
-    public function tearDown(){}
-
-    public function testQueueOrder()
+    public function testQueueReturnsItemsInCorrectOrder()
     {
         $queue = new WorkerQueue();
 
@@ -19,26 +16,26 @@ class QueueTest extends TestFixture
         $queue->insert('c', 30); // 2
         $queue->insert('d', 40); // 1
 
-        $this->assert()->isIdentical(5, $queue->count());
+        $this->assertEquals(5, $queue->count());
 
         $internalQueue = $queue->getIterator();
 
-        $this->assert()->isIdentical('d', $internalQueue->top());
+        $this->assertEquals('d', $internalQueue->top());
         $internalQueue->extract();
 
-        $this->assert()->isIdentical('c', $internalQueue->top());
+        $this->assertEquals('c', $internalQueue->top());
         $internalQueue->extract();
 
-        $this->assert()->isIdentical(3, $internalQueue->count());
+        $this->assertEquals(3, $internalQueue->count());
 
-        $this->assert()->isIdentical('a', $internalQueue->top());
+        $this->assertEquals('a', $internalQueue->top());
         $internalQueue->extract();
 
-        $this->assert()->isIdentical('b', $internalQueue->top());
+        $this->assertEquals('b', $internalQueue->top());
         $internalQueue->extract();
 
-        $this->assert()->isIdentical('e', $internalQueue->top());
+        $this->assertEquals('e', $internalQueue->top());
 
-        $this->assert()->isIdentical($internalQueue->toArray(), array(0 => 'e'));
+        $this->assertEquals($internalQueue->toArray(), array(0 => 'e'));
     }
 }

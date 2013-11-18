@@ -4,6 +4,7 @@ php:
   - 5.4
   - 5.5
 
-script: php ./tests/run.php ./tests
-before_script:
-   - composer install
+ script: ./vendor/bin/phpunit -c ./phpunit.xml ./tests/fixtures
+ before_script:
+    - composer self-update
+    - composer install --verbose
