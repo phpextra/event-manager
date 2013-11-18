@@ -145,7 +145,7 @@ All code contributions must go through a pull request.
 Fork the project, create a feature branch, and send me a pull request.
 To ensure a consistent code base, you should make sure the code follows
 the [coding standards](http://symfony.com/doc/2.0/contributing/code/standards.html).
-If you would like to help take a look at the [list of issues](https://github.com/jkobus/skajdo-test-suite/issues).
+If you would like to help take a look at the [list of issues](https://github.com/jkobus/skajdo-event-manager/issues).
 
 ##Requirements
 
