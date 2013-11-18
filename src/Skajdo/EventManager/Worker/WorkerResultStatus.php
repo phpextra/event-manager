@@ -10,6 +10,9 @@ namespace Skajdo\EventManager\Worker;
 /**
  * Worker result status
  * If status is > 0 then an error occurred
+ *
+ * @see WorkerResultStatus::SUCCESS
+ * @see WorkerResultStatus::FAILURE
  */
 interface WorkerResultStatus
 {

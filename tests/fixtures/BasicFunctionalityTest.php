@@ -1,16 +1,12 @@
 <?php
 
 namespace Skajdo\EventManager;
+
 use Skajdo\EventManager\Listener\AnonymousListener;
-use Skajdo\TestSuite\Test\TestFixture;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 
-/**
- * Class BasicFunctionalityTest
- * @todo more isolated tests
- */
-class BasicFunctionalityTest extends TestFixture
+class BasicFunctionalityTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var EventManager
@@ -51,10 +47,10 @@ class BasicFunctionalityTest extends TestFixture
         return $logger;
     }
 
-    public function testEmptyEventManagerDoesNothingIfNoListenersGiven()
+    public function testEventManagerDoesNothingIfNoListenersGiven()
     {
         $this->eventManager->trigger($event = new \DummyCancellableEvent2());
-        $this->assert()->isIdentical(array(), $event->events);
+        $this->assertEquals(array(), $event->events);
     }
 
     public function testEventManagerTriggersEventsAndListenersInProperOrder()
@@ -90,7 +86,7 @@ class BasicFunctionalityTest extends TestFixture
             'Closure 2',
         );
 
-        $this->assert()->isIdentical($expectedLogs, $event->events);
+        $this->assertEquals($expectedLogs, $event->events);
     }
 
     public function testEventManagerDetectsRecurrencyInListeners()
@@ -104,8 +100,8 @@ class BasicFunctionalityTest extends TestFixture
             $this->eventManager->trigger($event);
             throw new \Exception('Event manager was not able to detect recurrency');
         }catch (\Exception $e){
-            $this->assert()->isInstanceOf('Exception', $e);
-            $this->assert()->isIdentical('Recurrency', $e->getMessage());
+            $this->assertInstanceOf('Exception', $e);
+            $this->assertEquals('Recurrency', $e->getMessage());
         }
 
     }

@@ -3,10 +3,10 @@
     "description": "Event manager based on reflection, annotations and priority queue.",
 	"keywords": ["event manager", "event", "listener", "observer", "psr-0"],
 	"license": "BSD-3-Clause",
-	"homepage": "http://jkobus.github.com/skajdo-event-manager/",
+	"homepage": "https://github.com/jkobus/skajdo-event-manager",
 	"support": {
-		"issues": "https://github.com/jack-ks/skajdo-event-manager/issues",
-		"source": "https://github.com/jack-ks/skajdo-event-manager"
+		"issues": "https://github.com/jkobus/skajdo-event-manager/issues",
+		"source": "https://github.com/jkobus/skajdo-event-manager"
 	},
     "authors": [
         {
@@ -22,12 +22,11 @@
         "php":">=5.3.0",
 		"psr/log": "~1.0",
 		"mockery/mockery": "~0.8",
-		"zendframework/zend-stdlib": "*",
+        "zendframework/zend-stdlib": "~2.2",
         "zendframework/zend-code": "~2.2"
     },
-
     "require-dev": {
-        "skajdo/test-suite": "*",
+        "phpunit/phpunit": "~3.7",
         "sami/sami": "~1.2"
     }
 }

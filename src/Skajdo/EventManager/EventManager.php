@@ -186,7 +186,7 @@ class EventManager implements LoggerAwareInterface
      *
      * Defaults to FALSE
      *
-     * @param $throwExceptions
+     * @param bool $throwExceptions
      * @return EventManager
      */
     public function setThrowExceptions($throwExceptions)
@@ -206,7 +206,7 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * Return event that is currently running or NULL if no event is running
+     * Return event that is currently running or null if no event is running
      *
      * @return null|EventInterface
      */
@@ -258,7 +258,6 @@ class EventManager implements LoggerAwareInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-
         return $this;
     }
 }

@@ -10,8 +10,7 @@ namespace Skajdo\EventManager\Worker;
 use Skajdo\EventManager\Listener\ListenerMethod;
 
 /**
- * Class WorkerFactory
- * @package Skajdo\EventManager\Worker
+ * Creates workers
  */
 class WorkerFactory
 {

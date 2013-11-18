@@ -1,17 +1,14 @@
 <?php
 
 namespace Skajdo\EventManager;
+
 use Mockery\Mock;
 use Skajdo\EventManager\Listener\AnonymousListener;
 use Skajdo\TestSuite\Test\TestFixture;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 
-/**
- * Class EventManagerTest
- * @package Skajdo\EventManager
- */
-class EventManagerTest extends TestFixture
+class EventManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var EventManager

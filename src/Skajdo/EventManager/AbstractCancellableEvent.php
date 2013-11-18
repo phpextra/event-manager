@@ -9,8 +9,6 @@ namespace Skajdo\EventManager;
 
 /**
  * Represents cancellable event
- * Every cancellable event should extend this class or implement the
- * cancellable interface.
  *
  * @author      Jacek Kobus
  */
