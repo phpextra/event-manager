@@ -1,6 +1,9 @@
 #Skajdo Event Manager
 [![Build Status](https://travis-ci.org/jkobus/skajdo-event-manager.png?branch=master)](https://travis-ci.org/jkobus/skajdo-event-manager)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jkobus/skajdo-event-manager/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Latest Stable Version](https://poser.pugx.org/skajdo/event-manager/v/stable.png)](https://packagist.org/packages/skajdo/event-manager)
+[![Total Downloads](https://poser.pugx.org/skajdo/event-manager/downloads.png)](https://packagist.org/packages/skajdo/event-manager)
+[![Dependencies Status](https://depending.in/jkobus/skajdo-event-manager.png)](http://depending.in/jkobus/skajdo-event-manager)
 
 ##Event Management made simple
 
