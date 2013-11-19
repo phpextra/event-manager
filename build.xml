@@ -1,6 +1,6 @@
 <project name="SkajdoEventManager" default="build">
     <!-- phpunit,phpdoc, -->
-    <target name="build" depends="prepare,composer-validate,composer-update,lint,phpcs-ci,pdepend,phpmd-ci,phploc,test-suite,phpcpd,phpcb,samidoc"/>
+    <target name="build" depends="prepare,composer-validate,composer-update,lint,phpcs-ci,pdepend,phpmd-ci,phploc,phpunit,phpcpd,phpcb,samidoc"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="${basedir}/build/code-browser"/>
