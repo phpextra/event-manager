@@ -26,7 +26,7 @@ JSON:
 ```
 
 
-##Updating to the lastest version
+##Updating to the latest version
 
 ```
 > composer update skajdo/event-manager
