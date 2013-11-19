@@ -1,4 +1,5 @@
 build/report/*
+build/logs/*
 .idea
 composer.lock
 vendor
