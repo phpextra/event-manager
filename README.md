@@ -84,6 +84,20 @@ abstract class MyListener implements Listener
 
 ```
 
+## Anonymous function as listener
+
+```php
+
+<?php
+
+$listener = new AnonymousListener(function(SomeEventInterface $event){
+    ...
+});
+
+?>
+
+```
+
 
 ##To-Do
 
@@ -105,13 +119,15 @@ abstract class MyListener implements Listener
 * added worker factory
 * updated composer and readme
 
-1.1.0 (broken, not maintained)
+**Line 1.* is deprecated and will not be maintained.**
+
+1.1.0
 
 * interface changes (ListenerInterface -> Listener, EventInterface -> Event)
 * cleaned up classes
 * added benchmark test (10150 listener calls < 0.8 sec)
 
-1.0.4 (broken)
+1.0.4
 
 * changed license to MIT
 * added EventManagerAware interface
@@ -119,7 +135,7 @@ abstract class MyListener implements Listener
 * added MONITOR priority
 * removed exception in case where listener is not listening to any known events (info-log instead)
 
-1.0.3 (broken)
+1.0.3
 
 * added support for event inheritance
 * replaced multiple event-queues with one to make priority managment easier
