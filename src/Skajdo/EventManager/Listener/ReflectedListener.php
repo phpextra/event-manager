@@ -8,9 +8,9 @@
 namespace Skajdo\EventManager\Listener;
 use Skajdo\EventManager\Priority;
 use Zend\Code\Reflection\ClassReflection;
+use Zend\Code\Reflection\MethodReflection;
 
 /**
- * A wrapper for a basic listener that is created using reflection
  * Uses reflection to obtain information about what event listener is listening to.
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
@@ -55,7 +55,7 @@ class ReflectedListener extends AbstractReflectedListener implements NormalizedL
         if($this->methods === null){
             $reflectedListener = new ClassReflection($listenerClass = get_class($this->listener));
             foreach ($reflectedListener->getMethods() as $method) {
-                $priority = null;
+
                 /* @var $method \Zend\Code\Reflection\MethodReflection */
                 if (($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
                     continue;
@@ -66,23 +66,36 @@ class ReflectedListener extends AbstractReflectedListener implements NormalizedL
                     continue;
                 }
 
-                if($method->getDocBlock() !== false){
-                    /** @var $tag \Zend\Code\Reflection\DocBlock\Tag\GenericTag */
-                    $tag = $method->getDocBlock()->getTag('priority');
-
-                    if($tag !== false){
-                        if(is_numeric($tag->getContent())){
-                            $priority = (int)$tag->getContent();
-                        }else{
-                            $priority = Priority::getPriorityByName($tag->getContent());
-                        }
-                    }
-                }
+                $priority = $this->getPriority($method);
                 $methods[] = new ListenerMethod($this->getListener(), $method->getName(), $eventClassName, $priority);
             }
         }else{
             $methods = $this->methods;
         }
         return $methods;
+    }
+
+    /**
+     * Try to find a priority for given method
+     *
+     * @param MethodReflection $method
+     * @return int|null
+     */
+    protected function getPriority(MethodReflection $method)
+    {
+        $priority = null;
+        if($method->getDocBlock() !== false){
+            /** @var $tag \Zend\Code\Reflection\DocBlock\Tag\GenericTag */
+            $tag = $method->getDocBlock()->getTag('priority');
+
+            if($tag !== false){
+                if(is_numeric($tag->getContent())){
+                    $priority = (int)$tag->getContent();
+                }else{
+                    $priority = Priority::getPriorityByName($tag->getContent());
+                }
+            }
+        }
+        return $priority;
     }
 }

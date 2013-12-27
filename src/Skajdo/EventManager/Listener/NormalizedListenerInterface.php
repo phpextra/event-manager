@@ -8,7 +8,9 @@
 namespace Skajdo\EventManager\Listener;
 
 /**
- * Normalized listener that can return us a list of method to event pairs along with priority for each pair
+ * Normalized listener that can return a list of method-to-event pairs along with priority for each pair
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 interface NormalizedListenerInterface extends ListenerInterface
 {

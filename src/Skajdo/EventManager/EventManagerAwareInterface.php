@@ -8,7 +8,9 @@
 namespace Skajdo\EventManager;
 
 /**
- * Each class implementing this interface is considered aware of the event manager
+ * The EventManagerAwareInterface class
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 interface EventManagerAwareInterface
 {

@@ -8,7 +8,9 @@
 namespace Skajdo\EventManager;
 
 /**
- * Event priority ENUM class
+ * The Priority class
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 final class Priority
 {

@@ -6,11 +6,12 @@
  */
 
 namespace Skajdo\EventManager\Listener;
-
 use Skajdo\EventManager\EventInterface;
 
 /**
- * Listener that can be invoked by a worker using invoke method
+ * Listener that can be invoked by a worker using invoke
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 interface InvokableListenerInterface extends ListenerInterface
 {

@@ -9,6 +9,8 @@ namespace Skajdo\EventManager\Listener;
 
 /**
  * Extract common reflection tasks
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class AbstractReflectedListener
 {

@@ -13,6 +13,8 @@ use Skajdo\EventManager\EventInterface;
 /**
  * A wrapper for closure listener
  * Uses reflection to obtain information about what event listener is listening to.
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class AnonymousListener extends AbstractReflectedListener implements NormalizedListenerInterface, InvokableListenerInterface
 {
@@ -28,7 +30,7 @@ class AnonymousListener extends AbstractReflectedListener implements NormalizedL
 
     /**
      * @param Closure $closure
-     * @param $priority
+     * @param int $priority
      * @return \Skajdo\EventManager\Listener\AnonymousListener
      */
     function __construct(Closure $closure, $priority = null)
@@ -67,7 +69,7 @@ class AnonymousListener extends AbstractReflectedListener implements NormalizedL
     /**
      * Return event class name paired with method that should be called for that event
      *
-     * @throws \RuntimeException If closure param is missing or its not an event
+     * @throws \InvalidArgumentException
      * @return ListenerMethod[]
      */
     public function getListenerMethods()
@@ -79,7 +81,7 @@ class AnonymousListener extends AbstractReflectedListener implements NormalizedL
 
         if($param){
             if (($eventClassName = $this->getEventClassNameFromParam($param)) === null) {
-                throw new \RuntimeException('Closure param must be an event');
+                throw new \InvalidArgumentException(sprintf('First closure param (%s) must be a class implementing the EventInterface', $param->getType()));
             }
             return array(new ListenerMethod($this, 'invoke', $eventClassName, $this->priority));
         }

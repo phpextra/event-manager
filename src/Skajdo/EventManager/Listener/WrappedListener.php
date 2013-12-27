@@ -8,10 +8,12 @@
 namespace Skajdo\EventManager\Listener;
 
 /**
- * Due to the nature of listeners a proxy object is required to create a
- * simplified interface for each kind of listener.
+ * Proxy-like object is required to create a simplified interface for each kind of listener
+ *
+ * @deprecated
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class ListenerProxy implements NormalizedListenerInterface
+class WrappedListener implements NormalizedListenerInterface
 {
     /**
      * @var NormalizedListenerInterface
@@ -31,7 +33,7 @@ class ListenerProxy implements NormalizedListenerInterface
     }
 
     /**
-     * @return \Skajdo\EventManager\Listener\NormalizedListenerInterface
+     * @return NormalizedListenerInterface
      */
     public function getListener()
     {
@@ -39,12 +41,10 @@ class ListenerProxy implements NormalizedListenerInterface
     }
 
     /**
-     * Return event class name paired with method that should be called for that event
-     *
-     * @return ListenerMethod[]
+     * {@inheritdoc}
      */
     public function getListenerMethods()
     {
-        return $this->listener->getListenerMethods();
+        return $this->getListener()->getListenerMethods();
     }
 }

@@ -6,13 +6,12 @@
  */
 
 namespace Skajdo\EventManager;
-
 use Skajdo\EventManager\Listener\ListenerInterface;
 
 /**
- * Event manager exception
+ * The Exception class
  *
- * @author      Jacek Kobus
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class Exception extends \Exception
 {

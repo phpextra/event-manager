@@ -6,15 +6,14 @@
  */
 
 namespace Skajdo\EventManager\Worker;
-
 use Skajdo\EventManager\EventInterface;
 use Skajdo\EventManager\Listener\ListenerInterface;
 use Skajdo\EventManager\Priority;
 
 /**
- * Queue item.
+ * The Worker class
  *
- * @author Jacek Kobus
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class Worker
 {
@@ -46,7 +45,7 @@ class Worker
      * @param string $method
      * @param string $eventClass
      * @param int $priority
-     * @throws \InvalidArgumentException If Listener is not an instance of Listener interface nor Closure
+     * @throws \InvalidArgumentException
      */
     public function __construct(ListenerInterface $listener, $method, $eventClass, $priority = null)
     {
@@ -104,7 +103,7 @@ class Worker
     }
 
     /**
-     * @param \Skajdo\EventManager\Listener\ListenerInterface $listener
+     * @param ListenerInterface $listener
      */
     public function setListener(ListenerInterface $listener)
     {
@@ -112,7 +111,7 @@ class Worker
     }
 
     /**
-     * @return \Skajdo\EventManager\Listener\ListenerInterface
+     * @return ListenerInterface
      */
     public function getListener()
     {

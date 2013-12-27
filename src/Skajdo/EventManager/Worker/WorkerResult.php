@@ -8,7 +8,9 @@
 namespace Skajdo\EventManager\Worker;
 
 /**
- * Worker execution result
+ * The WorkerResult class
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class WorkerResult
 {

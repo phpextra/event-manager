@@ -10,6 +10,8 @@ namespace Skajdo\EventManager\Listener;
 /**
  * Each listener can have many method to event pairs that are represented by this object.
  * Each pair can have different priority.
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class ListenerMethod
 {

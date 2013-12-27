@@ -6,23 +6,28 @@
  */
 
 namespace Skajdo\EventManager;
-
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\Listener\ListenerProxy;
+use Skajdo\EventManager\Listener\NormalizedListenerInterface;
+use Skajdo\EventManager\Listener\ReflectedListener;
 use Skajdo\EventManager\Worker\Worker;
 use Skajdo\EventManager\Worker\WorkerFactory;
 use Skajdo\EventManager\Worker\WorkerQueue;
 
 /**
- * The event manager
+ * The EventManager class
  *
- * @author      Jacek Kobus
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class EventManager implements LoggerAwareInterface
 {
+    /**
+     * @var WorkerFactory
+     */
+    protected $workerFactory = null;
+
     /**
      * @var WorkerQueue
      */
@@ -66,23 +71,12 @@ class EventManager implements LoggerAwareInterface
     protected $callGraph = null;
 
     /**
-     * @param LoggerInterface $logger
+     * Create new event manager
      */
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct()
     {
+        $this->workerFactory = new WorkerFactory();
         $this->workers = new WorkerQueue();
-        if ($logger !== null) {
-            $this->setLogger($logger);
-        }
-    }
-
-    /**
-     * @see EventManager::trigger()
-     * @deprecated since 1.1.1; use EventManager::trigger() instead
-     */
-    public function triggerEvent(EventInterface $event, $preDispatchHook = null, $postDispatchHook = null)
-    {
-        return $this->trigger($event);
     }
 
     /**
@@ -90,9 +84,8 @@ class EventManager implements LoggerAwareInterface
      *
      * @param EventInterface $event
      * @throws \RuntimeException
-     * @throws \Exception|null
-     * @return EventManager
-     * @return \Skajdo\EventManager\EventManager
+     * @throws \Exception
+     * @return $this
      */
     public function trigger(EventInterface $event)
     {
@@ -157,23 +150,22 @@ class EventManager implements LoggerAwareInterface
      * Priority used in the listener can be overridden by setting the $priority argument
      *
      * @param ListenerInterface $listener
-     * @param int $priority Default priority
+     * @param int $priority
      * @return $this
      */
     public function addListener(ListenerInterface $listener, $priority = null)
     {
-        // normalize listener
-        $listener = new ListenerProxy($listener);
+        if(!$listener instanceof NormalizedListenerInterface){
+            $listener = new ReflectedListener($listener);
+        }
 
-        // create workers and add them to the worker queue
+        // create workers and add them to the queue
         foreach($listener->getListenerMethods() as $method){
 
-            $worker = WorkerFactory::create($method);
+            $worker = $this->workerFactory->createWorker($method);
             if($priority !== null){
                 $worker->setPriority($priority);
             }
-
-            $this->getLogger()->debug(sprintf('Worker added to the Queue'));
             $this->workers->insert($worker, $worker->getPriority());
         }
 

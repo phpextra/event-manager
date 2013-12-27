@@ -13,6 +13,8 @@ namespace Skajdo\EventManager\Worker;
  *
  * @see WorkerResultStatus::SUCCESS
  * @see WorkerResultStatus::FAILURE
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 interface WorkerResultStatus
 {
