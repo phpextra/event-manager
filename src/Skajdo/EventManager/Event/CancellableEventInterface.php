@@ -15,7 +15,7 @@ namespace Skajdo\EventManager;
 interface CancellableEventInterface extends EventInterface
 {
     /**
-     * Tell if current event is cancelled
+     * Tell if current event was cancelled
      * If the event is cancelled it cannot be undone.
      * Each listener should ALWAYS check if the task was cancelled
      * before modifying it.

@@ -6,13 +6,14 @@
  */
 
 namespace Skajdo\EventManager\Listener;
-
 use Skajdo\EventManager\Priority;
 use Zend\Code\Reflection\ClassReflection;
 
 /**
  * A wrapper for a basic listener that is created using reflection
  * Uses reflection to obtain information about what event listener is listening to.
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class ReflectedListener extends AbstractReflectedListener implements NormalizedListenerInterface
 {
@@ -37,7 +38,7 @@ class ReflectedListener extends AbstractReflectedListener implements NormalizedL
     }
 
     /**
-     * @return \Skajdo\EventManager\Listener\ListenerInterface
+     * @return ListenerInterface
      */
     public function getListener()
     {

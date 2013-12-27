@@ -8,11 +8,11 @@
 namespace Skajdo\EventManager;
 
 /**
- * Represents cancellable event
+ * Concrete implementation of cancellable event
  *
- * @author      Jacek Kobus
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class AbstractCancellableEvent implements CancellableEventInterface
+class CancellableEvent implements CancellableEventInterface
 {
     /**
      * @var bool

@@ -9,6 +9,8 @@ namespace Skajdo\EventManager;
 
 /**
  * Collect called objects and count them
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 class CallGraph implements \Countable
 {
