@@ -2,19 +2,22 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager;
+
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Skajdo\EventManager\Listener\ListenerInterface;
 use Skajdo\EventManager\Listener\NormalizedListenerInterface;
 use Skajdo\EventManager\Listener\ReflectedListener;
-use Skajdo\EventManager\Worker\Worker;
 use Skajdo\EventManager\Worker\WorkerFactory;
+use Skajdo\EventManager\Worker\WorkerInterface;
 use Skajdo\EventManager\Worker\WorkerQueue;
+use Skajdo\EventManager\Worker\WorkerQueueInterface;
+use Skajdo\EventManager\Worker\WorkerResult;
 
 /**
  * The EventManager class
@@ -29,12 +32,13 @@ class EventManager implements LoggerAwareInterface
     protected $workerFactory = null;
 
     /**
-     * @var WorkerQueue
+     * @var WorkerQueueInterface
      */
-    protected $workers = array();
+    protected $workerQueue = array();
 
     /**
      * Whenever to throw exceptions caught from listeners or not
+     *
      * @var bool
      */
     protected $throwExceptions = false;
@@ -47,28 +51,9 @@ class EventManager implements LoggerAwareInterface
     protected $runningEvent = null;
 
     /**
-     * Limit recursion
-     *
-     * @var int
-     */
-    protected $recurrencyLimit = 50;
-
-    /**
-     * Current recurrency level
-     *
-     * @var int
-     */
-    protected $recurrencyLevel = 0;
-
-    /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
-
-    /**
-     * @var CallGraph
-     */
-    protected $callGraph = null;
 
     /**
      * Create new event manager
@@ -76,11 +61,11 @@ class EventManager implements LoggerAwareInterface
     public function __construct()
     {
         $this->workerFactory = new WorkerFactory();
-        $this->workers = new WorkerQueue();
+        $this->workerQueue = new WorkerQueue();
     }
 
     /**
-     * Trigger event; calls all listeners that listen to this event
+     * Calls all listeners that listen to given $event
      *
      * @param EventInterface $event
      * @throws \RuntimeException
@@ -89,92 +74,103 @@ class EventManager implements LoggerAwareInterface
      */
     public function trigger(EventInterface $event)
     {
-        $this->runningEvent = $event;
-        $eventClassName = get_class($event);
         $listenersFound = 0;
-        $loopStart = microtime(true);
+        $this->setRunningEvent($event);
 
-        $this->recurrencyCheck($event);
-
-        /* @var $worker Worker */
-        foreach ($this->workers->getIterator() as $workerId => $worker) {
-
+        foreach ($this->getWorkerQueue() as $worker) {
             if ($worker->isListeningTo($event)) {
-
-                $this->getLogger()->debug(sprintf('Starting worker #%s with event %s', $workerId, get_class($event)));
-
-                $result = $worker->run($event);
-                if(!$result->isSuccessful()){
-                    $this->getLogger()->critical(sprintf('Worker #%s failed to complete the task: (%s) %s', $workerId, $result->getExceptionClass(), $result->getMessage()));
-                    if ($this->getThrowExceptions()) {
-                        throw $result->getException();
-                    }
-                }else{
-                    $this->getLogger()->debug(sprintf('Worker #%s completed in %s ms', $workerId, $result->getExecutionTime()));
-                }
+                $this->runWorker($worker, $event);
                 $listenersFound++;
             }
         }
 
-        $loopEnd = bcsub(microtime(true), $loopStart, 8);
         if ($listenersFound == 0) {
-            $this->getLogger()->debug(sprintf('%s has no listeners', $eventClassName));
-        } else {
-            $this->getLogger()->debug(
-                sprintf('Event %s was completed for %s listener(s) in %s s', $eventClassName, $listenersFound, $loopEnd)
-            );
+            // @todo log
         }
 
-        $this->getCallGraph()->clear();
-        $this->runningEvent = null;
+        $this->setRunningEvent(null);
 
         return $this;
     }
 
     /**
-     * @param EventInterface $event
-     * @throws \RuntimeException If recurrency was detected
+     * @param WorkerInterface $worker
+     * @param EventInterface  $event
+     * @throws Exception
+     * @return WorkerResult
      */
-    protected function recurrencyCheck(EventInterface $event)
+    protected function runWorker(WorkerInterface $worker, EventInterface $event)
     {
-        if($this->getCallGraph()->hasObject($event)){
-            $this->getLogger()->critical(Message::format(Message::RECURRENCY_DETECTED, $event));
-            throw new \RuntimeException('Recurrency');
-        }else{
-            $this->callGraph->addObject($event);
+        $result = $worker->run($event);
+        if (!$result->isSuccessful()) {
+            if ($this->getThrowExceptions()) {
+                throw $result->getException();
+            }
         }
+
+        return $result;
     }
 
     /**
      * Add event listener
-     * Priority used in the listener can be overridden by setting the $priority argument
+     * Priority used in the listener can be overridden by setting the $priority
      *
      * @param ListenerInterface $listener
-     * @param int $priority
+     * @param int               $priority
      * @return $this
      */
     public function addListener(ListenerInterface $listener, $priority = null)
     {
-        if(!$listener instanceof NormalizedListenerInterface){
+        if (!$listener instanceof NormalizedListenerInterface) {
             $listener = new ReflectedListener($listener);
         }
 
         // create workers and add them to the queue
-        foreach($listener->getListenerMethods() as $method){
-
-            $worker = $this->workerFactory->createWorker($method);
-            if($priority !== null){
+        foreach ($listener->getListenerMethods() as $method) {
+            $worker = $this->getWorkerFactory()->createWorker($method);
+            if ($priority !== null) {
                 $worker->setPriority($priority);
             }
-            $this->workers->insert($worker, $worker->getPriority());
+            $this->addWorker($worker);
         }
 
         return $this;
     }
 
     /**
+     * @param WorkerInterface $worker
+     * @return $this
+     */
+    protected function addWorker(WorkerInterface $worker)
+    {
+        $this->getWorkerQueue()->add($worker);
+
+        return $this;
+    }
+
+    /**
+     * Return event that is currently running or null if no event is running
+     *
+     * @return EventInterface|null
+     */
+    public function getRunningEvent()
+    {
+        return $this->runningEvent;
+    }
+
+    /**
+     * @param EventInterface $runningEvent
+     *
+     * @return $this
+     */
+    public function setRunningEvent($runningEvent)
+    {
+        $this->runningEvent = $runningEvent;
+    }
+
+    /**
      * If this is set to true all exceptions will be thrown
-     * and the queue will be interrupted (incomplete).
+     * and the queue will be interrupted (incomplete)
      *
      * Defaults to FALSE
      *
@@ -183,28 +179,9 @@ class EventManager implements LoggerAwareInterface
      */
     public function setThrowExceptions($throwExceptions)
     {
-        if ($throwExceptions == true) {
-            $this->getLogger()->debug(
-                sprintf('%s will now throw exceptions in case of listener failure', get_class($this))
-            );
-        } else {
-            $this->getLogger()->debug(
-                sprintf('%s will NOT THROW exceptions in case of listener failure', get_class($this))
-            );
-        }
         $this->throwExceptions = $throwExceptions;
 
         return $this;
-    }
-
-    /**
-     * Return event that is currently running or null if no event is running
-     *
-     * @return null|EventInterface
-     */
-    public function getRunningEvent()
-    {
-        return $this->runningEvent;
     }
 
     /**
@@ -219,16 +196,33 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * Get call graph
+     * Get worker factory
      *
-     * @return CallGraph
+     * @return WorkerFactory
      */
-    protected function getCallGraph()
+    public function getWorkerFactory()
     {
-        if ($this->callGraph === null) {
-            $this->callGraph = new CallGraph();
-        }
-        return $this->callGraph;
+        return $this->workerFactory;
+    }
+
+    /**
+     * Get workers queue
+     *
+     * @return WorkerQueueInterface|WorkerInterface[]
+     */
+    public function getWorkerQueue()
+    {
+        return $this->workerQueue;
+    }
+
+    /**
+     * @param WorkerQueueInterface $workerQueue
+     *
+     * @return $this
+     */
+    public function setWorkerQueue($workerQueue)
+    {
+        $this->workerQueue = $workerQueue;
     }
 
     /**
@@ -250,6 +244,7 @@ class EventManager implements LoggerAwareInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+
         return $this;
     }
 }

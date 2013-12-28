@@ -2,11 +2,12 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager\Worker;
 use Skajdo\EventManager\EventInterface;
+use Skajdo\EventManager\Exception;
 use Skajdo\EventManager\Listener\ListenerInterface;
 use Skajdo\EventManager\Priority;
 
@@ -15,7 +16,7 @@ use Skajdo\EventManager\Priority;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class Worker
+class Worker implements WorkerInterface
 {
     /**
      * @var ListenerInterface
@@ -42,14 +43,14 @@ class Worker
      * If priority is null the default (normal) will be used
      *
      * @param ListenerInterface $listener
-     * @param string $method
-     * @param string $eventClass
-     * @param int $priority
+     * @param string            $method
+     * @param string            $eventClass
+     * @param int               $priority
      * @throws \InvalidArgumentException
      */
     public function __construct(ListenerInterface $listener, $method, $eventClass, $priority = null)
     {
-        if($priority === null){
+        if ($priority === null) {
             $priority = Priority::NORMAL;
         }
 
@@ -65,14 +66,22 @@ class Worker
      */
     public function run(EventInterface $event)
     {
-        try{
-            $start = microtime(true);
+        try {
             call_user_func(array($this->getListener(), $this->getMethod()), $event);
-            $timeTaken = bcsub(microtime(true), $start, 10);
-            return new WorkerResult(WorkerResultStatus::SUCCESS, $timeTaken);
-        }catch (\Exception $e){
-            return new WorkerResult(WorkerResultStatus::FAILURE, null, $e);
+            $result = new WorkerResult($this, $event, WorkerResultStatus::SUCCESS);
+        } catch (\Exception $e) {
+
+            if (!$e instanceof Exception) {
+                $e = new Exception($e->getMessage(), $e->getCode(), $e);
+                $e
+                    ->setEvent($event)
+                    ->setListener($this->getListener());
+            }
+
+            $result = new WorkerResult($this, $event, WorkerResultStatus::FAILURE, null, $e);
         }
+
+        return $result;
     }
 
     /**
@@ -136,10 +145,13 @@ class Worker
 
     /**
      * @param int $priority
+     * @return $this
      */
     public function setPriority($priority)
     {
         $this->priority = $priority;
+
+        return $this;
     }
 
     /**

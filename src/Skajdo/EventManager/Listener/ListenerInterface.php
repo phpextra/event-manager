@@ -2,7 +2,7 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager\Listener;
@@ -10,9 +10,9 @@ namespace Skajdo\EventManager\Listener;
 /**
  * Listener interface
  * Listener does not require any specific methods. Any method with event as it first param is treated
- * as listener and it will be executed as soon as event will be triggered.
+ * as listener-method and it will be executed as soon as event will be triggered.
  *
- * @author      Jacek Kobus
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 interface ListenerInterface
 {

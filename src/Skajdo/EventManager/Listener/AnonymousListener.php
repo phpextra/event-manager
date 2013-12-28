@@ -2,7 +2,7 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager\Listener;
@@ -31,7 +31,7 @@ class AnonymousListener extends AbstractReflectedListener implements NormalizedL
     /**
      * @param Closure $closure
      * @param int $priority
-     * @return \Skajdo\EventManager\Listener\AnonymousListener
+     * @return AnonymousListener
      */
     function __construct(Closure $closure, $priority = null)
     {

@@ -2,38 +2,45 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager\Worker;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
+
 use Zend\Stdlib\PriorityQueue;
 
 /**
- * Priority queue.
+ * The WorkerQueue class
+ * Uses Zend's PriorityQueue
  *
- * Fixes issues with default Queue. Iterations may be slow as inner iterator is created.
- * It was made due to bug-feature (?) that causes queue elements to be removed.
- *
- * If using Zend, it has its own SplPriorityQueue replacement if PHP < 5.3
- * as it's available only in 5.3 and above.
- *
- * @todo log entries
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class WorkerQueue extends PriorityQueue implements LoggerAwareInterface
+class WorkerQueue extends AbstractWorkerQueue
 {
     /**
-     * @var LoggerInterface
+     * @var PriorityQueue
      */
-    protected $logger;
+    protected $queue;
+
+    function __construct()
+    {
+        $this->queue = new PriorityQueue();
+    }
 
     /**
      * {@inheritdoc}
      */
-    public function setLogger(LoggerInterface $logger)
+    public function add(WorkerInterface $worker)
     {
-        $this->logger = $logger;
+        $this->queue->insert($worker, $worker->getPriority());
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWorkers()
+    {
+        return $this->queue;
     }
 }

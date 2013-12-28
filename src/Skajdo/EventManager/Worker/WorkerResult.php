@@ -2,10 +2,12 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager\Worker;
+use Skajdo\EventManager\EventInterface;
+use Skajdo\EventManager\Exception;
 
 /**
  * The WorkerResult class
@@ -26,36 +28,55 @@ class WorkerResult
     protected $exception;
 
     /**
-     * @var float
+     * @var WorkerInterface
      */
-    protected $executionTime;
+    protected $worker;
 
     /**
-     * @param int $status
-     * @param int $executionTime
-     * @param \Exception $exception
+     * @var EventInterface
      */
-    function __construct($status = WorkerResultStatus::FAILURE, $executionTime = null, $exception = null)
-    {
+    protected $event;
+
+    /**
+     * @param WorkerInterface                $worker
+     * @param EventInterface                 $event
+     * @param int                            $status
+     * @param Exception $exception
+     */
+    function __construct(
+        WorkerInterface $worker,
+        EventInterface $event,
+        $status = WorkerResultStatus::FAILURE,
+        Exception $exception = null
+    ) {
+        $this->event = $event;
+        $this->worker = $worker;
         $this->exception = $exception;
-        $this->executionTime = $executionTime;
         $this->status = $status;
     }
 
     /**
-     * @return \Exception
+     * @return EventInterface
+     */
+    public function getEvent()
+    {
+        return $this->event;
+    }
+
+    /**
+     * @return WorkerInterface
+     */
+    public function getWorker()
+    {
+        return $this->worker;
+    }
+
+    /**
+     * @return Exception
      */
     public function getException()
     {
         return $this->exception;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExecutionTime()
-    {
-        return $this->executionTime;
     }
 
     /**
@@ -74,22 +95,24 @@ class WorkerResult
      */
     public function getMessage()
     {
-        if($this->getException()){
+        if ($this->getException()) {
             return $this->getException()->getMessage();
         }
+
         return null;
     }
 
     /**
      * Returns null if no exception
-     *
-     * @return string
+     * @deprecated
+     * @return string|null
      */
     public function getExceptionClass()
     {
-        if($this->getException()){
+        if ($this->getException()) {
             return get_class($this->getException());
         }
+
         return null;
     }
 

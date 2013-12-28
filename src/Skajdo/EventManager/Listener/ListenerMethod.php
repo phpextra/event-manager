@@ -2,18 +2,12 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager\Listener;
 
-/**
- * Each listener can have many method to event pairs that are represented by this object.
- * Each pair can have different priority.
- *
- * @author Jacek Kobus <kobus.jacek@gmail.com>
- */
-class ListenerMethod
+class ListenerMethod implements ListenerMethodInterface
 {
     /**
      * @var string
@@ -50,7 +44,7 @@ class ListenerMethod
     }
 
     /**
-     * @return \Skajdo\EventManager\Listener\ListenerInterface
+     * {@inheritdoc}
      */
     public function getListener()
     {
@@ -58,7 +52,7 @@ class ListenerMethod
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getEventClassName()
     {
@@ -66,7 +60,7 @@ class ListenerMethod
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getMethodName()
     {
@@ -74,7 +68,7 @@ class ListenerMethod
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getPriority()
     {

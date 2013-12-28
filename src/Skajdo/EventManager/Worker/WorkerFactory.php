@@ -2,7 +2,7 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager\Worker;
@@ -18,7 +18,7 @@ class WorkerFactory
 {
     /**
      * @deprecated use createWorker
-     * @param \Skajdo\EventManager\Listener\ListenerMethod $method
+     * @param ListenerMethod $method
      * @return Worker
      */
     public static function create(ListenerMethod $method)
@@ -28,7 +28,7 @@ class WorkerFactory
 
     /**
      * @param ListenerMethod $job
-     * @return Worker
+     * @return WorkerInterface
      */
     public static function createWorker(ListenerMethod $job)
     {

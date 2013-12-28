@@ -2,7 +2,7 @@
 
 /**
  * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
- * See the file LICENSE.txt for copying permission.
+ * See the file LICENSE.md for copying permission.
  */
 
 namespace Skajdo\EventManager;
@@ -45,7 +45,7 @@ class Exception extends \Exception
     }
 
     /**
-     * @param \Skajdo\EventManager\EventInterface $event
+     * @param EventInterface $event
      * @return $this
      */
     public function setEvent($event)
@@ -56,7 +56,7 @@ class Exception extends \Exception
     }
 
     /**
-     * @return \Skajdo\EventManager\EventInterface
+     * @return EventInterface
      */
     public function getEvent()
     {
