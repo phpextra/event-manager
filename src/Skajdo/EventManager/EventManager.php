@@ -7,7 +7,6 @@
 
 namespace Skajdo\EventManager;
 
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Skajdo\EventManager\Listener\ListenerInterface;
@@ -24,7 +23,7 @@ use Skajdo\EventManager\Worker\WorkerResult;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class EventManager implements LoggerAwareInterface
+class EventManager implements EventManagerInterface
 {
     /**
      * @var WorkerFactory
@@ -65,12 +64,7 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * Calls all listeners that listen to given $event
-     *
-     * @param EventInterface $event
-     * @throws \RuntimeException
-     * @throws \Exception
-     * @return $this
+     * {@inheritdoc}
      */
     public function trigger(EventInterface $event)
     {
@@ -112,12 +106,7 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * Add event listener
-     * Priority used in the listener can be overridden by setting the $priority
-     *
-     * @param ListenerInterface $listener
-     * @param int               $priority
-     * @return $this
+     * {@inheritdoc}
      */
     public function addListener(ListenerInterface $listener, $priority = null)
     {
@@ -149,9 +138,7 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * Return event that is currently running or null if no event is running
-     *
-     * @return EventInterface|null
+     * {@inheritdoc}
      */
     public function getRunningEvent()
     {
@@ -169,13 +156,7 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * If this is set to true all exceptions will be thrown
-     * and the queue will be interrupted (incomplete)
-     *
-     * Defaults to FALSE
-     *
-     * @param bool $throwExceptions
-     * @return EventManager
+     * {@inheritdoc}
      */
     public function setThrowExceptions($throwExceptions)
     {
@@ -185,10 +166,7 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * Tell if current instance of event manager will break the queue
-     * if an exception will be thrown from listener.
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function getThrowExceptions()
     {
@@ -238,8 +216,7 @@ class EventManager implements LoggerAwareInterface
     }
 
     /**
-     * @param LoggerInterface $logger
-     * @return EventManager
+     * {@inheritdoc}
      */
     public function setLogger(LoggerInterface $logger)
     {

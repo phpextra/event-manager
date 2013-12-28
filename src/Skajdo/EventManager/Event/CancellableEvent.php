@@ -5,7 +5,7 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace Skajdo\EventManager\Event;
 
 /**
  * Concrete implementation of cancellable event
