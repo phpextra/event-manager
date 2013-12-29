@@ -6,7 +6,7 @@
  */
 
 namespace Skajdo\EventManager\Worker;
-use Skajdo\EventManager\EventInterface;
+use Skajdo\EventManager\Event\EventInterface;
 use Skajdo\EventManager\Exception;
 
 /**

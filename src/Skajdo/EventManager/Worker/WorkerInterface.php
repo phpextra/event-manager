@@ -7,7 +7,7 @@
 
 namespace Skajdo\EventManager\Worker;
 use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\EventInterface;
+use Skajdo\EventManager\Event\EventInterface;
 
 
 /**

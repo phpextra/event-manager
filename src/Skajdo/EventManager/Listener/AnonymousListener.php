@@ -8,7 +8,7 @@
 namespace Skajdo\EventManager\Listener;
 
 use Closure;
-use Skajdo\EventManager\EventInterface;
+use Skajdo\EventManager\Event\EventInterface;
 
 /**
  * A wrapper for closure listener
@@ -76,12 +76,12 @@ class AnonymousListener extends AbstractReflectedListener implements NormalizedL
     {
         $closureReflection = new \ReflectionFunction($this->getClosure());
 
-        /* @var $param \Zend\Code\Reflection\ParameterReflection */
-        $param = current($closureReflection->getParameters());
+        $params = $closureReflection->getParameters();
+        if(isset($params[0])){
+            $param = $params[0];
 
-        if($param){
             if (($eventClassName = $this->getEventClassNameFromParam($param)) === null) {
-                throw new \InvalidArgumentException(sprintf('First closure param (%s) must be a class implementing the EventInterface', $param->getType()));
+                throw new \InvalidArgumentException(sprintf('First closure param (%s) must be a class implementing the EventInterface', $param->getName()));
             }
             return array(new ListenerMethod($this, 'invoke', $eventClassName, $this->priority));
         }

@@ -25,7 +25,7 @@ class AbstractReflectedListener
         }
 
         $eventClassName = $eventClass->getName();
-        $requiredInterface = 'Skajdo\EventManager\EventInterface';
+        $requiredInterface = 'Skajdo\EventManager\Event\EventInterface';
         if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
             return null;
         }

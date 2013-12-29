@@ -7,6 +7,7 @@
 
 namespace Skajdo\EventManager;
 
+use Skajdo\EventManager\Event\EventInterface;
 use Skajdo\EventManager\Listener\AnonymousListener;
 
 /**
@@ -17,7 +18,7 @@ use Skajdo\EventManager\Listener\AnonymousListener;
 class EventManagerTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testCreateNewInstance()
+    public function testCreateEventManagerCreatesEventManager()
     {
         new EventManager();
     }
@@ -25,11 +26,16 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
     public function testAddListenersAddsListeners()
     {
         $em = new EventManager();
-        $listener1 = new AnonymousListener(function(){});
-        $listener2 = new AnonymousListener(function(){});
+        $listener1 = new AnonymousListener(function(EventInterface $event){});
+        $listener2 = new AnonymousListener(function(EventInterface $event){});
 
         $this->assertEquals(0, $em->getWorkerQueue()->count());
-        $em->addListener($listener1)->addListener($listener2);
+
+        $em
+            ->addListener($listener1)
+            ->addListener($listener2)
+        ;
+
         $this->assertEquals(2, $em->getWorkerQueue()->count());
     }
 
