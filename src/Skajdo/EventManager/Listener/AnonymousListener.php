@@ -74,14 +74,16 @@ class AnonymousListener extends AbstractReflectedListener implements NormalizedL
      */
     public function getListenerMethods()
     {
-        $closureReflection = new \ReflectionFunction($this->getClosure());
+        $closureReflection = new \ReflectionMethod($this->getClosure(), '__invoke');
 
         $params = $closureReflection->getParameters();
         if(isset($params[0])){
             $param = $params[0];
 
-            if (($eventClassName = $this->getEventClassNameFromParam($param)) === null) {
-                throw new \InvalidArgumentException(sprintf('First closure param (%s) must be a class implementing the EventInterface', $param->getName()));
+            $eventClassName = $this->getEventClassNameFromParam($param);
+
+            if ($eventClassName === null) {
+                throw new \InvalidArgumentException(sprintf('First closure param (%s) must be a class implementing an EventInterface', $param->getName()));
             }
             return array(new ListenerMethod($this, 'invoke', $eventClassName, $this->priority));
         }

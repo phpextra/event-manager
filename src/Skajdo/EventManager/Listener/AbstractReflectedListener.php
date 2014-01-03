@@ -20,16 +20,16 @@ class AbstractReflectedListener
      */
     protected function getEventClassNameFromParam(\ReflectionParameter $param)
     {
-        if (!($eventClass = $param->getClass())) {
-            return null;
-        }
+        $eventClassName = null;
+        $eventClass = $param->getClass();
 
-        $eventClassName = $eventClass->getName();
-        $requiredInterface = 'Skajdo\EventManager\Event\EventInterface';
-        if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
-            return null;
+        if($eventClass !== null){
+            $eventClassName = $eventClass->getName();
+            $requiredInterface = 'Skajdo\EventManager\Event\EventInterface';
+            if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
+                $eventClassName = null;
+            }
         }
-
         return $eventClassName;
     }
 }

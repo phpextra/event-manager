@@ -7,6 +7,11 @@
 
 namespace Skajdo\EventManager\Listener;
 
+/**
+ * The ListenerMethod class
+ *
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
+ */
 class ListenerMethod implements ListenerMethodInterface
 {
     /**
