@@ -6,9 +6,6 @@
  */
 
 namespace Skajdo\EventManager\Listener;
-use Skajdo\EventManager\Priority;
-use Zend\Code\Reflection\ClassReflection;
-use Zend\Code\Reflection\MethodReflection;
 
 /**
  * Uses reflection to obtain information about what event listener is listening to.
@@ -53,21 +50,19 @@ class ReflectedListener extends AbstractReflectedListener implements NormalizedL
         $methods = array();
 
         if($this->methods === null){
-            $reflectedListener = new ClassReflection($listenerClass = get_class($this->listener));
+            $reflectedListener = new \ReflectionClass($listenerClass = get_class($this->listener));
             foreach ($reflectedListener->getMethods() as $method) {
 
-                /* @var $method \Zend\Code\Reflection\MethodReflection */
                 if (($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
                     continue;
                 }
 
-                /* @var $param \Zend\Code\Reflection\ParameterReflection */
                 if (($eventClassName = $this->getEventClassNameFromParam($param)) === null) {
                     continue;
                 }
 
                 $priority = $this->getPriority($method);
-                $methods[] = new ListenerMethod($this->getListener(), $method->getName(), $eventClassName, $priority);
+                $methods[] = new ListenerMethod($this, $method->getName(), $eventClassName, $priority);
             }
         }else{
             $methods = $this->methods;
@@ -78,24 +73,25 @@ class ReflectedListener extends AbstractReflectedListener implements NormalizedL
     /**
      * Try to find a priority for given method
      *
-     * @param MethodReflection $method
+     * @param \ReflectionMethod $method
      * @return int|null
      */
-    protected function getPriority(MethodReflection $method)
+    protected function getPriority(\ReflectionMethod $method)
     {
         $priority = null;
-        if($method->getDocBlock() !== false){
-            /** @var $tag \Zend\Code\Reflection\DocBlock\Tag\GenericTag */
-            $tag = $method->getDocBlock()->getTag('priority');
-
-            if($tag !== false){
-                if(is_numeric($tag->getContent())){
-                    $priority = (int)$tag->getContent();
-                }else{
-                    $priority = Priority::getPriorityByName($tag->getContent());
-                }
-            }
-        }
+        //@todo get priority
+//        if($method->getDocBlock() !== false){
+//            /** @var $tag \Zend\Code\Reflection\DocBlock\Tag\GenericTag */
+//            $tag = $method->getDocBlock()->getTag('priority');
+//
+//            if($tag !== false){
+//                if(is_numeric($tag->getContent())){
+//                    $priority = (int)$tag->getContent();
+//                }else{
+//                    $priority = Priority::getPriorityByName($tag->getContent());
+//                }
+//            }
+//        }
         return $priority;
     }
 }
