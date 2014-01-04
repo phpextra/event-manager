@@ -8,6 +8,7 @@
 namespace Skajdo\EventManager;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Skajdo\EventManager\Event\EventInterface;
 use Skajdo\EventManager\Listener\ListenerInterface;
 
 /**

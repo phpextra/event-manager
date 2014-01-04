@@ -16,7 +16,7 @@ use Skajdo\EventManager\Event\EventInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class AnonymousListener extends AbstractReflectedListener implements NormalizedListenerInterface, InvokableListenerInterface
+class AnonymousListener implements ListenerInterface
 {
     /**
      * @var Closure
@@ -64,40 +64,5 @@ class AnonymousListener extends AbstractReflectedListener implements NormalizedL
     public function invoke(EventInterface $event)
     {
         call_user_func($this->closure, $event);
-    }
-
-    /**
-     * Return event class name paired with method that should be called for that event
-     *
-     * @throws \InvalidArgumentException
-     * @return ListenerMethod[]
-     */
-    public function getListenerMethods()
-    {
-        $closureReflection = new \ReflectionMethod($this->getClosure(), '__invoke');
-
-        $params = $closureReflection->getParameters();
-        if(isset($params[0])){
-            $param = $params[0];
-
-            $eventClassName = $this->getEventClassNameFromParam($param);
-
-            if ($eventClassName === null) {
-                throw new \InvalidArgumentException(sprintf('First closure param (%s) must be a class implementing an EventInterface', $param->getName()));
-            }
-            return array(new ListenerMethod($this, 'invoke', $eventClassName, $this->priority));
-        }
-        return array();
-    }
-
-    /**
-     * Static factory for closures
-     *
-     * @param Closure $closure
-     * @return AnonymousListener
-     */
-    public static function create(Closure $closure)
-    {
-        return new self($closure);
     }
 }

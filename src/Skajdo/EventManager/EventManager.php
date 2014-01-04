@@ -111,13 +111,7 @@ class EventManager implements EventManagerInterface
      */
     public function addListener(ListenerInterface $listener, $priority = null)
     {
-        if (!$listener instanceof NormalizedListenerInterface) {
-            $listener = new ReflectedListener($listener);
-        }
-
-        // create workers and add them to the queue
-        foreach ($listener->getListenerMethods() as $method) {
-            $worker = $this->getWorkerFactory()->createWorker($method);
+        foreach($this->getWorkerFactory()->createWorkers($listener) as $worker){
             if ($priority !== null) {
                 $worker->setPriority($priority);
             }

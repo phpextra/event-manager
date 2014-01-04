@@ -7,6 +7,9 @@
 
 namespace Skajdo\EventManager\Worker;
 
+use Closure;
+use Skajdo\EventManager\Listener\AnonymousListener;
+use Skajdo\EventManager\Listener\ListenerInterface;
 use Skajdo\EventManager\Listener\ListenerMethod;
 
 /**
@@ -17,21 +20,105 @@ use Skajdo\EventManager\Listener\ListenerMethod;
 class WorkerFactory
 {
     /**
-     * @deprecated use createWorker
-     * @param ListenerMethod $method
-     * @return Worker
+     * @param ListenerInterface $listener
+     * @return WorkerInterface[]
      */
-    public static function create(ListenerMethod $method)
+    public static function createWorkers(ListenerInterface $listener)
     {
-        return self::createWorker($method);
+        if($listener instanceof AnonymousListener){
+            $worker = self::createWorkersFromAnonymousListener($listener);
+        }else{
+            $worker = self::createWorkersFromListener($listener);
+        }
+        return $worker;
     }
 
     /**
-     * @param ListenerMethod $job
-     * @return WorkerInterface
+     * @param AnonymousListener $listener
+     * @return WorkerInterface[]
+     * @throws \InvalidArgumentException
      */
-    public static function createWorker(ListenerMethod $job)
+    protected static function createWorkersFromAnonymousListener(AnonymousListener $listener)
     {
-        return new Worker($job->getListener(), $job->getMethodName(), $job->getEventClassName(), $job->getPriority());
+        $closureReflection = new \ReflectionMethod($listener->getClosure(), '__invoke');
+        $params = $closureReflection->getParameters();
+
+        if(isset($params[0])){
+            $param = $params[0];
+            $eventClassName = self::getEventClassNameFromParam($param);
+
+            if ($eventClassName === null) {
+                throw new \InvalidArgumentException(sprintf('First closure param (%s) must be a class implementing an EventInterface', $param->getName()));
+            }
+            return array(new Worker($listener, 'invoke', $eventClassName, $listener->getPriority()));
+        }
+        return array();
     }
+
+    /**
+     * @param ListenerInterface $listener
+     * @return WorkerInterface[]
+     */
+    protected static function createWorkersFromListener(ListenerInterface $listener)
+    {
+        $workers = array();
+        $reflectedListener = new \ReflectionClass($listenerClass = get_class($listener));
+        foreach ($reflectedListener->getMethods() as $method) {
+
+            if (($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
+                continue;
+            }
+
+            if (($eventClassName = self::getEventClassNameFromParam($param)) === null) {
+                continue;
+            }
+
+            $workers[] = new Worker($listener, $method->getName(), $eventClassName);
+        }
+        return $workers;
+    }
+
+    /**
+     * @param \ReflectionParameter $param
+     * @return null|string
+     */
+    protected static function getEventClassNameFromParam(\ReflectionParameter $param)
+    {
+        $eventClassName = null;
+        $eventClass = $param->getClass();
+
+        if($eventClass !== null){
+            $eventClassName = $eventClass->getName();
+            $requiredInterface = 'Skajdo\EventManager\Event\EventInterface';
+            if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
+                $eventClassName = null;
+            }
+        }
+        return $eventClassName;
+    }
+
+//    /**
+//     * Try to find a priority for given method
+//     *
+//     * @param \ReflectionMethod $method
+//     * @return int|null
+//     */
+//    protected function getPriority(\ReflectionMethod $method)
+//    {
+//        $priority = null;
+//        //@todo get priority
+////        if($method->getDocBlock() !== false){
+////            /** @var $tag \Zend\Code\Reflection\DocBlock\Tag\GenericTag */
+////            $tag = $method->getDocBlock()->getTag('priority');
+////
+////            if($tag !== false){
+////                if(is_numeric($tag->getContent())){
+////                    $priority = (int)$tag->getContent();
+////                }else{
+////                    $priority = Priority::getPriorityByName($tag->getContent());
+////                }
+////            }
+////        }
+//        return $priority;
+//    }
 }
