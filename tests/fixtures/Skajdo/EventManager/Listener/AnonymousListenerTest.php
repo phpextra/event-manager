@@ -34,13 +34,5 @@ class AnonymousListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new AnonymousListener($closure, Priority::HIGH);
         $this->assertEquals($closure, $listener->getClosure());
     }
-
-    public function testGetListenersMethodsReturnsSingleMethod()
-    {
-        $closure = function(EventInterface $event){};
-        $listener = new AnonymousListener($closure, Priority::HIGH);
-
-        $methods = $listener->getListenerMethods();
-    }
 }
  

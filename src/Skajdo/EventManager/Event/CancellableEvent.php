@@ -8,7 +8,7 @@
 namespace Skajdo\EventManager\Event;
 
 /**
- * Concrete implementation of cancellable event
+ * Concrete implementation of the cancellable event
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */

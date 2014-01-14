@@ -1,10 +1,14 @@
 <?php
 
-use Skajdo\EventManager\AbstractCancellableEvent;
 use Skajdo\EventManager\EventManager;
 use Skajdo\EventManager\Listener\ListenerInterface;
 
-class DummyCancellableEvent extends AbstractCancellableEvent
+class DummyEvent implements \Skajdo\EventManager\Event\EventInterface
+{
+    public $calls = array();
+}
+
+class DummyCancellableEvent implements \Skajdo\EventManager\Event\EventInterface
 {
     public $events = array();
 }

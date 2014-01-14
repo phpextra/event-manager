@@ -101,63 +101,6 @@ $listener = new AnonymousListener(function(SomeEventInterface $event){
 
 ```
 
-
-##To-Do
-
-* update readme (70%)
-* reformat log messages (70%)
-* recurrency check and monitor (100%)
-* performance test (n\a)
-* more tests (or maybe use PHPUnit) (100%)
-* replace ZendCode with Doctrine Annotations or just use the default Reflection API (n\a)
-
-
-##Changelog
-
-2.0.0
-
-* removed deprecated methods
-* updated class names
-* added phpunit
-* added worker factory
-* updated composer and readme
-
-**Line 1.* is deprecated and will not be maintained.**
-
-1.1.0
-
-* interface changes (ListenerInterface -> Listener, EventInterface -> Event)
-* cleaned up classes
-* added benchmark test (10150 listener calls < 0.8 sec)
-
-1.0.4
-
-* changed license to MIT
-* added EventManagerAware interface
-* readme update
-* added MONITOR priority
-* removed exception in case where listener is not listening to any known events (info-log instead)
-
-1.0.3
-
-* added support for event inheritance
-* replaced multiple event-queues with one to make priority managment easier
-* updated readme
-
-1.0.2
-
-* bugfix
-
-1.0.1
-
-* added closure support
-* priority can be overriden while adding listener
-
-1.0.0
-
-* first relase
-
-
 ##Contributing
 
 All code contributions must go through a pull request.  

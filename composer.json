@@ -28,10 +28,10 @@
 		"psr/log": "~1.0",
         "symfony/stopwatch": "~2.4",
         "zendframework/zend-stdlib": "~2.2",
-        "zendframework/zend-code": "~2.2",
-        "mockery/mockery": "~0.8"
+        "zendframework/zend-code": "~2.2"
     },
     "require-dev": {
+        "mockery/mockery": "~0.8",
         "phpunit/phpunit": "~3.7",
         "sami/sami": "~1.2"
     }

@@ -8,9 +8,9 @@
 namespace Skajdo\EventManager\Event;
 
 /**
- * Represents cancellable event
+ * The CancellableEventInterface interface
  *
- * @author      Jacek Kobus
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 interface CancellableEventInterface extends EventInterface
 {

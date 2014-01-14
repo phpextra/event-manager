@@ -19,20 +19,22 @@ use Skajdo\EventManager\Priority;
  */
 class WorkerFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreateNewInstance()
+    public function testCreateNewWorkerFactoryInstance()
     {
         $factory = new WorkerFactory();
     }
 
     public function testCreateNewWorkerCreatesNewWorker()
     {
+        $this->markTestIncomplete();
         $listener = new AnonymousListener(function(EventInterface $event){}, Priority::HIGH);
-        $method = new ListenerMethod($listener, 'invoke', 'Skajdo\EventManager\Event\EventInterface', Priority::HIGH);
 
         $factory = new WorkerFactory();
-        $worker = $factory->createWorker($method);
+        $workers = $factory->createWorkers($listener);
 
-        $this->assertEquals($worker->getPriority(), Priority::HIGH);
+        $this->assertTrue(is_array($workers));
+        $this->assertEquals(1, count($workers));
+        $this->assertEquals($workers[0]->getPriority(), Priority::HIGH);
     }
 }
  

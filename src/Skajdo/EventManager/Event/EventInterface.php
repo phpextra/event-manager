@@ -8,9 +8,9 @@
 namespace Skajdo\EventManager\Event;
 
 /**
- * Represents an event
+ * The EventInterface interface
  *
- * @author      Jacek Kobus
+ * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
 interface EventInterface
 {
