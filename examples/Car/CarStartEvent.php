@@ -1,4 +1,6 @@
 <?php
+use Skajdo\EventManager\Event\CancellableEvent;
+use Skajdo\EventManager\Event\EventInterface;
 
 /**
  * You can extend the concrete or abstract class, or just implement the interface
@@ -7,8 +9,6 @@
  * Event is just a simple class that holds the entity we are working on (the car)
  * It extends the cancellable event so we can actually cancel the whole process
  */
-use Skajdo\EventManager\CancellableEvent;
-use Skajdo\EventManager\EventInterface;
 
 class CarStartEvent extends CancellableEvent implements EventInterface
 {
