@@ -5,7 +5,8 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace Skajdo\EventManager\Exception;
+use Skajdo\EventManager\Event\EventInterface;
 use Skajdo\EventManager\Listener\ListenerInterface;
 
 /**
