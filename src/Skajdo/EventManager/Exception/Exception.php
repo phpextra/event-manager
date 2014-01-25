@@ -6,15 +6,17 @@
  */
 
 namespace Skajdo\EventManager\Exception;
+
 use Skajdo\EventManager\Event\EventInterface;
 use Skajdo\EventManager\Listener\ListenerInterface;
+use Exception as SplException;
 
 /**
  * The Exception class
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class Exception extends \Exception
+class Exception extends SplException
 {
     /**
      * @var ListenerInterface
