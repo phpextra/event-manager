@@ -69,6 +69,8 @@ class EventManager implements EventManagerInterface
     public function trigger(EventInterface $event)
     {
         $listenersFound = 0;
+
+        $previousRunningEvent = $this->getRunningEvent();
         $this->setRunningEvent($event);
 
         foreach ($this->getWorkerQueue() as $worker) {
@@ -82,7 +84,9 @@ class EventManager implements EventManagerInterface
             // @todo log
         }
 
-        $this->setRunningEvent(null);
+        if($previousRunningEvent){
+            $this->setRunningEvent($previousRunningEvent);
+        }
 
         return $this;
     }
@@ -144,7 +148,7 @@ class EventManager implements EventManagerInterface
      *
      * @return $this
      */
-    public function setRunningEvent($runningEvent)
+    public function setRunningEvent(EventInterface $runningEvent)
     {
         $this->runningEvent = $runningEvent;
     }
