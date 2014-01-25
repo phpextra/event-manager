@@ -7,7 +7,7 @@
 
 namespace Skajdo\EventManager\Worker;
 use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Exception;
+use Skajdo\EventManager\Exception\Exception;
 use Skajdo\EventManager\Listener\ListenerInterface;
 use Skajdo\EventManager\Priority;
 
