@@ -7,7 +7,6 @@
 
 namespace Skajdo\EventManager\Worker;
 use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Exception\Exception;
 
 /**
  * The WorkerResult class
@@ -41,13 +40,13 @@ class WorkerResult
      * @param WorkerInterface                $worker
      * @param EventInterface                 $event
      * @param int                            $status
-     * @param Exception $exception
+     * @param \Exception $exception
      */
     function __construct(
         WorkerInterface $worker,
         EventInterface $event,
         $status = WorkerResultStatus::FAILURE,
-        Exception $exception = null
+        \Exception $exception = null
     ) {
         $this->event = $event;
         $this->worker = $worker;
@@ -72,7 +71,7 @@ class WorkerResult
     }
 
     /**
-     * @return Exception
+     * @return \Exception
      */
     public function getException()
     {

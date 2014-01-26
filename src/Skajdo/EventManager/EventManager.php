@@ -10,7 +10,6 @@ namespace Skajdo\EventManager;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Exception\Exception;
 use Skajdo\EventManager\Listener\ListenerInterface;
 use Skajdo\EventManager\Worker\WorkerFactory;
 use Skajdo\EventManager\Worker\WorkerInterface;
@@ -94,7 +93,7 @@ class EventManager implements EventManagerInterface
     /**
      * @param WorkerInterface $worker
      * @param EventInterface  $event
-     * @throws Exception
+     * @throws \Exception
      * @return WorkerResult
      */
     protected function runWorker(WorkerInterface $worker, EventInterface $event)

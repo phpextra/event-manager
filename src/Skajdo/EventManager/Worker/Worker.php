@@ -70,14 +70,14 @@ class Worker implements WorkerInterface
             call_user_func(array($this->getListener(), $this->getMethod()), $event);
             $result = new WorkerResult($this, $event, WorkerResultStatus::SUCCESS);
         } catch (\Exception $e) {
-            if (!$e instanceof Exception) {
-
-                $e = new Exception($e->getMessage(), $e->getCode(), $e);
-                $e
-                    ->setEvent($event)
-                    ->setListener($this->getListener())
-                ;
-            }
+//            if (!$e instanceof Exception) {
+//
+//                $e = new Exception($e->getMessage(), $e->getCode(), $e);
+//                $e
+//                    ->setEvent($event)
+//                    ->setListener($this->getListener())
+//                ;
+//            }
 
             $result = new WorkerResult($this, $event, WorkerResultStatus::FAILURE, $e);
         }
