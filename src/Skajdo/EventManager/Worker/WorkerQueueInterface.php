@@ -36,16 +36,4 @@ interface WorkerQueueInterface extends LoggerAwareInterface, \Countable, \Iterat
      * @return WorkerInterface[]|\IteratorAggregate
      */
     public function getWorkers();
-
-    /**
-     * How many items are in the queue?
-     *
-     * @return int
-     */
-    public function count();
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLogger(LoggerInterface $logger);
 }
