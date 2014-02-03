@@ -63,10 +63,4 @@ interface EventManagerInterface extends LoggerAwareInterface
      * @return $this
      */
     public function trigger(EventInterface $event);
-
-    /**
-     * @param LoggerInterface $logger
-     * @return EventManager
-     */
-    public function setLogger(LoggerInterface $logger);
 }
