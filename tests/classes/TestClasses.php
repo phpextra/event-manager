@@ -1,14 +1,14 @@
 <?php
 
-use Skajdo\EventManager\EventManager;
-use Skajdo\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\EventManager;
+use PHPExtra\EventManager\Listener\ListenerInterface;
 
-class DummyEvent implements \Skajdo\EventManager\Event\EventInterface
+class DummyEvent implements \PHPExtra\EventManager\Event\EventInterface
 {
     public $calls = array();
 }
 
-class DummyCancellableEvent implements \Skajdo\EventManager\Event\EventInterface
+class DummyCancellableEvent implements \PHPExtra\EventManager\Event\EventInterface
 {
     public $events = array();
 }
@@ -23,7 +23,7 @@ class DummyCancellableEvent2 extends DummyCancellableEvent
 class InfiniteLoopCauser implements ListenerInterface
 {
     /**
-     * @var Skajdo\EventManager\EventManager
+     * @var PHPExtra\EventManager\EventManager
      */
     protected $em;
 

@@ -5,11 +5,11 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace PHPExtra\EventManager;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Listener\ListenerInterface;
 
 /**
  * The EventManagerInterface interface

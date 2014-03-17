@@ -5,10 +5,10 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace PHPExtra\EventManager;
 
-use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Listener\AnonymousListener;
+use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Listener\AnonymousListener;
 
 /**
  * The EventManagerTest class

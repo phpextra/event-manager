@@ -5,7 +5,7 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager\Event;
+namespace PHPExtra\EventManager\Event;
 
 /**
  * Concrete implementation of the cancellable event

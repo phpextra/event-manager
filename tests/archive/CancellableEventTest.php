@@ -1,6 +1,6 @@
 <?php
 
-namespace Skajdo\EventManager;
+namespace PHPExtra\EventManager;
 
 class CancellableEventTest extends \PHPUnit_Framework_TestCase
 {

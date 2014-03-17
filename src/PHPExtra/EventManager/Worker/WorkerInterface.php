@@ -5,9 +5,9 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager\Worker;
-use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\Event\EventInterface;
+namespace PHPExtra\EventManager\Worker;
+use PHPExtra\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\Event\EventInterface;
 
 
 /**

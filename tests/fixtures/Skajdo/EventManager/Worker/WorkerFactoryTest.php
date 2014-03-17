@@ -5,12 +5,12 @@
  * See the file LICENSE.txt for copying permission.
  */
  
-namespace Skajdo\EventManager\Worker;
+namespace PHPExtra\EventManager\Worker;
 
-use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Listener\AnonymousListener;
-use Skajdo\EventManager\Listener\ListenerMethod;
-use Skajdo\EventManager\Priority;
+use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Listener\AnonymousListener;
+use PHPExtra\EventManager\Listener\ListenerMethod;
+use PHPExtra\EventManager\Priority;
 
 /**
  * The WorkerFactoryTest class

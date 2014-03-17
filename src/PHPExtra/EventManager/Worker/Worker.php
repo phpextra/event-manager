@@ -5,11 +5,11 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager\Worker;
-use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Exception\Exception;
-use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\Priority;
+namespace PHPExtra\EventManager\Worker;
+use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Exception\Exception;
+use PHPExtra\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\Priority;
 
 /**
  * The Worker class

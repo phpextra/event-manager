@@ -5,7 +5,7 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager\Listener;
+namespace PHPExtra\EventManager\Listener;
 
 /**
  * Listener interface

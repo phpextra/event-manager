@@ -5,10 +5,10 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager\Exception;
+namespace PHPExtra\EventManager\Exception;
 
-use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Listener\ListenerInterface;
 use Exception as SplException;
 
 /**

@@ -5,7 +5,7 @@
  * See the file LICENSE.txt for copying permission.
  */
  
-namespace Skajdo\EventManager\Event;
+namespace PHPExtra\EventManager\Event;
 
 /**
  * The CancellableEventTest class

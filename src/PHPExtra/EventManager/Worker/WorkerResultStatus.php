@@ -5,7 +5,7 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager\Worker;
+namespace PHPExtra\EventManager\Worker;
 
 /**
  * Worker result status

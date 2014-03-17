@@ -5,10 +5,10 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager\Listener;
+namespace PHPExtra\EventManager\Listener;
 
 use Closure;
-use Skajdo\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Event\EventInterface;
 
 /**
  * A wrapper for closure listener

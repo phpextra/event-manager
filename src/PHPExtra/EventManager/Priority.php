@@ -5,7 +5,7 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace PHPExtra\EventManager;
 
 /**
  * The Priority class

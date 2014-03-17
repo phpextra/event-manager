@@ -5,8 +5,8 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager\Worker;
-use Skajdo\EventManager\Event\EventInterface;
+namespace PHPExtra\EventManager\Worker;
+use PHPExtra\EventManager\Event\EventInterface;
 
 /**
  * The WorkerResult class

@@ -5,11 +5,11 @@
  * See the file LICENSE.txt for copying permission.
  */
  
-namespace Skajdo\EventManager\Worker;
+namespace PHPExtra\EventManager\Worker;
 
-use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Listener\AnonymousListener;
-use Skajdo\EventManager\Priority;
+use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Listener\AnonymousListener;
+use PHPExtra\EventManager\Priority;
 
 /**
  * The WorkerTest class
@@ -21,7 +21,7 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
     public function testCreateNewInstance()
     {
         $listener = new AnonymousListener(function(EventInterface $event){}, Priority::HIGH);
-        $worker = new Worker($listener, 'invoke', 'Skajdo\EventManager\Event\EventInterface');
+        $worker = new Worker($listener, 'invoke', 'PHPExtra\EventManager\Event\EventInterface');
     }
 }
  

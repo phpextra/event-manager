@@ -1,10 +1,10 @@
 <?php
 
-namespace Skajdo\EventManager;
+namespace PHPExtra\EventManager;
 
 use Mockery\Mock;
-use Skajdo\EventManager\Listener\AnonymousListener;
-use Skajdo\TestSuite\Test\TestFixture;
+use PHPExtra\EventManager\Listener\AnonymousListener;
+use PHPExtra\TestSuite\Test\TestFixture;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 

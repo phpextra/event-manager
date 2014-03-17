@@ -5,7 +5,7 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager\Worker;
+namespace PHPExtra\EventManager\Worker;
 
 /**
  * The WorkerQueueTest class
@@ -26,7 +26,7 @@ class WorkerQueueTest extends \PHPUnit_Framework_TestCase
     public function testAddWorkerAddsWorkerToTheQueue()
     {
         $queue = new WorkerQueue();
-        $listener = $this->getMock('Skajdo\EventManager\Listener\ListenerInterface');
+        $listener = $this->getMock('PHPExtra\EventManager\Listener\ListenerInterface');
         $worker1 = new Worker($listener, 'dummy', 'dummy');
         $worker2 = new Worker($listener, 'dummy', 'dummy');
         $worker3 = new Worker($listener, 'dummy', 'dummy');

@@ -5,17 +5,17 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager;
+namespace PHPExtra\EventManager;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Skajdo\EventManager\Event\EventInterface;
-use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\Worker\WorkerFactory;
-use Skajdo\EventManager\Worker\WorkerInterface;
-use Skajdo\EventManager\Worker\WorkerQueue;
-use Skajdo\EventManager\Worker\WorkerQueueInterface;
-use Skajdo\EventManager\Worker\WorkerResult;
+use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\Worker\WorkerFactory;
+use PHPExtra\EventManager\Worker\WorkerInterface;
+use PHPExtra\EventManager\Worker\WorkerQueue;
+use PHPExtra\EventManager\Worker\WorkerQueueInterface;
+use PHPExtra\EventManager\Worker\WorkerResult;
 
 /**
  * The EventManager class

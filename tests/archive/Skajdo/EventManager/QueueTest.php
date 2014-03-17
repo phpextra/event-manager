@@ -1,8 +1,8 @@
 <?php
 
-namespace Skajdo\EventManager;
+namespace PHPExtra\EventManager;
 
-use Skajdo\EventManager\Worker\WorkerQueue;
+use PHPExtra\EventManager\Worker\WorkerQueue;
 
 class QueueTest extends \PHPUnit_Framework_TestCase
 {

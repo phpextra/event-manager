@@ -1,8 +1,8 @@
 <?php
 
-namespace Skajdo\EventManager;
+namespace PHPExtra\EventManager;
 
-use Skajdo\EventManager\Listener\AnonymousListener;
+use PHPExtra\EventManager\Listener\AnonymousListener;
 
 require_once(__DIR__ . '/../classes/TestClasses.php');
 

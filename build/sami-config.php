@@ -11,7 +11,7 @@ $iterator = Finder::create()
 
 return new Sami($iterator, array(
     'theme'                => 'enhanced',
-    'title'                => 'Skajdo/EventManager',
+    'title'                => 'PHPExtra/EventManager',
     'build_dir'            => __DIR__ . '/api',
     'cache_dir'            => __DIR__ . '/cache',
     'default_opened_level' => 2,

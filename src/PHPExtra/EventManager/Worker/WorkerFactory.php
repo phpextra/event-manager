@@ -5,12 +5,12 @@
  * See the file LICENSE.md for copying permission.
  */
 
-namespace Skajdo\EventManager\Worker;
+namespace PHPExtra\EventManager\Worker;
 
 use Closure;
-use Skajdo\EventManager\Listener\AnonymousListener;
-use Skajdo\EventManager\Listener\ListenerInterface;
-use Skajdo\EventManager\Listener\ListenerMethod;
+use PHPExtra\EventManager\Listener\AnonymousListener;
+use PHPExtra\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\Listener\ListenerMethod;
 
 /**
  * The WorkerFactory class
@@ -89,7 +89,7 @@ class WorkerFactory
 
         if($eventClass !== null){
             $eventClassName = $eventClass->getName();
-            $requiredInterface = 'Skajdo\EventManager\Event\EventInterface';
+            $requiredInterface = 'PHPExtra\EventManager\Event\EventInterface';
             if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
                 $eventClassName = null;
             }

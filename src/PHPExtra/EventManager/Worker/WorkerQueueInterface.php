@@ -5,7 +5,7 @@
  * See the file LICENSE.txt for copying permission.
  */
 
-namespace Skajdo\EventManager\Worker;
+namespace PHPExtra\EventManager\Worker;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
