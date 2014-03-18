@@ -34,6 +34,7 @@
     "require-dev": {
         "mockery/mockery": "~0.8",
         "phpunit/phpunit": "~3.7",
-        "sami/sami": "~1.2"
+        "sami/sami": "~1.2",
+        "phpextra/qa-tools": "*"
     }
 }
