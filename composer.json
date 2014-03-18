@@ -1,22 +1,24 @@
 {
-    "name": "skajdo/event-manager",
+    "name": "phpextra/event-manager",
     "description": "Event manager based on reflection, annotations and priority queue",
-	"keywords": ["event manager", "event", "listener", "observer", "psr-0"],
-	"license": "BSD-3-Clause",
-	"homepage": "https://github.com/jkobus/skajdo-event-manager",
-	"support": {
-		"issues": "https://github.com/jkobus/skajdo-event-manager/issues",
-		"source": "https://github.com/jkobus/skajdo-event-manager"
-	},
+    "keywords": ["event manager", "event", "listener", "observer", "psr-0"],
+    "license": "BSD-3-Clause",
+    "homepage": "https://github.com/phpextra/event-manager",
+    "support": {
+        "issues": "https://github.com/phpextra/event-manager/issues",
+        "source": "https://github.com/phpextra/event-manager"
+    },
     "authors": [
         {
             "name": "Jacek Kobus",
             "email": "kobus.jacek@gmail.com"
         }
     ],
-	"autoload": {
-		"psr-0": {"Skajdo\\EventManager": "src/"}
-	},
+    "autoload": {
+        "psr-0": {
+            "PHPExtra\\EventManager": "src/"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
@@ -24,11 +26,10 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "php":">=5.3.0",
-		"psr/log": "~1.0.0",
+        "php": ">=5.3.0",
+        "psr/log": "~1.0.0",
         "symfony/stopwatch": "~2.4.0",
-        "zendframework/zend-stdlib": "~2.2.0",
-        "zendframework/zend-code": "~2.2.0"
+        "zendframework/zend-stdlib": "~2.2.0"
     },
     "require-dev": {
         "mockery/mockery": "~0.8",

@@ -1,14 +1,15 @@
 <?php
 
+use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\EventManager;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 
-class DummyEvent implements \PHPExtra\EventManager\Event\EventInterface
+class DummyEvent implements EventInterface
 {
     public $calls = array();
 }
 
-class DummyCancellableEvent implements \PHPExtra\EventManager\Event\EventInterface
+class DummyCancellableEvent implements EventInterface
 {
     public $events = array();
 }
