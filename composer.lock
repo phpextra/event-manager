@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c2dbdd9facf2aff651a5c5f08c44c44e",
+    "hash": "c4a2eef3ce58a671e46e1714527e8459",
     "packages": [
         {
             "name": "psr/log",
@@ -47,55 +47,6 @@
                 "psr-3"
             ],
             "time": "2014-01-18 15:33:09"
-        },
-        {
-            "name": "symfony/stopwatch",
-            "version": "2.4.x-dev",
-            "target-dir": "Symfony/Component/Stopwatch",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/Stopwatch.git",
-                "reference": "bffad325e36a3e71fba6d5dcce6e2f4b4637b91a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/bffad325e36a3e71fba6d5dcce6e2f4b4637b91a",
-                "reference": "bffad325e36a3e71fba6d5dcce6e2f4b4637b91a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Stopwatch\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Stopwatch Component",
-            "homepage": "http://symfony.com",
-            "time": "2014-02-11 13:52:09"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -543,16 +494,16 @@
         },
         {
             "name": "phpextra/qa-tools",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpextra/qa-tools.git",
-                "reference": "5a3fd68bb1f3a4779477aac1a2c90e9557d38728"
+                "reference": "93f5204e82c39b1cfff54d69ff1a6aba7eb8071d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpextra/qa-tools/zipball/5a3fd68bb1f3a4779477aac1a2c90e9557d38728",
-                "reference": "5a3fd68bb1f3a4779477aac1a2c90e9557d38728",
+                "url": "https://api.github.com/repos/phpextra/qa-tools/zipball/93f5204e82c39b1cfff54d69ff1a6aba7eb8071d",
+                "reference": "93f5204e82c39b1cfff54d69ff1a6aba7eb8071d",
                 "shasum": ""
             },
             "require": {
@@ -580,7 +531,7 @@
                 }
             ],
             "description": "Quality assurance tools package",
-            "time": "2014-03-18 15:32:45"
+            "time": "2014-03-18 15:31:40"
         },
         {
             "name": "phploc/phploc",
@@ -912,12 +863,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "4dbc3ab5de25a9ffd07796519f9f7f4aaddc37e0"
+                "reference": "619f9179d6d30be8fc7333b5eaba9132dbaa8142"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4dbc3ab5de25a9ffd07796519f9f7f4aaddc37e0",
-                "reference": "4dbc3ab5de25a9ffd07796519f9f7f4aaddc37e0",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/619f9179d6d30be8fc7333b5eaba9132dbaa8142",
+                "reference": "619f9179d6d30be8fc7333b5eaba9132dbaa8142",
                 "shasum": ""
             },
             "require": {
@@ -978,7 +929,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-05 12:52:24"
+            "time": "2014-03-26 11:35:32"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1598,12 +1549,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "e81f1b30eb9748c3f8e0de3a92ea210845cff0a9"
+                "reference": "fe66eed49c7bbfc312978ef0f86e490127a345b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/e81f1b30eb9748c3f8e0de3a92ea210845cff0a9",
-                "reference": "e81f1b30eb9748c3f8e0de3a92ea210845cff0a9",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/fe66eed49c7bbfc312978ef0f86e490127a345b2",
+                "reference": "fe66eed49c7bbfc312978ef0f86e490127a345b2",
                 "shasum": ""
             },
             "require": {
@@ -1638,7 +1589,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:29:57"
+            "time": "2014-03-26 12:01:00"
         },
         {
             "name": "symfony/finder",
@@ -1696,12 +1647,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "0db8c1a21c0acf00c78b4369f8e15e7fa7ad856d"
+                "reference": "1b6f4fc4e4338033cea4ff0051f2b99a28a30134"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/0db8c1a21c0acf00c78b4369f8e15e7fa7ad856d",
-                "reference": "0db8c1a21c0acf00c78b4369f8e15e7fa7ad856d",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/1b6f4fc4e4338033cea4ff0051f2b99a28a30134",
+                "reference": "1b6f4fc4e4338033cea4ff0051f2b99a28a30134",
                 "shasum": ""
             },
             "require": {
@@ -1736,7 +1687,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-03-25 22:03:32"
+            "time": "2014-03-26 11:51:10"
         },
         {
             "name": "symfony/yaml",
