@@ -30,7 +30,7 @@ JSON:
 On windows open cmd window in the project directory, then type:
 
 ```
-> composer update & test
+> composer install && test
 ```
 
 ## Usage example

@@ -1,6 +1,9 @@
-build/report/*
-build/logs/*
+build/*
+!build/.gitkeep
+!build/phpcs.xml
+!build/phpmd.xml
+!build/sami-config.php
+
 .idea
-composer.lock
 vendor
 atlassian-ide-plugin.xml
