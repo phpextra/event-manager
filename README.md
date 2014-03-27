@@ -15,7 +15,7 @@ JSON:
 
 ```json
 "require": {
-    "phpextra/event-manager":"~3.0.0"
+    "phpextra/event-manager":"~1.0.0"
 }
 ```
 
@@ -33,9 +33,60 @@ On windows open cmd window in the project directory, then type:
 > composer install && test
 ```
 
-## Usage example
+## How it works ?
 
-For more complex example please see **examples** inside this project.
+Both event and listener are interfaces.
+Events support inheritance. It means that listener can listen for event parents.
+
+## Examples
+
+
+    class UserLoginEvent implements EventInterface
+    {
+        protected $user;
+
+        public function __construct($user){ ... }
+
+        (...)
+    }
+
+    class UserListener implements Listener
+    {
+        /**
+         * @priority HIGH
+         */
+        public function onUserLogin(UserLoginEvent $event)
+        {
+            $event->user ...
+            echo "User listener 1";
+        }
+
+        /**
+         * @priority NORMAL
+         */
+        public function onAnyEvent(EventInterface $event)
+        {
+            if($event instanceof UserLoginEvent){
+                $event->user ...
+                echo "User listener 2";
+            }
+        }
+    }
+
+    $manager = new EventManager();
+    $manager->trigger(new UserLoginEvent($user));
+
+    > User listener 1
+    > User listener 2
+
+Anonymous function can be a listener too. Priority in this case can be specified as a second constructor param in
+AnonymousListener class.
+
+
+    $listener = new AnonymousListener(function(UserLoginEvent $event){
+        $event->user ...
+    }), Priority::LOWEST);
+
 
 ##Contributing
 
