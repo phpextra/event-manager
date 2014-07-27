@@ -26,7 +26,6 @@ class WorkerFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateNewWorkerCreatesNewWorker()
     {
-        $this->markTestIncomplete();
         $listener = new AnonymousListener(function(EventInterface $event){}, Priority::HIGH);
 
         $factory = new WorkerFactory();

@@ -3,7 +3,6 @@ build/*
 !build/phpcs.xml
 !build/phpmd.xml
 !build/sami-config.php
-
 .idea
 vendor
 atlassian-ide-plugin.xml

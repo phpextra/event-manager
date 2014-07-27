@@ -16,7 +16,9 @@ class WorkerResultTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateNewInstance()
     {
-        $this->markTestIncomplete();
+        $event = new \DummyEvent();
+        $worker = new Worker(new \DummyListener1(), 'asd', 'asd');
+        new WorkerResult($worker, $event, WorkerResultStatus::SUCCESS);
     }
 }
  

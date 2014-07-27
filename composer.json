@@ -31,12 +31,9 @@
         "zendframework/zend-stdlib": "~2.2.0"
     },
     "require-dev": {
-        "mockery/mockery": "~0.8",
-        "phpunit/phpunit": "~3.7",
-        "sami/sami": "~1.2",
-        "phpextra/qa-tools": "~1.0"
+        "phpunit/phpunit": "~3.7"
     },
     "archive": {
-        "exclude": ["/*", "!/src", "!LICENSE.md", "!README.md", "!.gitignore"]
+        "exclude": ["/*", "!/src", "!.gitignore"]
     }
 }
