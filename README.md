@@ -29,6 +29,8 @@ class UserLoginEvent implements EventInterface
 class UserListener implements Listener
 {
     /**
+     * Listen only UserLoginEvent
+     *
      * @priority HIGH
      */
     public function onUserLogin(UserLoginEvent $event)
@@ -38,6 +40,8 @@ class UserListener implements Listener
     }
 
     /**
+     * Listen for ANY event
+     *
      * @priority NORMAL
      */
     public function onAnyEvent(EventInterface $event)
@@ -50,9 +54,11 @@ class UserListener implements Listener
 }
 
 $manager = new EventManager();
+$manager->addListener(new UserListener());
 $manager->trigger(new UserLoginEvent($user));
 
 ```
+Result:
 
 ```
 > User listener 1
