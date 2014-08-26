@@ -7,10 +7,9 @@
 
 namespace PHPExtra\EventManager\Worker;
 
-use Closure;
 use PHPExtra\EventManager\Listener\AnonymousListener;
 use PHPExtra\EventManager\Listener\ListenerInterface;
-use PHPExtra\EventManager\Listener\ListenerMethod;
+use PHPExtra\EventManager\Priority;
 
 /**
  * The WorkerFactory class
@@ -73,7 +72,9 @@ class WorkerFactory
                 continue;
             }
 
-            $workers[] = new Worker($listener, $method->getName(), $eventClassName);
+            $priority = self::getPriority($method);
+
+            $workers[] = new Worker($listener, $method->getName(), $eventClassName, $priority);
         }
         return $workers;
     }
@@ -97,28 +98,30 @@ class WorkerFactory
         return $eventClassName;
     }
 
-//    /**
-//     * Try to find a priority for given method
-//     *
-//     * @param \ReflectionMethod $method
-//     * @return int|null
-//     */
-//    protected function getPriority(\ReflectionMethod $method)
-//    {
-//        $priority = null;
-//        //@todo get priority
-////        if($method->getDocBlock() !== false){
-////            /** @var $tag \Zend\Code\Reflection\DocBlock\Tag\GenericTag */
-////            $tag = $method->getDocBlock()->getTag('priority');
-////
-////            if($tag !== false){
-////                if(is_numeric($tag->getContent())){
-////                    $priority = (int)$tag->getContent();
-////                }else{
-////                    $priority = Priority::getPriorityByName($tag->getContent());
-////                }
-////            }
-////        }
-//        return $priority;
-//    }
+    /**
+     * Try to find a priority for given method
+     *
+     * @param \ReflectionMethod $method
+     * @param int               $default
+     *
+     * @return int
+     */
+    protected static function getPriority(\ReflectionMethod $method, $default = Priority::NORMAL)
+    {
+        $priority = null;
+        $pattern = '#\-?\d+|LOWEST|LOW|NORMAL|HIGH|HIGHEST|MONITOR#i';
+
+        $matches = array();
+        preg_match($pattern, $method->getDocComment(), $matches);
+
+        if(isset($matches[0])){
+            if(is_numeric($matches[0])){
+                $priority = (int)$matches[0];
+            }else{
+                $priority = Priority::getPriorityByName($matches[0]);
+            }
+        }
+
+        return $priority === null ? $default : $priority;
+    }
 }

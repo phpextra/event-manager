@@ -56,8 +56,32 @@ class DummyListener1 implements ListenerInterface
      * @priority 100
      * @param \DummyCancellableEvent $event
      */
-    public function onDummyEvent(DummyCancellableEvent $event){
-        $event->events[] = 'Dummy 1';
+    public function onDummyEvent1(DummyCancellableEvent $event){
+        $event->events[] = 'Dummy 1.2';
+    }
+
+    /**
+     * @priority HIGH
+     * @param \DummyCancellableEvent $event
+     */
+    public function onDummyEvent2(DummyCancellableEvent $event){
+        $event->events[] = 'Dummy 1.1';
+    }
+
+    /**
+     * @priority LOWEST
+     * @param \DummyCancellableEvent $event
+     */
+    public function onDummyEvent3(DummyCancellableEvent $event){
+        $event->events[] = 'Dummy 1.3';
+    }
+
+    /**
+     * @priority -2000
+     * @param \DummyCancellableEvent $event
+     */
+    public function onDummyEvent4(DummyCancellableEvent $event){
+        $event->events[] = 'Dummy 1.4';
     }
 }
 
@@ -80,5 +104,13 @@ class DummyListener2 implements ListenerInterface
      */
     public function onDummyEvent2(DummyCancellableEvent2 $event){
         $event->events[] = 'Dummy 2 Event 2';
+    }
+
+    /**
+     * @priority LOWEST
+     * @param \DummyCancellableEvent2 $event
+     */
+    public function onDummyEvent3(DummyCancellableEvent2 $event){
+        $event->events[] = 'Dummy 3 Event 2';
     }
 }

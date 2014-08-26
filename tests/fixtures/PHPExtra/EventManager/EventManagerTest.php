@@ -7,6 +7,7 @@
 
 namespace PHPExtra\EventManager;
 
+use DummyCancellableEvent;
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\AnonymousListener;
 
@@ -23,7 +24,7 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
         new EventManager();
     }
 
-    public function testAddListenersAddsListeners()
+    public function testAddAnonymousListenersAddsListeners()
     {
         $em = new EventManager();
         $listener1 = new AnonymousListener(function(EventInterface $event){});
@@ -81,6 +82,25 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $event->calls);
 
+    }
+
+    public function testTriggerStandardListenersExecutesListenersInCorrectOrder()
+    {
+        $em = new EventManager();
+
+        $event = new DummyCancellableEvent();
+        $listener = new \DummyListener1();
+
+        $em->addListener($listener)->trigger($event);
+
+        $expected = array(
+            'Dummy 1.1',
+            'Dummy 1.2',
+            'Dummy 1.3',
+            'Dummy 1.4'
+        );
+
+        $this->assertEquals($expected, $event->events);
     }
 }
  
