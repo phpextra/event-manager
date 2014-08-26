@@ -109,16 +109,16 @@ class WorkerFactory
     protected static function getPriority(\ReflectionMethod $method, $default = Priority::NORMAL)
     {
         $priority = null;
-        $pattern = '#\-?\d+|LOWEST|LOW|NORMAL|HIGH|HIGHEST|MONITOR#i';
+        $pattern = '#@priority\\s+(\-?\d+|LOWEST|LOW|NORMAL|HIGH|HIGHEST|MONITOR)#i';
 
         $matches = array();
         preg_match($pattern, $method->getDocComment(), $matches);
 
-        if(isset($matches[0])){
-            if(is_numeric($matches[0])){
-                $priority = (int)$matches[0];
+        if(isset($matches[1])){
+            if(is_numeric($matches[1])){
+                $priority = (int)$matches[1];
             }else{
-                $priority = Priority::getPriorityByName($matches[0]);
+                $priority = Priority::getPriorityByName($matches[1]);
             }
         }
 

@@ -51,9 +51,9 @@ class DummyListener1 implements ListenerInterface
 {
     /**
      * Short desc
-     * Long desc
+     * Long ident and some numeric value priority 500
      *
-     * @priority 100
+     * @priority                 100
      * @param \DummyCancellableEvent $event
      */
     public function onDummyEvent1(DummyCancellableEvent $event){
