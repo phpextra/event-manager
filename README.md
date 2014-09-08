@@ -91,6 +91,14 @@ $listener = new AnonymousListener(function(UserLoginEvent $event){
 composer install & call ./vendor/bin/phpunit.bat ./tests
 ```
 
+###1.0.x
+
+- event manager now properly reads priority from annotations
+
+###1.0.0
+
+Initial release
+
 ##Contributing
 
 All code contributions must go through a pull request.
