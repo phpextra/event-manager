@@ -64,6 +64,7 @@ final class Priority
      * Get human readable priority name
      *
      * @param int $priority
+     *
      * @return string
      * @throws \InvalidArgumentException If unable to find priority name
      */
@@ -81,6 +82,7 @@ final class Priority
      * Get priority integer value by priority name
      *
      * @param string $priorityName
+     *
      * @return int
      * @throws \InvalidArgumentException If name is invalid
      */

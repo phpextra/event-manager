@@ -7,8 +7,6 @@
 
 namespace PHPExtra\EventManager;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Worker\WorkerFactory;
@@ -16,6 +14,8 @@ use PHPExtra\EventManager\Worker\WorkerInterface;
 use PHPExtra\EventManager\Worker\WorkerQueue;
 use PHPExtra\EventManager\Worker\WorkerQueueInterface;
 use PHPExtra\EventManager\Worker\WorkerResult;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * The EventManager class
@@ -83,53 +83,9 @@ class EventManager implements EventManagerInterface
             // @todo log
         }
 
-        if($previousRunningEvent){
+        if ($previousRunningEvent) {
             $this->setRunningEvent($previousRunningEvent);
         }
-
-        return $this;
-    }
-
-    /**
-     * @param WorkerInterface $worker
-     * @param EventInterface  $event
-     * @throws \Exception
-     * @return WorkerResult
-     */
-    protected function runWorker(WorkerInterface $worker, EventInterface $event)
-    {
-        $result = $worker->run($event);
-        if (!$result->isSuccessful()) {
-            if ($this->getThrowExceptions()) {
-                throw $result->getException();
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addListener(ListenerInterface $listener, $priority = null)
-    {
-        foreach($this->getWorkerFactory()->createWorkers($listener) as $worker){
-            if ($priority !== null) {
-                $worker->setPriority($priority);
-            }
-            $this->addWorker($worker);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param WorkerInterface $worker
-     * @return $this
-     */
-    protected function addWorker(WorkerInterface $worker)
-    {
-        $this->getWorkerQueue()->add($worker);
 
         return $this;
     }
@@ -153,34 +109,6 @@ class EventManager implements EventManagerInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function setThrowExceptions($throwExceptions)
-    {
-        $this->throwExceptions = $throwExceptions;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getThrowExceptions()
-    {
-        return $this->throwExceptions;
-    }
-
-    /**
-     * Get worker factory
-     *
-     * @return WorkerFactory
-     */
-    public function getWorkerFactory()
-    {
-        return $this->workerFactory;
-    }
-
-    /**
      * Get workers queue
      *
      * @return WorkerQueueInterface|WorkerInterface[]
@@ -198,6 +126,80 @@ class EventManager implements EventManagerInterface
     public function setWorkerQueue($workerQueue)
     {
         $this->workerQueue = $workerQueue;
+    }
+
+    /**
+     * @param WorkerInterface $worker
+     * @param EventInterface  $event
+     *
+     * @throws \Exception
+     * @return WorkerResult
+     */
+    protected function runWorker(WorkerInterface $worker, EventInterface $event)
+    {
+        $result = $worker->run($event);
+        if (!$result->isSuccessful()) {
+            if ($this->getThrowExceptions()) {
+                throw $result->getException();
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getThrowExceptions()
+    {
+        return $this->throwExceptions;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setThrowExceptions($throwExceptions)
+    {
+        $this->throwExceptions = $throwExceptions;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addListener(ListenerInterface $listener, $priority = null)
+    {
+        foreach ($this->getWorkerFactory()->createWorkers($listener) as $worker) {
+            if ($priority !== null) {
+                $worker->setPriority($priority);
+            }
+            $this->addWorker($worker);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get worker factory
+     *
+     * @return WorkerFactory
+     */
+    public function getWorkerFactory()
+    {
+        return $this->workerFactory;
+    }
+
+    /**
+     * @param WorkerInterface $worker
+     *
+     * @return $this
+     */
+    protected function addWorker(WorkerInterface $worker)
+    {
+        $this->getWorkerQueue()->add($worker);
+
+        return $this;
     }
 
     /**

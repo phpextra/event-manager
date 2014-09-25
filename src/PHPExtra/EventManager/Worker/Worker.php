@@ -6,6 +6,7 @@
  */
 
 namespace PHPExtra\EventManager\Worker;
+
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Priority;
@@ -45,6 +46,7 @@ class Worker implements WorkerInterface
      * @param string            $method
      * @param string            $eventClass
      * @param int               $priority
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct(ListenerInterface $listener, $method, $eventClass, $priority = null)
@@ -61,6 +63,7 @@ class Worker implements WorkerInterface
 
     /**
      * @param EventInterface $event
+     *
      * @return WorkerResult
      */
     public function run(EventInterface $event)
@@ -76,30 +79,11 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * Tell if current worker is listening to given event type
-     *
-     * @param EventInterface $event
-     * @return bool
+     * @return ListenerInterface
      */
-    public function isListeningTo(EventInterface $event)
+    public function getListener()
     {
-        return is_a($event, $this->getEventClass());
-    }
-
-    /**
-     * @param string $eventClass
-     */
-    public function setEventClass($eventClass)
-    {
-        $this->eventClass = $eventClass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEventClass()
-    {
-        return $this->eventClass;
+        return $this->listener;
     }
 
     /**
@@ -111,11 +95,11 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @return ListenerInterface
+     * @return string
      */
-    public function getListener()
+    public function getMethod()
     {
-        return $this->listener;
+        return $this->method;
     }
 
     /**
@@ -127,22 +111,31 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @return string
+     * Tell if current worker is listening to given event type
+     *
+     * @param EventInterface $event
+     *
+     * @return bool
      */
-    public function getMethod()
+    public function isListeningTo(EventInterface $event)
     {
-        return $this->method;
+        return is_a($event, $this->getEventClass());
     }
 
     /**
-     * @param int $priority
-     * @return $this
+     * @return string
      */
-    public function setPriority($priority)
+    public function getEventClass()
     {
-        $this->priority = $priority;
+        return $this->eventClass;
+    }
 
-        return $this;
+    /**
+     * @param string $eventClass
+     */
+    public function setEventClass($eventClass)
+    {
+        $this->eventClass = $eventClass;
     }
 
     /**
@@ -151,5 +144,17 @@ class Worker implements WorkerInterface
     public function getPriority()
     {
         return $this->priority;
+    }
+
+    /**
+     * @param int $priority
+     *
+     * @return $this
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+
+        return $this;
     }
 }

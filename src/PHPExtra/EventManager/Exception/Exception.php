@@ -7,9 +7,9 @@
 
 namespace PHPExtra\EventManager\Exception;
 
+use Exception as SplException;
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
-use Exception as SplException;
 
 /**
  * The Exception class
@@ -29,7 +29,16 @@ class Exception extends SplException
     protected $event;
 
     /**
+     * @return ListenerInterface
+     */
+    public function getListener()
+    {
+        return $this->listener;
+    }
+
+    /**
      * @param ListenerInterface $listener
+     *
      * @return $this
      */
     public function setListener($listener)
@@ -40,15 +49,16 @@ class Exception extends SplException
     }
 
     /**
-     * @return ListenerInterface
+     * @return EventInterface
      */
-    public function getListener()
+    public function getEvent()
     {
-        return $this->listener;
+        return $this->event;
     }
 
     /**
      * @param EventInterface $event
+     *
      * @return $this
      */
     public function setEvent($event)
@@ -56,14 +66,6 @@ class Exception extends SplException
         $this->event = $event;
 
         return $this;
-    }
-
-    /**
-     * @return EventInterface
-     */
-    public function getEvent()
-    {
-        return $this->event;
     }
 
 

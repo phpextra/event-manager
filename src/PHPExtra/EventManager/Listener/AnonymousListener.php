@@ -30,7 +30,8 @@ class AnonymousListener implements ListenerInterface
 
     /**
      * @param Closure $closure
-     * @param int $priority
+     * @param int     $priority
+     *
      * @return AnonymousListener
      */
     function __construct(Closure $closure, $priority = null)
@@ -59,6 +60,7 @@ class AnonymousListener implements ListenerInterface
      * Invoke an event
      *
      * @param EventInterface $event
+     *
      * @return void
      */
     public function invoke(EventInterface $event)

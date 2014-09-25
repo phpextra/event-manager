@@ -33,6 +33,7 @@ class WorkerQueue extends AbstractWorkerQueue
     public function add(WorkerInterface $worker)
     {
         $this->queue->insert($worker, $worker->getPriority());
+
         return $this;
     }
 

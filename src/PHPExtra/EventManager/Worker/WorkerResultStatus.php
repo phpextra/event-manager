@@ -11,8 +11,8 @@ namespace PHPExtra\EventManager\Worker;
  * Worker result status
  * If status is > 0 then an error occurred
  *
- * @see WorkerResultStatus::SUCCESS
- * @see WorkerResultStatus::FAILURE
+ * @see    WorkerResultStatus::SUCCESS
+ * @see    WorkerResultStatus::FAILURE
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */

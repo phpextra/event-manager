@@ -20,20 +20,23 @@ class WorkerFactory
 {
     /**
      * @param ListenerInterface $listener
+     *
      * @return WorkerInterface[]
      */
     public static function createWorkers(ListenerInterface $listener)
     {
-        if($listener instanceof AnonymousListener){
+        if ($listener instanceof AnonymousListener) {
             $worker = self::createWorkersFromAnonymousListener($listener);
-        }else{
+        } else {
             $worker = self::createWorkersFromListener($listener);
         }
+
         return $worker;
     }
 
     /**
      * @param AnonymousListener $listener
+     *
      * @return WorkerInterface[]
      * @throws \InvalidArgumentException
      */
@@ -42,20 +45,49 @@ class WorkerFactory
         $closureReflection = new \ReflectionMethod($listener->getClosure(), '__invoke');
         $params = $closureReflection->getParameters();
 
-        if(isset($params[0])){
+        if (isset($params[0])) {
             $param = $params[0];
             $eventClassName = self::getEventClassNameFromParam($param);
 
             if ($eventClassName === null) {
-                throw new \InvalidArgumentException(sprintf('First closure param (%s) must be a class implementing an EventInterface', $param->getName()));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'First closure param (%s) must be a class implementing an EventInterface',
+                        $param->getName()
+                    )
+                );
             }
+
             return array(new Worker($listener, 'invoke', $eventClassName, $listener->getPriority()));
         }
+
         return array();
     }
 
     /**
+     * @param \ReflectionParameter $param
+     *
+     * @return null|string
+     */
+    protected static function getEventClassNameFromParam(\ReflectionParameter $param)
+    {
+        $eventClassName = null;
+        $eventClass = $param->getClass();
+
+        if ($eventClass !== null) {
+            $eventClassName = $eventClass->getName();
+            $requiredInterface = 'PHPExtra\EventManager\Event\EventInterface';
+            if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
+                $eventClassName = null;
+            }
+        }
+
+        return $eventClassName;
+    }
+
+    /**
      * @param ListenerInterface $listener
+     *
      * @return WorkerInterface[]
      */
     protected static function createWorkersFromListener(ListenerInterface $listener)
@@ -76,26 +108,8 @@ class WorkerFactory
 
             $workers[] = new Worker($listener, $method->getName(), $eventClassName, $priority);
         }
+
         return $workers;
-    }
-
-    /**
-     * @param \ReflectionParameter $param
-     * @return null|string
-     */
-    protected static function getEventClassNameFromParam(\ReflectionParameter $param)
-    {
-        $eventClassName = null;
-        $eventClass = $param->getClass();
-
-        if($eventClass !== null){
-            $eventClassName = $eventClass->getName();
-            $requiredInterface = 'PHPExtra\EventManager\Event\EventInterface';
-            if (!is_subclass_of($eventClassName, $requiredInterface) && $eventClassName != $requiredInterface) {
-                $eventClassName = null;
-            }
-        }
-        return $eventClassName;
     }
 
     /**
@@ -114,10 +128,10 @@ class WorkerFactory
         $matches = array();
         preg_match($pattern, $method->getDocComment(), $matches);
 
-        if(isset($matches[1])){
-            if(is_numeric($matches[1])){
+        if (isset($matches[1])) {
+            if (is_numeric($matches[1])) {
                 $priority = (int)$matches[1];
-            }else{
+            } else {
                 $priority = Priority::getPriorityByName($matches[1]);
             }
         }

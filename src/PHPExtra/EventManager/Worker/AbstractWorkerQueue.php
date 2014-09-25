@@ -6,6 +6,7 @@
  */
 
 namespace PHPExtra\EventManager\Worker;
+
 use Psr\Log\LoggerInterface;
 
 /**

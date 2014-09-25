@@ -6,8 +6,9 @@
  */
 
 namespace PHPExtra\EventManager\Worker;
-use PHPExtra\EventManager\Listener\ListenerInterface;
+
 use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Listener\ListenerInterface;
 
 
 /**
@@ -19,6 +20,7 @@ interface WorkerInterface
 {
     /**
      * @param EventInterface $event
+     *
      * @return WorkerResult
      */
     public function run(EventInterface $event);
@@ -27,6 +29,7 @@ interface WorkerInterface
      * Tell if current worker is listening to given event type
      *
      * @param EventInterface $event
+     *
      * @return bool
      */
     public function isListeningTo(EventInterface $event);
@@ -48,6 +51,7 @@ interface WorkerInterface
 
     /**
      * @param int $priority
+     *
      * @return $this
      */
     public function setPriority($priority);

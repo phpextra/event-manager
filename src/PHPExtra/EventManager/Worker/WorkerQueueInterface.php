@@ -6,6 +6,7 @@
  */
 
 namespace PHPExtra\EventManager\Worker;
+
 use Psr\Log\LoggerAwareInterface;
 
 
@@ -20,6 +21,7 @@ interface WorkerQueueInterface extends LoggerAwareInterface, \Countable, \Iterat
      * Add worker to the stack
      *
      * @param WorkerInterface $worker
+     *
      * @return $this
      */
     public function add(WorkerInterface $worker);

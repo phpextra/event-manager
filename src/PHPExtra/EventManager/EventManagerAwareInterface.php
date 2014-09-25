@@ -18,6 +18,7 @@ interface EventManagerAwareInterface
      * Set EventManager instance
      *
      * @param EventManager $manager
+     *
      * @return $this
      */
     public function setEventManager(EventManager $manager);

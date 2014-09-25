@@ -6,6 +6,7 @@
  */
 
 namespace PHPExtra\EventManager\Worker;
+
 use PHPExtra\EventManager\Event\EventInterface;
 
 /**
@@ -37,10 +38,10 @@ class WorkerResult
     protected $event;
 
     /**
-     * @param WorkerInterface                $worker
-     * @param EventInterface                 $event
-     * @param int                            $status
-     * @param \Exception $exception
+     * @param WorkerInterface $worker
+     * @param EventInterface  $event
+     * @param int             $status
+     * @param \Exception      $exception
      */
     function __construct(
         WorkerInterface $worker,
@@ -71,23 +72,6 @@ class WorkerResult
     }
 
     /**
-     * @return \Exception
-     */
-    public function getException()
-    {
-        return $this->exception;
-    }
-
-    /**
-     * @see WorkerResultStatus
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
      * Get message returned by exception or null if no exception
      *
      * @return string
@@ -102,7 +86,16 @@ class WorkerResult
     }
 
     /**
+     * @return \Exception
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
+
+    /**
      * Returns null if no exception
+     *
      * @deprecated
      * @return string|null
      */
@@ -121,5 +114,14 @@ class WorkerResult
     public function isSuccessful()
     {
         return $this->getStatus() == 0;
+    }
+
+    /**
+     * @see WorkerResultStatus
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

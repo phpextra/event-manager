@@ -6,9 +6,10 @@
  */
 
 namespace PHPExtra\EventManager;
-use Psr\Log\LoggerAwareInterface;
+
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
+use Psr\Log\LoggerAwareInterface;
 
 /**
  * The EventManagerInterface interface
@@ -39,6 +40,7 @@ interface EventManagerInterface extends LoggerAwareInterface
      * Defaults to false
      *
      * @param bool $throwExceptions
+     *
      * @return EventManager
      */
     public function setThrowExceptions($throwExceptions);
@@ -49,6 +51,7 @@ interface EventManagerInterface extends LoggerAwareInterface
      *
      * @param ListenerInterface $listener
      * @param int               $priority
+     *
      * @return $this
      */
     public function addListener(ListenerInterface $listener, $priority = null);
@@ -57,6 +60,7 @@ interface EventManagerInterface extends LoggerAwareInterface
      * Call all listeners that listen to given $event
      *
      * @param EventInterface $event
+     *
      * @throws \RuntimeException
      * @throws \Exception
      * @return $this
