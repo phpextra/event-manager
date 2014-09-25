@@ -6,3 +6,4 @@ build/*
 .idea
 vendor
 atlassian-ide-plugin.xml
+cache.properties

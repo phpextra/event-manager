@@ -6,13 +6,6 @@
     <property file="${build.property.file}"/>
     <property name="build.version" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
 
-    <property name="php" value="php"/>
-    <property name="phpunit" value="phpunit"/>
-
-    <condition property="bin-extension" value=".bat" else="">
-        <os family="windows"/>
-    </condition>
-
     <target name="current-version">
         <echo>Current version: ${build.version}</echo>
     </target>
@@ -23,7 +16,7 @@
         <antcall target="update-build-revision"/>
         <antcall target="git-commit-and-push-all"/>
 
-        <echo>Release complete: </echo>
+        <echo>Release complete !</echo>
 
     </target>
 
@@ -70,7 +63,7 @@
     </target>
 
     <target name="update-build-revision">
-        <echo>Changing build version towards the next release</echo>
+        <echo>Changing build version towards the next release ...</echo>
 
         <propertyfile file="${build.property.file}">
             <entry key="build.revision.number" type="int" operation="+" value="1" default="0" pattern="0"/>
@@ -81,26 +74,8 @@
         <echo>${build.version} -> ${next.build.version}</echo>
     </target>
 
-    <target name="build" depends="prepare,lint,composer,security-checker,phploc,pdepend,phpmd,phpmd-ci,phpcs,phpcs-ci,phpcpd,phpunit,phpcb,api,cleanup"/>
-
-    <target name="clean" description="Cleanup build artifacts">
-        <delete dir="${basedir}/build/api"/>
-        <delete dir="${basedir}/build/code-browser"/>
-        <delete dir="${basedir}/build/coverage"/>
-        <delete dir="${basedir}/build/logs"/>
-        <delete dir="${basedir}/build/pdepend"/>
-    </target>
-
-    <target name="prepare" depends="clean" description="Prepare for build">
-        <mkdir dir="${basedir}/build/api"/>
-        <mkdir dir="${basedir}/build/code-browser"/>
-        <mkdir dir="${basedir}/build/coverage"/>
-        <mkdir dir="${basedir}/build/logs"/>
-        <mkdir dir="${basedir}/build/pdepend"/>
-    </target>
-
     <target name="lint">
-        <apply executable="${php}" failonerror="true">
+        <apply executable="php" failonerror="true">
             <arg value="-l" />
 
             <fileset dir="${basedir}/src">
@@ -115,36 +90,18 @@
         </apply>
     </target>
 
-    <target name="composer-install">
-        <get src="http://getcomposer.org/composer.phar" dest="${basedir}/composer.phar"/>
-    </target>
-
-    <target name="composer" depends="composer-install">
-        <exec executable="php" failonerror="true">
-            <arg value="composer.phar" />
-            <arg value="config" />
-            <arg value="--global" />
-            <arg value="discard-changes" />
-            <arg value="true" />
-        </exec>
-        <exec executable="php" failonerror="true">
-            <arg value="composer.phar" />
-            <arg value="update" />
-            <arg value="--verbose" />
-            <arg value="--no-interaction" />
-            <arg value="--profile" />
-        </exec>
-    </target>
+    <!--<target name="clean" description="Cleanup build artifacts">-->
+        <!--<delete dir="${basedir}/build/api"/>-->
+        <!--<delete dir="${basedir}/build/code-browser"/>-->
+        <!--<delete dir="${basedir}/build/coverage"/>-->
+        <!--<delete dir="${basedir}/build/logs"/>-->
+        <!--<delete dir="${basedir}/build/pdepend"/>-->
+    <!--</target>-->
 
     <target name="phpunit" description="Run unit tests with PHPUnit">
-        <exec executable="${basedir}/vendor/bin/phpunit${bin-extension}" failonerror="true">
+        <exec executable="phpunit" failonerror="true">
             <arg value="${basedir}/tests" />
         </exec>
-    </target>
-
-    <target name="cleanup" description="Remove unused files created during build process">
-        <delete file="${basedir}/composer.phar"/>
-        <delete file="${basedir}/cache.properties"/>
     </target>
 
 </project>
