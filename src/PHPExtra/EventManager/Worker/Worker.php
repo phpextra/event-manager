@@ -1,13 +1,12 @@
 <?php
 
 /**
- * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.md for copying permission.
  */
 
 namespace PHPExtra\EventManager\Worker;
 use PHPExtra\EventManager\Event\EventInterface;
-use PHPExtra\EventManager\Exception\Exception;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Priority;
 
@@ -70,15 +69,6 @@ class Worker implements WorkerInterface
             call_user_func(array($this->getListener(), $this->getMethod()), $event);
             $result = new WorkerResult($this, $event, WorkerResultStatus::SUCCESS);
         } catch (\Exception $e) {
-//            if (!$e instanceof Exception) {
-//
-//                $e = new Exception($e->getMessage(), $e->getCode(), $e);
-//                $e
-//                    ->setEvent($event)
-//                    ->setListener($this->getListener())
-//                ;
-//            }
-
             $result = new WorkerResult($this, $event, WorkerResultStatus::FAILURE, $e);
         }
 

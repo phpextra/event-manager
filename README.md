@@ -11,8 +11,7 @@ Library is under active development and it aims to be **simple** and **fast**. A
 
 ## How it works ?
 
-Both event and listener are interfaces.
-Events support inheritance. It means that listener can listen for event parents.
+Both event and listener are interfaces. Events support inheritance.
 
 ## Examples
 
@@ -93,20 +92,20 @@ composer install & call ./vendor/bin/phpunit.bat ./tests
 
 ##Changelog
 
-###1.0.x
-
-- event manager now properly reads priority from annotations
-
-###1.0.0
-
-Initial release
+    1.0.1
+    
+    - event manager now properly reads priority from annotations
+    
+    1.0.0
+    
+    - initial release
 
 ##Contributing
 
 All code contributions must go through a pull request.
 Fork the project, create a feature branch, and send me a pull request.
 To ensure a consistent code base, you should make sure the code follows
-the [coding standards](http://symfony.com/doc/2.0/contributing/code/standards.html).
+the [coding standards](http://symfony.com/doc/master/contributing/code/standards.html).
 If you would like to help take a look at the [list of issues](https://github.com/phpextra/event-manager/issues).
 
 ##Requirements
@@ -119,5 +118,5 @@ Jacek Kobus - <kobus.jacek@gmail.com>
 
 ## License information
 
-    See the file LICENSE.md for copying permission.
+See the file LICENSE.md for copying permission.
 

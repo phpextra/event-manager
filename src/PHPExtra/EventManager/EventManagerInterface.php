@@ -1,13 +1,12 @@
 <?php
 
 /**
- * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.txt for copying permission.
  */
 
 namespace PHPExtra\EventManager;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 
@@ -19,7 +18,7 @@ use PHPExtra\EventManager\Listener\ListenerInterface;
 interface EventManagerInterface extends LoggerAwareInterface
 {
     /**
-     * Return event that is currently running or null if no event is running
+     * Returns an event that is currently running or null if no event is running
      *
      * @return EventInterface|null
      */
