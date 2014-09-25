@@ -7,6 +7,9 @@
 
 namespace PHPExtra\EventManager;
 
+// workaround, see http://php.net/manual/en/reserved.constants.php#88288
+defined('PHPEXTRA_EM_PHP_INT_MIN') or define('PHPEXTRA_EM_PHP_INT_MIN', ~PHP_INT_MAX);
+
 /**
  * The Priority class
  *
@@ -44,7 +47,7 @@ final class Priority
      * It should be used to monitor event results.
      * No changes should be made by listener using that priority
      */
-    const MONITOR = -1000000;
+    const MONITOR = PHPEXTRA_EM_PHP_INT_MIN;
 
     /**
      * Name to int mapping
