@@ -76,7 +76,7 @@ $listener = new AnonymousListener(function(UserLoginEvent $event){
 ## How priority works ?
 
 Priority value determines how fast each worker (listener) will be picked from priority queue.
-Higher priority means that it will be picked earlier than other workers with lover priority.
+Higher priority means that it will be picked earlier than other workers with low    er priority.
 MONITOR is a special, lowest, priority. No other priority can be lower, as MONITOR equals to ~PHP_INT_MAX.
 The purpose of this is to use it when you want to monitor an outcome of an event.
 Listeners using MONITOR should not actively take part in changing the state of an event.
