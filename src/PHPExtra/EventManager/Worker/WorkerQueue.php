@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.md for copying permission.
  */
 
@@ -33,7 +33,6 @@ class WorkerQueue extends AbstractWorkerQueue
     public function add(WorkerInterface $worker)
     {
         $this->queue->insert($worker, $worker->getPriority());
-
         return $this;
     }
 

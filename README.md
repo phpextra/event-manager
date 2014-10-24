@@ -11,7 +11,10 @@ Library is under active development and it aims to be **simple** and **fast**. A
 
 ## How it works ?
 
-Both event and listener are interfaces. Events support inheritance.
+Both event and listener are interfaces.
+Events support inheritance. It means that listener can listen for event parents.
+If priority of workers is equal, **LIFO** order applies.
+
 
 ## Examples
 
@@ -73,33 +76,6 @@ $listener = new AnonymousListener(function(UserLoginEvent $event){
 }), Priority::LOWEST);
 ```
 
-## How priority works ?
-
-Priority value determines how fast each worker (listener) will be picked from priority queue.
-Higher priority means that it will be picked earlier than other workers with low    er priority.
-MONITOR is a special, lowest, priority. No other priority can be lower, as MONITOR equals to ~PHP_INT_MAX.
-The purpose of this is to use it when you want to monitor an outcome of an event.
-Listeners using MONITOR should not actively take part in changing the state of an event.
-It should be rather used for logging, benchmarks etc.
-
-All priorities defined by this library are available as constants.
-
-```php
-// Class PHPExtra\EventManager\Priority
-
-Priority::LOWEST    == -1000
-Priority::LOW       == -100
-Priority::NORMAL    == 0        // default
-Priority::HIGH      == 100
-Priority::HIGHEST   == 1000
-
-// Translates integer value to human readable priority name
-echo Priority::getPriorityName(100); // returns (string)"high"
-
-// Get integer value of a priority using its name
-echo Priority::getPriorityByName('high'); // returns (int)"100"
-```
-
 ## Installation (Composer)
 
 ```json
@@ -117,23 +93,12 @@ echo Priority::getPriorityByName('high'); // returns (int)"100"
 composer install & call ./vendor/bin/phpunit.bat ./tests
 ```
 
-##Changelog
-
-    1.0.x
-    - event manager now properly reads priority from annotations
-    - Priority is no longer "final"
-    - MONITOR priority now equals to ~PHP_INT_MAX
-    - code cleanup (code style, dependencies)
-
-    1.0.0
-    - initial release
-
 ##Contributing
 
 All code contributions must go through a pull request.
 Fork the project, create a feature branch, and send me a pull request.
 To ensure a consistent code base, you should make sure the code follows
-the [coding standards](http://symfony.com/doc/master/contributing/code/standards.html).
+the [coding standards](http://symfony.com/doc/2.0/contributing/code/standards.html).
 If you would like to help take a look at the [list of issues](https://github.com/phpextra/event-manager/issues).
 
 ##Requirements
@@ -146,5 +111,5 @@ Jacek Kobus - <kobus.jacek@gmail.com>
 
 ## License information
 
-See the file LICENSE.md for copying permission.
+    See the file LICENSE.md for copying permission.
 

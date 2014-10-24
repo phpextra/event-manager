@@ -1,13 +1,11 @@
 <?php
 
 /**
- * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.txt for copying permission.
  */
 
 namespace PHPExtra\EventManager\Worker;
-
-use Psr\Log\LoggerAwareInterface;
 
 
 /**
@@ -15,7 +13,7 @@ use Psr\Log\LoggerAwareInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-interface WorkerQueueInterface extends LoggerAwareInterface, \Countable, \IteratorAggregate
+interface WorkerQueueInterface extends \Countable, \Iterator
 {
     /**
      * Add worker to the stack
@@ -24,7 +22,7 @@ interface WorkerQueueInterface extends LoggerAwareInterface, \Countable, \Iterat
      *
      * @return $this
      */
-    public function add(WorkerInterface $worker);
+    public function addWorker(WorkerInterface $worker);
 
     /**
      * Is the queue empty?
@@ -34,7 +32,7 @@ interface WorkerQueueInterface extends LoggerAwareInterface, \Countable, \Iterat
     public function isEmpty();
 
     /**
-     * @return WorkerInterface[]|\IteratorAggregate
+     * @return array|WorkerInterface[]
      */
     public function getWorkers();
 }

@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2013 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.md for copying permission.
  */
 
 namespace PHPExtra\EventManager\Worker;
-
 use Psr\Log\LoggerInterface;
 
 /**
