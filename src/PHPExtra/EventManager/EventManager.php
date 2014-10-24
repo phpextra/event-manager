@@ -7,13 +7,13 @@
 
 namespace PHPExtra\EventManager;
 
+use PHPExtra\EventManager\Worker\SortableWorkerQueue;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Worker\WorkerFactory;
 use PHPExtra\EventManager\Worker\WorkerInterface;
-use PHPExtra\EventManager\Worker\WorkerQueue;
 use PHPExtra\EventManager\Worker\WorkerQueueInterface;
 use PHPExtra\EventManager\Worker\WorkerResult;
 
@@ -59,7 +59,7 @@ class EventManager implements EventManagerInterface
     public function __construct()
     {
         $this->workerFactory = new WorkerFactory();
-        $this->workerQueue = new WorkerQueue();
+        $this->workerQueue = new SortableWorkerQueue();
     }
 
     /**
@@ -72,7 +72,9 @@ class EventManager implements EventManagerInterface
         $previousRunningEvent = $this->getRunningEvent();
         $this->setRunningEvent($event);
 
-        foreach ($this->getWorkerQueue() as $worker) {
+        $workers = $this->getWorkerQueue()->getWorkers();
+
+        foreach ($workers as $worker) {
             if ($worker->isListeningTo($event)) {
                 $this->runWorker($worker, $event);
                 $listenersFound++;
@@ -129,7 +131,7 @@ class EventManager implements EventManagerInterface
      */
     protected function addWorker(WorkerInterface $worker)
     {
-        $this->getWorkerQueue()->add($worker);
+        $this->getWorkerQueue()->addWorker($worker);
 
         return $this;
     }

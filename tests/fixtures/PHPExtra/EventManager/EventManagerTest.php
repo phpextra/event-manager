@@ -71,10 +71,10 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
             }
         });
 
-        $em->addListener($listeners[0], Priority::MONITOR);
-        $em->addListener($listeners[1], Priority::HIGH);
-        $em->addListener($listeners[2], Priority::LOW);
-        $em->addListener($listeners[3], Priority::HIGHEST);
+        $em->addListener($listeners[0], Priority::MONITOR);     // A
+        $em->addListener($listeners[1], Priority::HIGH);        // B
+        $em->addListener($listeners[2], Priority::LOW);         // C
+        $em->addListener($listeners[3], Priority::HIGHEST);     // D
 
         $em->trigger($event);
 

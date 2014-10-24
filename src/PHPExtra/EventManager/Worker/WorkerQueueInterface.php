@@ -6,8 +6,6 @@
  */
 
 namespace PHPExtra\EventManager\Worker;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 
 
 /**
@@ -15,15 +13,16 @@ use Psr\Log\LoggerInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-interface WorkerQueueInterface extends LoggerAwareInterface, \Countable, \IteratorAggregate
+interface WorkerQueueInterface extends \Countable, \Iterator
 {
     /**
      * Add worker to the stack
      *
      * @param WorkerInterface $worker
+     *
      * @return $this
      */
-    public function add(WorkerInterface $worker);
+    public function addWorker(WorkerInterface $worker);
 
     /**
      * Is the queue empty?
@@ -33,7 +32,7 @@ interface WorkerQueueInterface extends LoggerAwareInterface, \Countable, \Iterat
     public function isEmpty();
 
     /**
-     * @return WorkerInterface[]|\IteratorAggregate
+     * @return array|WorkerInterface[]
      */
     public function getWorkers();
 }

@@ -13,6 +13,7 @@ Library is under active development and it aims to be **simple** and **fast**. A
 
 Both event and listener are interfaces.
 Events support inheritance. It means that listener can listen for event parents.
+If priority of workers is equal, **LIFO** order applies.
 
 ## Examples
 
