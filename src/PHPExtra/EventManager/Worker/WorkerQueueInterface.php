@@ -7,7 +7,6 @@
 
 namespace PHPExtra\EventManager\Worker;
 
-
 /**
  * The WorkerQueueInterface interface
  *

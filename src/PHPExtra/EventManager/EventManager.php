@@ -7,11 +7,9 @@
 
 namespace PHPExtra\EventManager;
 
-use PHPExtra\EventManager\Worker\SortableWorkerQueue;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\Worker\SortableWorkerQueue;
 use PHPExtra\EventManager\Worker\WorkerFactory;
 use PHPExtra\EventManager\Worker\WorkerInterface;
 use PHPExtra\EventManager\Worker\WorkerQueueInterface;

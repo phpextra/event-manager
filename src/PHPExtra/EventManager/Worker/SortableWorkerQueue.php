@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
+ * See the file LICENSE.md for copying permission.
+ */
+
 namespace PHPExtra\EventManager\Worker;
 
 use PHPExtra\Sorter\Comparator\NumericComparator;
@@ -8,7 +13,7 @@ use PHPExtra\Sorter\Strategy\ComplexSortStrategy;
 use PHPExtra\Type\Collection\Collection;
 
 /**
- * The SortableWorkerQueue class
+ * Sortable worker queue
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
@@ -52,6 +57,7 @@ class SortableWorkerQueue extends Collection implements WorkerQueueInterface
     public function addWorker(WorkerInterface $worker)
     {
         $this->add($worker);
+
         return $this;
     }
 
@@ -60,15 +66,17 @@ class SortableWorkerQueue extends Collection implements WorkerQueueInterface
      */
     public function add($entity)
     {
-        if(!$entity instanceof WorkerInterface){
+        if (!$entity instanceof WorkerInterface) {
 
-            if(is_object($entity)){
+            if (is_object($entity)) {
                 $type = get_class($entity);
-            }else{
+            } else {
                 $type = gettype($entity);
             }
 
-            throw new \RuntimeException(sprintf('Given value (%s) must be an instance of a class implementing WorkerInterface', $type));
+            throw new \RuntimeException(
+                sprintf('Given value (%s) must be an instance of a class implementing WorkerInterface', $type)
+            );
         }
 
         $this->objectWeights->attach($entity, $this->weight);
@@ -77,6 +85,7 @@ class SortableWorkerQueue extends Collection implements WorkerQueueInterface
         parent::add($entity);
 
         $this->sort($this->getSorter());
+
         return $this;
     }
 
@@ -87,6 +96,7 @@ class SortableWorkerQueue extends Collection implements WorkerQueueInterface
     {
         $this->rewind();
         $this->entities = $sorter->sort($this->entities);
+
         return $this;
     }
 
@@ -95,7 +105,7 @@ class SortableWorkerQueue extends Collection implements WorkerQueueInterface
      */
     protected function getSorter()
     {
-        if(!$this->sorter){
+        if (!$this->sorter) {
             $sorter = new ComplexSortStrategy();
             $sorter->setComparator(new NumericComparator());
             $comparator = new NumericComparator();
@@ -103,13 +113,20 @@ class SortableWorkerQueue extends Collection implements WorkerQueueInterface
             $objectWeights = $this->objectWeights;
 
             $sorter
-                ->sortBy(function(WorkerInterface $worker){
-                    return (int)$worker->getPriority();
-                }, SorterInterface::DESC, $comparator)
-                ->sortBy(function(WorkerInterface $worker) use ($objectWeights){
-                    return $objectWeights->offsetGet($worker);
-                }, SorterInterface::DESC, $comparator)
-            ;
+                ->sortBy(
+                    function (WorkerInterface $worker) {
+                        return (int)$worker->getPriority();
+                    },
+                    SorterInterface::DESC,
+                    $comparator
+                )
+                ->sortBy(
+                    function (WorkerInterface $worker) use ($objectWeights) {
+                        return $objectWeights->offsetGet($worker);
+                    },
+                    SorterInterface::DESC,
+                    $comparator
+                );
 
             $this->sorter = $sorter;
         }
