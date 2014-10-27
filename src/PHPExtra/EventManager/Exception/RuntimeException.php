@@ -7,16 +7,16 @@
 
 namespace PHPExtra\EventManager\Exception;
 
-use Exception as SplException;
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
+use RuntimeException as SplRuntimeException;
 
 /**
- * The Exception class
+ * The RuntimeException class
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class Exception extends SplException
+class RuntimeException extends SplRuntimeException
 {
     /**
      * @var ListenerInterface
@@ -27,6 +27,16 @@ class Exception extends SplException
      * @var EventInterface
      */
     protected $event;
+
+    /**
+     * @param string     $message
+     * @param int        $code
+     * @param \Exception $previous
+     */
+    public function __construct($message = "", $code = 0, \Exception $previous = null)
+    {
+        SplRuntimeException::__construct($message, $code, $previous);
+    }
 
     /**
      * @return ListenerInterface
@@ -67,6 +77,4 @@ class Exception extends SplException
 
         return $this;
     }
-
-
 }

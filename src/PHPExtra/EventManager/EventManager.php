@@ -8,6 +8,7 @@
 namespace PHPExtra\EventManager;
 
 use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Exception\RuntimeException;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Worker\SortableWorkerQueue;
 use PHPExtra\EventManager\Worker\WorkerFactory;
@@ -60,6 +61,7 @@ class EventManager implements EventManagerInterface
     {
         $this->workerFactory = new WorkerFactory();
         $this->workerQueue = new SortableWorkerQueue();
+        $this->logger = new NullLogger();
     }
 
     /**
@@ -67,26 +69,23 @@ class EventManager implements EventManagerInterface
      */
     public function trigger(EventInterface $event)
     {
-        $listenersFound = 0;
-
-        $previousRunningEvent = $this->getRunningEvent();
-        $this->setRunningEvent($event);
-
         $workers = $this->getWorkerQueue()->getWorkers();
 
-        foreach ($workers as $worker) {
-            if ($worker->isListeningTo($event)) {
-                $this->runWorker($worker, $event);
-                $listenersFound++;
+        if(count($workers) > 0){
+
+            $previousRunningEvent = $this->getRunningEvent();
+            $this->setRunningEvent($event);
+
+            foreach ($workers as $worker) {
+                if ($worker->isListeningTo($event)) {
+                    $this->runWorker($worker, $event);
+                }
             }
-        }
 
-        if ($listenersFound == 0) {
-            // @todo log
-        }
-
-        if ($previousRunningEvent) {
             $this->setRunningEvent($previousRunningEvent);
+
+        }else{
+            $this->getLogger()->info(sprintf('Event %s has no workers', get_class($event)));
         }
 
         return $this;
@@ -101,13 +100,19 @@ class EventManager implements EventManagerInterface
     }
 
     /**
-     * @param EventInterface $runningEvent
+     * @param EventInterface $event
      *
      * @return $this
      */
-    public function setRunningEvent(EventInterface $runningEvent)
+    public function setRunningEvent(EventInterface $event = null)
     {
-        $this->runningEvent = $runningEvent;
+        if($event === null){
+            $this->getLogger()->debug('Current running event is now NULL');
+        }else{
+            $this->getLogger()->debug(sprintf('Current running event was set to %s', get_class($event)));
+        }
+
+        $this->runningEvent = $event;
     }
 
     /**
@@ -134,15 +139,26 @@ class EventManager implements EventManagerInterface
      * @param WorkerInterface $worker
      * @param EventInterface  $event
      *
-     * @throws \Exception
+     * @throws RuntimeException
      * @return WorkerResult
      */
     protected function runWorker(WorkerInterface $worker, EventInterface $event)
     {
+        $this->getLogger()->debug(sprintf('Starting worker #%s with priority %s', $worker, $worker->getPriority()));
+
         $result = $worker->run($event);
         if (!$result->isSuccessful()) {
+            $this->getLogger()->warning(sprintf('Worker #%s failed: %s', $worker, $result->getMessage()));
             if ($this->getThrowExceptions()) {
-                throw $result->getException();
+                $this->getLogger()->debug(sprintf('Throwing exception (throwExceptions is set to true)', $worker));
+
+                $exception = new RuntimeException('Worker failed', 0, $result->getException());
+                $exception
+                    ->setEvent($event)
+                    ->setListener($worker->getListener())
+                ;
+
+                throw $exception;
             }
         }
 
@@ -172,11 +188,23 @@ class EventManager implements EventManagerInterface
      */
     public function addListener(ListenerInterface $listener, $priority = null)
     {
-        foreach ($this->getWorkerFactory()->createWorkers($listener) as $worker) {
+        $workers = $this->getWorkerFactory()->createWorkers($listener);
+        $workersCount = 0;
+
+        if ($priority !== null) {
+            $this->getLogger()->debug(sprintf('Overriding the priority for all workers from %s to %s', get_class($listener), $priority));
+        }
+
+        foreach ($workers as $worker) {
             if ($priority !== null) {
                 $worker->setPriority($priority);
             }
             $this->addWorker($worker);
+            $workersCount++;
+        }
+
+        if($workersCount == 0){
+            $this->getLogger()->warning(sprintf('Listener "%s" does not have any workers', get_class($listener)));
         }
 
         return $this;
@@ -199,6 +227,9 @@ class EventManager implements EventManagerInterface
      */
     protected function addWorker(WorkerInterface $worker)
     {
+        $params = array($worker, $worker->getListenerClass(), $worker->getMethodName(), $worker->getEventClass(), $worker->getPriority());
+        $this->getLogger()->debug(vsprintf('Adding new worker (#%s) %s::%s(%s $event) with priority: %s', $params));
+
         $this->getWorkerQueue()->addWorker($worker);
 
         return $this;

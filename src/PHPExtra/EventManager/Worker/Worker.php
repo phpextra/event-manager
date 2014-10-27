@@ -19,52 +19,57 @@ use PHPExtra\EventManager\Priority;
 class Worker implements WorkerInterface
 {
     /**
+     * @var string
+     */
+    private $id;
+
+    /**
      * @var ListenerInterface
      */
-    protected $listener;
+    private $listener;
 
     /**
      * @var string
      */
-    protected $method;
-
-    /**
-     * @var string
-     */
-    protected $eventClass;
+    private $eventClass;
 
     /**
      * @var int
      */
-    protected $priority;
+    private $priority;
+
+    /**
+     * @var string
+     */
+    private $methodName;
 
     /**
      * Create new worker that will wake-up listener using event
      * If priority is null the default (normal) will be used
      *
      * @param ListenerInterface $listener
-     * @param string            $method
+     * @param string            $methodName
      * @param string            $eventClass
      * @param int               $priority
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(ListenerInterface $listener, $method, $eventClass, $priority = null)
+    public function __construct(ListenerInterface $listener, $methodName, $eventClass, $priority = null)
     {
         if ($priority === null) {
             $priority = Priority::NORMAL;
         }
 
+        $this->id = uniqid('worker_');
+
         $this->setListener($listener);
-        $this->setMethod($method);
+        $this->setMethodName($methodName);
         $this->setEventClass($eventClass);
         $this->setPriority($priority);
     }
 
     /**
-     * @param EventInterface $event
-     *
-     * @return WorkerResult
+     * {@inheritdoc}
      */
     public function run(EventInterface $event)
     {
@@ -79,11 +84,27 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @return ListenerInterface
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getListener()
     {
         return $this->listener;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getListenerClass()
+    {
+        return get_class($this->getListener());
     }
 
     /**
@@ -95,27 +116,47 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getMethod()
     {
-        return $this->method;
+        return $this->getMethodName();
     }
 
     /**
+     * @deprecated use setMethodName
+     *
      * @param string $method
+     *
+     * @return $this
      */
     public function setMethod($method)
     {
-        $this->method = $method;
+        return $this->setMethodName($method);
     }
 
     /**
-     * Tell if current worker is listening to given event type
+     * {@inheritdoc}
+     */
+    public function getMethodName()
+    {
+        return $this->methodName;
+    }
+
+    /**
+     * @param string $methodName
      *
-     * @param EventInterface $event
-     *
-     * @return bool
+     * @return $this
+     */
+    public function setMethodName($methodName)
+    {
+        $this->methodName = $methodName;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function isListeningTo(EventInterface $event)
     {
@@ -123,7 +164,7 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getEventClass()
     {
@@ -139,7 +180,7 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getPriority()
     {
@@ -147,14 +188,20 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @param int $priority
-     *
-     * @return $this
+     * {@inheritdoc}
      */
     public function setPriority($priority)
     {
         $this->priority = $priority;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return $this->getId();
     }
 }

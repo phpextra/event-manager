@@ -19,6 +19,13 @@ use PHPExtra\EventManager\Listener\ListenerInterface;
 interface WorkerInterface
 {
     /**
+     * Worker unique ID that will identify given worker during execution
+     *
+     * @return string
+     */
+    public function getId();
+
+    /**
      * @param EventInterface $event
      *
      * @return WorkerResult
@@ -42,7 +49,19 @@ interface WorkerInterface
     /**
      * @return string
      */
+    public function getListenerClass();
+
+    /**
+     * @deprecated use getMethodName()
+     *
+     * @return string
+     */
     public function getMethod();
+
+    /**
+     * @return string
+     */
+    public function getMethodName();
 
     /**
      * @return string
@@ -60,4 +79,11 @@ interface WorkerInterface
      * @return int
      */
     public function getPriority();
+
+    /**
+     * Return worker ID
+     *
+     * @return string
+     */
+    public function __toString();
 }

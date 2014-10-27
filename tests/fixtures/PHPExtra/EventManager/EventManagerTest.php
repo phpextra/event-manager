@@ -130,5 +130,33 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $event->events);
     }
+
+    public function testExceptionThrowingIsDisabledByDefault()
+    {
+        $em = new EventManager();
+
+        $event = new DummyCancellableEvent();
+        $listener = new AnonymousListener(function(EventInterface $event){
+                throw new \Exception('test');
+            });
+
+        $em->addListener($listener)->trigger($event);
+    }
+
+    /**
+     * @expectedException \PHPExtra\EventManager\Exception\RuntimeException
+     */
+    public function testExceptionThrownDuringWorkerExecutionIsProperlyHandledAndRethrown()
+    {
+        $em = new EventManager();
+        $em->setThrowExceptions(true);
+
+        $event = new DummyCancellableEvent();
+        $listener = new AnonymousListener(function(EventInterface $event){
+            throw new \Exception('test');
+        });
+
+        $em->addListener($listener)->trigger($event);
+    }
 }
  
