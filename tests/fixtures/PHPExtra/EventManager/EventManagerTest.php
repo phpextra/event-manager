@@ -40,7 +40,7 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $em->getWorkerQueue()->count());
     }
 
-    public function testExecuteAnonymousListenersInProperOrderReturnsValidResult()
+    public function testExecuteListenersInProperOrderReturnsValidResult()
     {
         $event = new \DummyEvent();
         $em = new EventManager();
@@ -71,14 +71,42 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
             }
         });
 
-        $em->addListener($listeners[0], Priority::MONITOR);     // A
-        $em->addListener($listeners[1], Priority::HIGH);        // B
-        $em->addListener($listeners[2], Priority::LOW);         // C
+        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+            if($event instanceof \DummyEvent){
+                $event->calls[] = 'E';
+            }
+        });
+
+        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+            if($event instanceof \DummyEvent){
+                $event->calls[] = 'F';
+            }
+        });
+
+        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+            if($event instanceof \DummyEvent){
+                $event->calls[] = 'G';
+            }
+        });
+
+        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+            if($event instanceof \DummyEvent){
+                $event->calls[] = 'H';
+            }
+        });
+
         $em->addListener($listeners[3], Priority::HIGHEST);     // D
+        $em->addListener($listeners[4], Priority::HIGHER);      // E
+        $em->addListener($listeners[1], Priority::HIGH);        // B
+        $em->addListener($listeners[7], Priority::NORMAL);      // H
+        $em->addListener($listeners[2], Priority::LOW);         // C
+        $em->addListener($listeners[5], Priority::LOWER);       // F
+        $em->addListener($listeners[6], Priority::LOWEST);      // G
+        $em->addListener($listeners[0], Priority::MONITOR);     // A
 
         $em->trigger($event);
 
-        $expected = array('D', 'B', 'C', 'A');
+        $expected = array('D', 'E', 'B', 'H', 'C', 'F', 'G', 'A');
 
         $this->assertEquals($expected, $event->calls);
 
