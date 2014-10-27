@@ -123,7 +123,7 @@ class WorkerFactory
     protected static function getPriority(\ReflectionMethod $method, $default = Priority::NORMAL)
     {
         $priority = null;
-        $pattern = '#@priority\\s+(\-?\d+|LOWEST|LOW|NORMAL|HIGH|HIGHEST|MONITOR)#i';
+        $pattern = '#@priority\\s+(\-?\d+|LOWEST|LOW|NORMAL|HIGH|HIGHEST|MONITOR|HIGHER|LOWER)#i';
 
         $matches = array();
         preg_match($pattern, $method->getDocComment(), $matches);
