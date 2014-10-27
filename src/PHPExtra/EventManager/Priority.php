@@ -9,6 +9,7 @@ namespace PHPExtra\EventManager;
 
 // workaround, see http://php.net/manual/en/reserved.constants.php#88288
 defined('PHPEXTRA_EM_PHP_INT_MIN') or define('PHPEXTRA_EM_PHP_INT_MIN', ~PHP_INT_MAX);
+defined('PHPEXTRA_EM_PHP_INT_MAX') or define('PHPEXTRA_EM_PHP_INT_MAX', PHP_INT_MAX);
 
 /**
  * The Priority class
@@ -21,6 +22,11 @@ class Priority
      * Lowest priority
      */
     const LOWEST = -1000;
+
+    /**
+     * Lower priority, lower than low.
+     */
+    const LOWER = -750;
 
     /**
      * Low priority
@@ -38,12 +44,17 @@ class Priority
     const HIGH = 500;
 
     /**
+     * Highest priority, above high
+     */
+    const HIGHER = 750;
+
+    /**
      * Highest priority
      */
     const HIGHEST = 1000;
 
     /**
-     * Special priority (one-million, lower than lowest);
+     * Special, lowest priority.
      * It should be used to monitor event results.
      * No changes should be made by listener using that priority
      */
@@ -55,12 +66,14 @@ class Priority
      * @var array
      */
     protected static $nameToPriority = array(
-        'lowest' => self::LOWEST,
-        'low' => self::LOW,
-        'normal' => self::NORMAL,
-        'high' => self::HIGH,
-        'highest' => self::HIGHEST,
-        'monitor' => self::MONITOR,
+        'lowest'    => self::LOWEST,
+        'lower'     => self::LOWER,
+        'low'       => self::LOW,
+        'normal'    => self::NORMAL,
+        'high'      => self::HIGH,
+        'higher'    => self::HIGHER,
+        'highest'   => self::HIGHEST,
+        'monitor'   => self::MONITOR,
     );
 
     /**

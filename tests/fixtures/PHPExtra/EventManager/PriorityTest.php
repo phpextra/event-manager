@@ -18,9 +18,11 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('lowest', -1000),
+            array('lower', -750),
             array('low', -500),
             array('normal', 0),
             array('high', 500),
+            array('higher', 750),
             array('highest', 1000),
             array('monitor', ~PHP_INT_MAX),
         );
