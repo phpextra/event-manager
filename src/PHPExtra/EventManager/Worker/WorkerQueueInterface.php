@@ -29,9 +29,4 @@ interface WorkerQueueInterface extends \Countable, \Iterator
      * @return bool
      */
     public function isEmpty();
-
-    /**
-     * @return WorkerInterface[]
-     */
-    public function getWorkers();
 }

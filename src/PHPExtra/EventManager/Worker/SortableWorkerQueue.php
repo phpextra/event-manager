@@ -46,14 +46,6 @@ class SortableWorkerQueue extends Collection implements WorkerQueueInterface
     /**
      * {@inheritdoc}
      */
-    public function getWorkers()
-    {
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function addWorker(WorkerInterface $worker)
     {
         $this->add($worker);

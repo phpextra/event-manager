@@ -70,14 +70,14 @@ class EventManager implements EventManagerInterface
      */
     public function trigger(EventInterface $event)
     {
-        $workers = $this->getWorkerQueue()->getWorkers();
+        $workerQueue = clone $this->getWorkerQueue();
 
-        if(count($workers) > 0){
+        if($workerQueue->count() > 0){
 
             $previousRunningEvent = $this->getRunningEvent();
             $this->setRunningEvent($event);
 
-            foreach ($workers as $worker) {
+            foreach ($workerQueue as $worker) {
                 if ($worker->isListeningTo($event)) {
                     $this->runWorker($worker, $event);
                 }
