@@ -21,7 +21,7 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
     public function testCreateNewInstance()
     {
         $listener = new AnonymousListener(function(EventInterface $event){}, Priority::HIGH);
-        $worker = new Worker($listener, 'invoke', 'PHPExtra\EventManager\Event\EventInterface');
+        $worker = new Worker(1, $listener, 'invoke', 'PHPExtra\EventManager\Event\EventInterface');
     }
 }
  

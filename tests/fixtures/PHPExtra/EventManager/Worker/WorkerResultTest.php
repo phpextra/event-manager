@@ -17,7 +17,7 @@ class WorkerResultTest extends \PHPUnit_Framework_TestCase
     public function testCreateNewInstance()
     {
         $event = new \DummyEvent();
-        $worker = new Worker(new \DummyListener1(), 'asd', 'asd');
+        $worker = new Worker(1, new \DummyListener1(), 'asd', 'asd');
         new WorkerResult($worker, $event, WorkerResultStatus::SUCCESS);
     }
 }

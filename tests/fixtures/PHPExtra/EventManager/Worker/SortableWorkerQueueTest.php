@@ -34,9 +34,9 @@ class SortableWorkerQueueTest extends \PHPUnit_Framework_TestCase
     {
         $queue = $this->createWorkerQueue();
         $listener = $this->getMock('PHPExtra\EventManager\Listener\ListenerInterface');
-        $worker1 = new Worker($listener, 'dummy1', 'dummy');
-        $worker2 = new Worker($listener, 'dummy2', 'dummy');
-        $worker3 = new Worker($listener, 'dummy3', 'dummy');
+        $worker1 = new Worker(1, $listener, 'dummy1', 'dummy');
+        $worker2 = new Worker(2, $listener, 'dummy2', 'dummy');
+        $worker3 = new Worker(3, $listener, 'dummy3', 'dummy');
 
         $queue->addWorker($worker1);
 
@@ -62,9 +62,9 @@ class SortableWorkerQueueTest extends \PHPUnit_Framework_TestCase
     {
         $queue = $this->createWorkerQueue();
         $listener = $this->getMock('PHPExtra\EventManager\Listener\ListenerInterface');
-        $worker1 = new Worker($listener, 'dummy1', 'dummy');
-        $worker2 = new Worker($listener, 'dummy2', 'dummy');
-        $worker3 = new Worker($listener, 'dummy3', 'dummy');
+        $worker1 = new Worker(1, $listener, 'dummy1', 'dummy');
+        $worker2 = new Worker(2, $listener, 'dummy2', 'dummy');
+        $worker3 = new Worker(3, $listener, 'dummy3', 'dummy');
 
         $queue->addWorker($worker1);
         $queue->addWorker($worker2);
