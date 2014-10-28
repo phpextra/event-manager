@@ -19,6 +19,11 @@ use PHPExtra\EventManager\Priority;
 class WorkerFactory implements WorkerFactoryInterface
 {
     /**
+     * @var int
+     */
+    private $nextWorkerId = 1000;
+
+    /**
      * {@inheritdoc}
      */
     public function createWorkers(ListenerInterface $listener)
@@ -30,6 +35,16 @@ class WorkerFactory implements WorkerFactoryInterface
         }
 
         return $worker;
+    }
+
+    /**
+     * Generate ID for new worker created in the factory
+     *
+     * @return int
+     */
+    private function generateWorkerId()
+    {
+        return $this->nextWorkerId++;
     }
 
     /**
@@ -52,7 +67,7 @@ class WorkerFactory implements WorkerFactoryInterface
                 throw new \InvalidArgumentException($message);
             }
 
-            return array(new Worker($listener, 'invoke', $eventClassName, $listener->getPriority()));
+            return array(new Worker($this->generateWorkerId(), $listener, 'invoke', $eventClassName, $listener->getPriority()));
         }
 
         return array();
@@ -99,7 +114,7 @@ class WorkerFactory implements WorkerFactoryInterface
             }
 
             $priority = Priority::getPriorityFromDocComment($method->getDocComment(), Priority::NORMAL);
-            $workers[] = new Worker($listener, $method->getName(), $eventClassName, $priority);
+            $workers[] = new Worker($this->generateWorkerId(), $listener, $method->getName(), $eventClassName, $priority);
         }
 
         return $workers;

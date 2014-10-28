@@ -47,20 +47,20 @@ class Worker implements WorkerInterface
      * Create new worker that will wake-up listener using event
      * If priority is null the default (normal) will be used
      *
+     * @param string            $id
      * @param ListenerInterface $listener
      * @param string            $methodName
      * @param string            $eventClass
      * @param int               $priority
      *
-     * @throws \InvalidArgumentException
      */
-    public function __construct(ListenerInterface $listener, $methodName, $eventClass, $priority = null)
+    public function __construct($id, ListenerInterface $listener, $methodName, $eventClass, $priority = null)
     {
         if ($priority === null) {
             $priority = Priority::NORMAL;
         }
 
-        $this->id = uniqid('worker_');
+        $this->id = $id;
 
         $this->setListener($listener);
         $this->setMethodName($methodName);
