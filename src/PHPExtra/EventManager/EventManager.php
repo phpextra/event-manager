@@ -12,6 +12,7 @@ use PHPExtra\EventManager\Exception\RuntimeException;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Worker\SortableWorkerQueue;
 use PHPExtra\EventManager\Worker\WorkerFactory;
+use PHPExtra\EventManager\Worker\WorkerFactoryInterface;
 use PHPExtra\EventManager\Worker\WorkerInterface;
 use PHPExtra\EventManager\Worker\WorkerQueueInterface;
 use PHPExtra\EventManager\Worker\WorkerResult;
@@ -26,7 +27,7 @@ use Psr\Log\NullLogger;
 class EventManager implements EventManagerInterface
 {
     /**
-     * @var WorkerFactory
+     * @var WorkerFactoryInterface
      */
     protected $workerFactory = null;
 
@@ -213,7 +214,7 @@ class EventManager implements EventManagerInterface
     /**
      * Get worker factory
      *
-     * @return WorkerFactory
+     * @return WorkerFactoryInterface
      */
     public function getWorkerFactory()
     {

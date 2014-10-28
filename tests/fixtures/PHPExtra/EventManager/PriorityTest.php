@@ -29,6 +29,25 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return array
+     */
+    public function docCommentToValue()
+    {
+        return array(
+            array('@priority   lowest',     Priority::LOWEST),
+            array('@priority   lower',      Priority::LOWER),
+            array('@priority   normal',     Priority::NORMAL),
+            array('@priority   high',       Priority::HIGH),
+            array('@priority   higher',     Priority::HIGHER),
+            array('@priority   highest',    Priority::HIGHEST),
+            array('@priority   monitor',    Priority::MONITOR),
+
+            array('@priority   -1000',      Priority::LOWEST),
+            array('@priority   1000',       Priority::HIGHEST),
+        );
+    }
+
+    /**
      * @dataProvider nameToValue
      *
      * @param string $name
@@ -50,6 +69,32 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
     {
         $name = Priority::getPriorityName($value);
         $this->assertEquals($expectedName, $name);
+    }
+
+    /**
+     * @dataProvider docCommentToValue
+     *
+     * @param string $comment
+     * @param int $expectedValue
+     */
+    public function testGivenDocCommentReturnValidPriorityValue($comment, $expectedValue)
+    {
+        $value = Priority::getPriorityFromDocComment($comment, null);
+        $this->assertEquals($expectedValue, $value);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGivenInvalidNonEmptyDocCommentThrowInvalidArgumentException()
+    {
+        Priority::getPriorityFromDocComment('@priority awda4tw4tw', null);
+    }
+
+    public function testGivenInvalidEmptyDocCommentThrowInvalidArgumentException()
+    {
+        $value = Priority::getPriorityFromDocComment('@priority', null);
+        $this->assertNull($value);
     }
 }
  

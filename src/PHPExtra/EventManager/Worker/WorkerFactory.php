@@ -16,19 +16,17 @@ use PHPExtra\EventManager\Priority;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class WorkerFactory
+class WorkerFactory implements WorkerFactoryInterface
 {
     /**
-     * @param ListenerInterface $listener
-     *
-     * @return WorkerInterface[]
+     * {@inheritdoc}
      */
-    public static function createWorkers(ListenerInterface $listener)
+    public function createWorkers(ListenerInterface $listener)
     {
         if ($listener instanceof AnonymousListener) {
-            $worker = self::createWorkersFromAnonymousListener($listener);
+            $worker = $this->createWorkersFromAnonymousListener($listener);
         } else {
-            $worker = self::createWorkersFromListener($listener);
+            $worker = $this->createWorkersFromListener($listener);
         }
 
         return $worker;
@@ -40,22 +38,18 @@ class WorkerFactory
      * @return WorkerInterface[]
      * @throws \InvalidArgumentException
      */
-    protected static function createWorkersFromAnonymousListener(AnonymousListener $listener)
+    private function createWorkersFromAnonymousListener(AnonymousListener $listener)
     {
         $closureReflection = new \ReflectionMethod($listener->getClosure(), '__invoke');
         $params = $closureReflection->getParameters();
 
         if (isset($params[0])) {
             $param = $params[0];
-            $eventClassName = self::getEventClassNameFromParam($param);
+            $eventClassName = $this->getEventClassNameFromParam($param);
 
             if ($eventClassName === null) {
-                throw new \InvalidArgumentException(
-                    sprintf(
-                        'First closure param (%s) must be a class implementing an EventInterface',
-                        $param->getName()
-                    )
-                );
+                $message = sprintf('First closure param (%s) must be a class implementing an EventInterface', $param->getName());
+                throw new \InvalidArgumentException($message);
             }
 
             return array(new Worker($listener, 'invoke', $eventClassName, $listener->getPriority()));
@@ -69,7 +63,7 @@ class WorkerFactory
      *
      * @return null|string
      */
-    protected static function getEventClassNameFromParam(\ReflectionParameter $param)
+    private function getEventClassNameFromParam(\ReflectionParameter $param)
     {
         $eventClassName = null;
         $eventClass = $param->getClass();
@@ -90,7 +84,7 @@ class WorkerFactory
      *
      * @return WorkerInterface[]
      */
-    protected static function createWorkersFromListener(ListenerInterface $listener)
+    private function createWorkersFromListener(ListenerInterface $listener)
     {
         $workers = array();
         $reflectedListener = new \ReflectionClass($listenerClass = get_class($listener));
@@ -100,42 +94,14 @@ class WorkerFactory
                 continue;
             }
 
-            if (($eventClassName = self::getEventClassNameFromParam($param)) === null) {
+            if (($eventClassName = $this->getEventClassNameFromParam($param)) === null) {
                 continue;
             }
 
-            $priority = self::getPriority($method);
-
+            $priority = Priority::getPriorityFromDocComment($method->getDocComment(), Priority::NORMAL);
             $workers[] = new Worker($listener, $method->getName(), $eventClassName, $priority);
         }
 
         return $workers;
-    }
-
-    /**
-     * Try to find a priority for given method
-     *
-     * @param \ReflectionMethod $method
-     * @param int               $default
-     *
-     * @return int
-     */
-    protected static function getPriority(\ReflectionMethod $method, $default = Priority::NORMAL)
-    {
-        $priority = null;
-        $pattern = '#@priority\\s+(\-?\d+|LOWEST|LOW|NORMAL|HIGH|HIGHEST|MONITOR|HIGHER|LOWER)#i';
-
-        $matches = array();
-        preg_match($pattern, $method->getDocComment(), $matches);
-
-        if (isset($matches[1])) {
-            if (is_numeric($matches[1])) {
-                $priority = (int)$matches[1];
-            } else {
-                $priority = Priority::getPriorityByName($matches[1]);
-            }
-        }
-
-        return $priority === null ? $default : $priority;
     }
 }

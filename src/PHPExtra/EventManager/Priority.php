@@ -111,4 +111,31 @@ class Priority
 
         return self::$nameToPriority[$priorityName];
     }
+
+    /**
+     * Get priority from method comment or null if priority was not found in given string
+     *
+     * @param string $comment
+     * @param int $default
+     *
+     * @return int|null
+     */
+    public static function getPriorityFromDocComment($comment, $default = null)
+    {
+        $priority = null;
+        $pattern = '#@priority\\s+(\-?\d+|\w+)#i';
+
+        $matches = array();
+        preg_match($pattern, $comment, $matches);
+
+        if (isset($matches[1])) {
+            if (is_numeric($matches[1])) {
+                $priority = (int)$matches[1];
+            } else {
+                $priority = Priority::getPriorityByName($matches[1]);
+            }
+        }
+
+        return $priority === null ? $default : $priority;
+    }
 }
