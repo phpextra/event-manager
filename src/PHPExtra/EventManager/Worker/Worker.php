@@ -202,6 +202,6 @@ class Worker implements WorkerInterface
      */
     public function __toString()
     {
-        return $this->getId();
+        return (string)$this->getId();
     }
 }
