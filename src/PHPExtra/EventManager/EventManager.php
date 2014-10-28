@@ -145,7 +145,7 @@ class EventManager implements EventManagerInterface
      */
     protected function runWorker(WorkerInterface $worker, EventInterface $event)
     {
-        $this->getLogger()->debug(sprintf('Starting worker #%s with priority %s', $worker, $worker->getPriority()));
+        $this->getLogger()->debug(sprintf('Starting worker #%s with priority %s for event %s', $worker, $worker->getPriority(), get_class($event)));
 
         $result = $worker->run($event);
         if (!$result->isSuccessful()) {
@@ -153,7 +153,7 @@ class EventManager implements EventManagerInterface
             if ($this->getThrowExceptions()) {
                 $this->getLogger()->debug(sprintf('Throwing exception (throwExceptions is set to true)', $worker));
 
-                $exception = new RuntimeException('Worker failed', 0, $result->getException());
+                $exception = new RuntimeException(sprintf('Worker #%s failed', $worker), 0, $result->getException());
                 $exception
                     ->setEvent($event)
                     ->setListener($worker->getListener())
@@ -193,7 +193,7 @@ class EventManager implements EventManagerInterface
         $workersCount = 0;
 
         if ($priority !== null) {
-            $this->getLogger()->debug(sprintf('Overriding the priority for all workers from %s to %s', get_class($listener), $priority));
+            $this->getLogger()->debug(sprintf('Overriding the priority for all workers to %s in %s', $priority, get_class($listener)));
         }
 
         foreach ($workers as $worker) {
@@ -229,7 +229,7 @@ class EventManager implements EventManagerInterface
     protected function addWorker(WorkerInterface $worker)
     {
         $params = array($worker, $worker->getListenerClass(), $worker->getMethodName(), $worker->getEventClass(), $worker->getPriority());
-        $this->getLogger()->debug(vsprintf('Adding new worker (#%s) %s::%s(%s $event) with priority: %s', $params));
+        $this->getLogger()->debug(vsprintf('Added new worker (#%s) %s::%s() with priority: %s', $params));
 
         $this->getWorkerQueue()->addWorker($worker);
 
