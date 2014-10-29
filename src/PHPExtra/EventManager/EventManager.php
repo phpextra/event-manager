@@ -228,7 +228,7 @@ class EventManager implements EventManagerInterface
      */
     protected function addWorker(WorkerInterface $worker)
     {
-        $params = array($worker, $worker->getListenerClass(), $worker->getMethodName(), $worker->getEventClass(), $worker->getPriority());
+        $params = array($worker, $worker->getListenerClass(), $worker->getMethodName(), $worker->getPriority());
         $this->getLogger()->debug(vsprintf('Added new worker (#%s) %s::%s() with priority: %s', $params));
 
         $this->getWorkerQueue()->addWorker($worker);
