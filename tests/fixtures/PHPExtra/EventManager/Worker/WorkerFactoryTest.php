@@ -50,5 +50,15 @@ class WorkerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($workers[2]->getPriority(), -1000);
         $this->assertEquals($workers[3]->getPriority(), -2000);
     }
+
+    public function testFactoryDoesNotCreateWorkersFromPrivateNorProtectedMethods()
+    {
+        $listener = new \DummyListener3();
+
+        $factory = new WorkerFactory();
+        $workers = $factory->createWorkers($listener);
+
+        $this->assertEquals(0, count($workers));
+    }
 }
  

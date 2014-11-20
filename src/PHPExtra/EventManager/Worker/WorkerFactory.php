@@ -105,7 +105,7 @@ class WorkerFactory implements WorkerFactoryInterface
         $reflectedListener = new \ReflectionClass($listenerClass = get_class($listener));
         foreach ($reflectedListener->getMethods() as $method) {
 
-            if (($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
+            if (!$method->isPublic() || ($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
                 continue;
             }
 

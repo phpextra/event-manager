@@ -114,3 +114,21 @@ class DummyListener2 implements ListenerInterface
         $event->events[] = 'Dummy 3 Event 2';
     }
 }
+
+/**
+ * Class DummyListener3
+ */
+class DummyListener3 implements ListenerInterface
+{
+    /**
+     * @priority -1000
+     * @param \DummyCancellableEvent $event
+     */
+    private function onDummyEvent(DummyCancellableEvent $event){
+        $event->events[] = 'Dummy 2 Event 1';
+    }
+
+    protected function onDummyEvent2(DummyCancellableEvent $event){
+        $event->events[] = 'Dummy 2 Event 2';
+    }
+}
