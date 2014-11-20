@@ -107,28 +107,28 @@ See **composer.json** for a full list of dependencies.
 
 ##Changelog
 
-2.0.0
+    2.0.0
 
-- Fixed problem that caused phpDoc priorities to have wrong values
-- Removed WorkerQueueInterface::getWorkers
-- Worker factory now assigns an unique Id for each created worker
-- Updated log messages sent from event manager
-- Changed signature of EventManagerAwareInterface (**BC break**)
-- Fixed manager trying to call private methods if its first param was implementing the EventInterface
+    - Fixed problem that caused phpDoc priorities to have wrong values
+    - Removed WorkerQueueInterface::getWorkers
+    - Worker factory now assigns an unique Id for each created worker
+    - Updated log messages sent from event manager
+    - Changed signature of EventManagerAwareInterface (**BC break**)
+    - Fixed manager trying to call private methods if its first param was implementing the EventInterface
 
-1.0.2
+    1.0.2
 
-- Modified WorkerQueue - now returns workers in LIFO order if priority of workers is equal
-- Removed Zend Priority queue dependency
+    - Modified WorkerQueue - now returns workers in LIFO order if priority of workers is equal
+    - Removed Zend Priority queue dependency
 
-1.0.1
+    1.0.1
 
-- Changed MONITOR priority value to ~PHP_INT_MAX
-- Removed final keyword form Priority class
+    - Changed MONITOR priority value to ~PHP_INT_MAX
+    - Removed final keyword form Priority class
 
-1.0.0
+    1.0.0
 
-- First release
+    - First release
 
 
 ##Authors
