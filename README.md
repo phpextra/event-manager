@@ -81,7 +81,7 @@ $listener = new AnonymousListener(function(UserLoginEvent $event){
 ```json
 {
     "require": {
-        "phpextra/event-manager":"~1.0"
+        "phpextra/event-manager":"~2.0"
     }
 }
 ```
@@ -104,6 +104,32 @@ If you would like to help take a look at the [list of issues](https://github.com
 ##Requirements
 
 See **composer.json** for a full list of dependencies.
+
+##Changelog
+
+2.0.0
+
+- Fixed problem that caused phpDoc priorities to have wrong values
+- Removed WorkerQueueInterface::getWorkers
+- Worker factory now assigns an unique Id for each created worker
+- Updated log messages sent from event manager
+- Changed signature of EventManagerAwareInterface (**BC break**)
+- Fixed manager trying to call private methods if its first param was implementing the EventInterface
+
+1.0.2
+
+- Modified WorkerQueue - now returns workers in LIFO order if priority of workers is equal
+- Removed Zend Priority queue dependency
+
+1.0.1
+
+- Changed MONITOR priority value to ~PHP_INT_MAX
+- Removed final keyword form Priority class
+
+1.0.0
+
+- First release
+
 
 ##Authors
 
