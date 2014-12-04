@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "956284f2f8855bd07a5460c5088248a8",
+    "hash": "5914d263331b0ac19c3f658fda7edbe3",
     "packages": [
         {
             "name": "psr/log",
@@ -51,6 +51,52 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "devster/ubench",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/devster/ubench.git",
+                "reference": "b0d1f9a4ffad3b43413fdc6013c01e65dde11742"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/devster/ubench/zipball/b0d1f9a4ffad3b43413fdc6013c01e65dde11742",
+                "reference": "b0d1f9a4ffad3b43413fdc6013c01e65dde11742",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Ubench": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Perret",
+                    "email": "jeremy@devster.org",
+                    "homepage": "https://github.com/devster"
+                }
+            ],
+            "description": "Micro PHP library for benchmarking",
+            "homepage": "https://github.com/devster/ubench",
+            "keywords": [
+                "bench",
+                "benchmark",
+                "library",
+                "micro"
+            ],
+            "time": "2013-02-28 08:22:22"
+        },
         {
             "name": "doctrine/instantiator",
             "version": "dev-master",
