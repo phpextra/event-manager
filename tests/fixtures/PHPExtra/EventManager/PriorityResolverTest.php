@@ -3,13 +3,14 @@
 namespace fixtures\PHPExtra\EventManager;
 
 use PHPExtra\EventManager\Priority;
+use PHPExtra\EventManager\PriorityResolver;
 
 /**
- * The PriorityTest class
+ * The PriorityResolverTest class
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class PriorityTest extends \PHPUnit_Framework_TestCase
+class PriorityResolverTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @return array
@@ -47,15 +48,21 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testCreateNewInstance()
+    {
+        new PriorityResolver();
+    }
+
     /**
      * @dataProvider nameToValue
      *
      * @param string $name
      * @param int    $expectedValue
      */
-    public function testGivenPriorityValueReturnItsName($name, $expectedValue)
+    public function testGetsPriorityNameByValue($name, $expectedValue)
     {
-        $value = Priority::getPriorityByName($name);
+        $resolver = new PriorityResolver();
+        $value = $resolver->getPriorityByName($name);
         $this->assertEquals($expectedValue, $value);
     }
 
@@ -65,9 +72,10 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
      * @param string $expectedName
      * @param int    $value
      */
-    public function testGivenValidPriorityNameReturnItsIntegerValue($expectedName, $value)
+    public function testGetsPriorityValueByName($expectedName, $value)
     {
-        $name = Priority::getPriorityName($value);
+        $resolver = new PriorityResolver();
+        $name = $resolver->getPriorityName($value);
         $this->assertEquals($expectedName, $name);
     }
 
@@ -77,23 +85,46 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
      * @param string $comment
      * @param int $expectedValue
      */
-    public function testGivenDocCommentReturnValidPriorityValue($comment, $expectedValue)
+    public function testGetsPriorityValueFromDocComment($comment, $expectedValue)
     {
-        $value = Priority::getPriorityFromDocComment($comment, null);
+        $resolver = new PriorityResolver();
+        $value = $resolver->getPriorityFromDocComment($comment, null);
         $this->assertEquals($expectedValue, $value);
     }
 
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testGivenInvalidNonEmptyDocCommentThrowInvalidArgumentException()
+    public function testThrowsInvalidArgumentExceptionOnInvalidNonEmptyDocComment()
     {
-        Priority::getPriorityFromDocComment('@priority awda4tw4tw', null);
+        $resolver = new PriorityResolver();
+        $resolver->getPriorityFromDocComment('@priority awda4tw4tw', null);
     }
 
-    public function testGivenInvalidEmptyDocCommentThrowInvalidArgumentException()
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unknown priority given: "jhon doe"
+     */
+    public function testThrowsInvalidArgumentExceptionOnInvalidPriorityValue()
     {
-        $value = Priority::getPriorityFromDocComment('@priority', null);
+        $resolver = new PriorityResolver();
+        $resolver->getPriorityName('jhon doe');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unknown priority name given: "jhon doe"
+     */
+    public function testThrowsInvalidArgumentExceptionOnInvalidPriorityName()
+    {
+        $resolver = new PriorityResolver();
+        $resolver->getPriorityByName('jhon doe');
+    }
+
+    public function testReturnsNullOnInvalidEmptyDocComment()
+    {
+        $resolver = new PriorityResolver();
+        $value = $resolver->getPriorityFromDocComment('@priority', null);
         $this->assertNull($value);
     }
 }

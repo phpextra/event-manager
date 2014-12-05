@@ -7,7 +7,7 @@
  
 namespace PHPExtra\EventManager\Listener;
 
-use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Event\Event;
 use PHPExtra\EventManager\Priority;
 
 /**
@@ -17,20 +17,20 @@ use PHPExtra\EventManager\Priority;
  */
 class AnonymousListenerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreateNewListenerInstance()
+    public function testCreateNewInstance()
     {
-        $listener = new AnonymousListener(function(EventInterface $event){}, Priority::HIGH);
+        new AnonymousListener(function(Event $event){}, Priority::HIGH);
     }
 
-    public function testGetListenersPriorityReturnsCorrectPriorityValue()
+    public function testListenerReturnsValidPriority()
     {
-        $listener = new AnonymousListener(function(EventInterface $event){}, Priority::HIGH);
+        $listener = new AnonymousListener(function(Event $event){}, Priority::HIGH);
         $this->assertEquals(Priority::HIGH, $listener->getPriority());
     }
 
-    public function testGetListenersClosureReturnsCorrectObject()
+    public function testListenerReturnsClosure()
     {
-        $closure = function(EventInterface $event){};
+        $closure = function(Event $event){};
         $listener = new AnonymousListener($closure, Priority::HIGH);
         $this->assertEquals($closure, $listener->getClosure());
     }

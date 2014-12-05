@@ -7,7 +7,7 @@
  
 namespace PHPExtra\EventManager\Worker;
 
-use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Event\Event;
 use PHPExtra\EventManager\Listener\AnonymousListener;
 use PHPExtra\EventManager\Priority;
 
@@ -20,7 +20,7 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateNewInstance()
     {
-        $listener = new AnonymousListener(function(EventInterface $event){}, Priority::HIGH);
+        $listener = new AnonymousListener(function(Event $event){}, Priority::HIGH);
         $worker = new Worker(1, $listener, 'invoke', 'PHPExtra\EventManager\Event\EventInterface');
     }
 }

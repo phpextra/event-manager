@@ -1,59 +1,59 @@
 <?php
 
 /**
- * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2016 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.md for copying permission.
  */
 
 namespace PHPExtra\EventManager;
 
-use PHPExtra\EventManager\Event\EventInterface;
-use PHPExtra\EventManager\Exception\RuntimeException;
-use PHPExtra\EventManager\Listener\ListenerInterface;
-use PHPExtra\EventManager\Worker\DefaultWorkerQueue;
+use PHPExtra\EventManager\Event\Event;
+use PHPExtra\EventManager\Exception\EventException;
+use PHPExtra\EventManager\Listener\Listener;
+use PHPExtra\EventManager\Worker\ArrayWorkerQueue;
+use PHPExtra\EventManager\Worker\WorkerQueue;
+use PHPExtra\EventManager\Worker\Worker;
 use PHPExtra\EventManager\Worker\WorkerFactory;
-use PHPExtra\EventManager\Worker\WorkerFactoryInterface;
-use PHPExtra\EventManager\Worker\WorkerInterface;
-use PHPExtra\EventManager\Worker\WorkerQueueInterface;
 use PHPExtra\EventManager\Worker\WorkerResult;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * The EventManager class
+ * The default EventManager implementation
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class EventManager implements EventManagerInterface
+class EventManager implements EventEmitter, LoggerAwareInterface
 {
     /**
-     * @var WorkerFactoryInterface
+     * @var WorkerFactory
      */
-    protected $workerFactory = null;
+    private $workerFactory = null;
 
     /**
-     * @var WorkerQueueInterface|WorkerInterface[]
+     * @var WorkerQueue|Worker[]
      */
-    protected $workerQueue;
+    private $workerQueue;
 
     /**
      * Whenever to throw exceptions caught from listeners or not
      *
      * @var bool
      */
-    protected $throwExceptions = false;
+    private $throwExceptions = false;
 
     /**
      * Currently running event
      *
-     * @var EventInterface
+     * @var Event
      */
-    protected $runningEvent = null;
+    private $runningEvent = null;
 
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * Create new event manager
@@ -61,39 +61,35 @@ class EventManager implements EventManagerInterface
     public function __construct()
     {
         $this->workerFactory = new WorkerFactory();
-        $this->workerQueue = new DefaultWorkerQueue();
+        $this->workerQueue = new ArrayWorkerQueue();
         $this->logger = new NullLogger();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function trigger(EventInterface $event)
+    public function emit(Event $event)
     {
-        $workerQueue = clone $this->getWorkerQueue();
+        $previousRunningEvent = $this->runningEvent;
+        $this->runningEvent = $event;
 
-        if($workerQueue->count() > 0){
+        $workers = $this->workerQueue->getWorkersFor($event);
 
-            $previousRunningEvent = $this->getRunningEvent();
-            $this->setRunningEvent($event);
-
-            foreach ($workerQueue as $worker) {
-                if ($worker->isListeningTo($event)) {
-                    $this->runWorker($worker, $event);
-                }
+        if (count($workers) > 0) {
+            foreach ($workers as $worker) {
+                $this->runWorker($worker, $event);
             }
-
-            $this->setRunningEvent($previousRunningEvent);
-
-        }else{
-            $this->getLogger()->info(sprintf('Event %s has no workers', get_class($event)));
+        } else {
+            $this->logger->debug(sprintf('Event %s has no workers', get_class($event)));
         }
+
+        $this->runningEvent = $previousRunningEvent;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @return Event
      */
     public function getRunningEvent()
     {
@@ -101,63 +97,42 @@ class EventManager implements EventManagerInterface
     }
 
     /**
-     * @param EventInterface $event
-     *
-     * @return $this
+     * @param Worker $worker
+     * @param Event  $event
      */
-    public function setRunningEvent(EventInterface $event = null)
+    protected function onWorkerStart(Worker $worker, Event $event)
     {
-        if($event === null){
-            $this->getLogger()->debug('Current running event is now NULL');
-        }else{
-            $this->getLogger()->debug(sprintf('Current running event was set to %s', get_class($event)));
-        }
-
-        $this->runningEvent = $event;
     }
 
     /**
-     * Get workers queue
-     *
-     * @return WorkerQueueInterface|WorkerInterface[]
+     * @param Worker $worker
+     * @param Event  $event
      */
-    public function getWorkerQueue()
+    protected function onWorkerStop(Worker $worker, Event $event)
     {
-        return $this->workerQueue;
     }
 
     /**
-     * @param WorkerQueueInterface $workerQueue
+     * @param Worker $worker
+     * @param Event  $event
      *
-     * @return $this
-     */
-    public function setWorkerQueue($workerQueue)
-    {
-        $this->workerQueue = $workerQueue;
-    }
-
-    /**
-     * @param WorkerInterface $worker
-     * @param EventInterface  $event
-     *
-     * @throws RuntimeException
+     * @throws EventException
      * @return WorkerResult
      */
-    protected function runWorker(WorkerInterface $worker, EventInterface $event)
+    private function runWorker(Worker $worker, Event $event)
     {
-        $this->getLogger()->debug(sprintf('Starting worker #%s with priority %s for event %s', $worker, $worker->getPriority(), get_class($event)));
+        $this->logger->debug(sprintf('Starting worker #%s with priority %s for event %s', $worker, $worker->getPriority(), get_class($event)));
 
+        $this->onWorkerStart($worker, $event);
         $result = $worker->run($event);
-        if (!$result->isSuccessful()) {
-            $this->getLogger()->warning(sprintf('Worker #%s failed: %s', $worker, $result->getMessage()));
-            if ($this->getThrowExceptions()) {
-                $this->getLogger()->debug(sprintf('Throwing exception (throwExceptions is set to true)', $worker));
+        $this->onWorkerStop($worker, $event);
 
-                $exception = new RuntimeException(sprintf('Worker #%s failed', $worker), 0, $result->getException());
-                $exception
-                    ->setEvent($event)
-                    ->setListener($worker->getListener())
-                ;
+        if (!$result->isSuccessful()) {
+            $this->logger->warning(sprintf('Worker #%s failed: %s', $worker, $result->getMessage()));
+
+            if ($this->throwExceptions) {
+                $this->logger->debug(sprintf('Throwing exception (throwExceptions is set to true)', $worker));
+                $exception = new EventException($event, $worker->getListener(), sprintf('Worker #%s failed', $worker->getId()), $result->getException());
 
                 throw $exception;
             }
@@ -167,85 +142,59 @@ class EventManager implements EventManagerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set to true to throw exceptions coming from listeners.
+     * By default all exceptions are suppressed.
+     *
+     * @param bool $throwExceptions
+     *
+     * @return $this
      */
-    public function getThrowExceptions()
+    public function setThrowExceptions($throwExceptions = true)
     {
-        return $this->throwExceptions;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setThrowExceptions($throwExceptions)
-    {
-        $this->throwExceptions = $throwExceptions;
+        $this->throwExceptions = (bool)$throwExceptions;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @see Priority
+     *
+     * @param Listener $listener
+     * @param int      $priority
+     *
+     * @return $this
      */
-    public function addListener(ListenerInterface $listener, $priority = null)
+    public function add(Listener $listener, $priority = null)
     {
-        $workers = $this->getWorkerFactory()->createWorkers($listener);
+        $workers = $this->workerFactory->createWorkers($listener, $priority);
         $workersCount = 0;
 
         if ($priority !== null) {
-            $this->getLogger()->debug(sprintf('Overriding the priority for all workers to %s in %s', $priority, get_class($listener)));
+            $this->logger->debug(sprintf('Overriding priority for all workers to %s in %s', $priority, get_class($listener)));
         }
 
         foreach ($workers as $worker) {
-            if ($priority !== null) {
-                $worker->setPriority($priority);
-            }
             $this->addWorker($worker);
             $workersCount++;
         }
 
-        if($workersCount == 0){
-            $this->getLogger()->warning(sprintf('Listener "%s" does not have any workers', get_class($listener)));
+        if ($workersCount == 0) {
+            $this->logger->debug(sprintf('Listener "%s" does not have any workers', get_class($listener)));
         }
 
         return $this;
     }
 
     /**
-     * Get worker factory
-     *
-     * @return WorkerFactoryInterface
-     */
-    public function getWorkerFactory()
-    {
-        return $this->workerFactory;
-    }
-
-    /**
-     * @param WorkerInterface $worker
+     * @param Worker $worker
      *
      * @return $this
      */
-    protected function addWorker(WorkerInterface $worker)
+    private function addWorker(Worker $worker)
     {
-        $params = array($worker, $worker->getListenerClass(), $worker->getMethodName(), $worker->getPriority());
-        $this->getLogger()->debug(vsprintf('Added new worker (#%s) %s::%s() with priority: %s', $params));
-
-        $this->getWorkerQueue()->addWorker($worker);
+        $this->workerQueue->addWorker($worker);
 
         return $this;
-    }
-
-    /**
-     * @return LoggerInterface
-     */
-    public function getLogger()
-    {
-        if ($this->logger === null) {
-            $this->logger = new NullLogger();
-        }
-
-        return $this->logger;
     }
 
     /**
