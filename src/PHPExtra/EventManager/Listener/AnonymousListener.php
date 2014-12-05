@@ -16,17 +16,17 @@ use PHPExtra\EventManager\Event\EventInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class AnonymousListener implements ListenerInterface
+class AnonymousListener implements ListenerInterface, InvokableListener
 {
     /**
      * @var Closure
      */
-    protected $closure;
+    private $closure;
 
     /**
      * @var int
      */
-    protected $priority;
+    private $priority;
 
     /**
      * @param Closure $closure
@@ -41,14 +41,6 @@ class AnonymousListener implements ListenerInterface
     }
 
     /**
-     * @return Closure
-     */
-    public function getClosure()
-    {
-        return $this->closure;
-    }
-
-    /**
      * @return int
      */
     public function getPriority()
@@ -57,11 +49,7 @@ class AnonymousListener implements ListenerInterface
     }
 
     /**
-     * Invoke an event
-     *
-     * @param EventInterface $event
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function invoke(EventInterface $event)
     {

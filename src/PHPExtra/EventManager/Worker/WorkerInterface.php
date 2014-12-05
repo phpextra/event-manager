@@ -42,48 +42,37 @@ interface WorkerInterface
     public function isListeningTo(EventInterface $event);
 
     /**
+     * Get listener attached to this worker
+     *
      * @return ListenerInterface
      */
     public function getListener();
 
     /**
+     * Get listener class name
+     *
      * @return string
      */
     public function getListenerClass();
 
     /**
-     * @deprecated use getMethodName()
+     * Get listener's method name
      *
-     * @return string
-     */
-    public function getMethod();
-
-    /**
      * @return string
      */
     public function getMethodName();
 
     /**
+     * Get event class name
+     *
      * @return string
      */
     public function getEventClass();
 
     /**
-     * @param int $priority
+     * Get worker priority
      *
-     * @return $this
-     */
-    public function setPriority($priority);
-
-    /**
      * @return int
      */
     public function getPriority();
-
-    /**
-     * Return worker ID
-     *
-     * @return string
-     */
-    public function __toString();
 }

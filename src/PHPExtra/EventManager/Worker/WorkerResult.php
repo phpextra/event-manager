@@ -94,21 +94,6 @@ class WorkerResult
     }
 
     /**
-     * Returns null if no exception
-     *
-     * @deprecated
-     * @return string|null
-     */
-    public function getExceptionClass()
-    {
-        if ($this->getException()) {
-            return get_class($this->getException());
-        }
-
-        return null;
-    }
-
-    /**
      * @return bool
      */
     public function isSuccessful()

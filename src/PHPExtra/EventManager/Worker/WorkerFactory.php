@@ -10,6 +10,7 @@ namespace PHPExtra\EventManager\Worker;
 use PHPExtra\EventManager\Listener\AnonymousListener;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Priority;
+use PHPExtra\EventManager\PriorityResolver;
 
 /**
  * The WorkerFactory class
@@ -28,13 +29,7 @@ class WorkerFactory implements WorkerFactoryInterface
      */
     public function createWorkers(ListenerInterface $listener)
     {
-        if ($listener instanceof AnonymousListener) {
-            $worker = $this->createWorkersFromAnonymousListener($listener);
-        } else {
-            $worker = $this->createWorkersFromListener($listener);
-        }
-
-        return $worker;
+        return $this->createWorkersFromListener($listener);
     }
 
     /**
@@ -47,31 +42,31 @@ class WorkerFactory implements WorkerFactoryInterface
         return $this->nextWorkerId++;
     }
 
-    /**
-     * @param AnonymousListener $listener
-     *
-     * @return WorkerInterface[]
-     * @throws \InvalidArgumentException
-     */
-    private function createWorkersFromAnonymousListener(AnonymousListener $listener)
-    {
-        $closureReflection = new \ReflectionMethod($listener->getClosure(), '__invoke');
-        $params = $closureReflection->getParameters();
-
-        if (isset($params[0])) {
-            $param = $params[0];
-            $eventClassName = $this->getEventClassNameFromParam($param);
-
-            if ($eventClassName === null) {
-                $message = sprintf('First closure param (%s) must be a class implementing an EventInterface', $param->getName());
-                throw new \InvalidArgumentException($message);
-            }
-
-            return array(new Worker($this->generateWorkerId(), $listener, 'invoke', $eventClassName, $listener->getPriority()));
-        }
-
-        return array();
-    }
+//    /**
+//     * @param AnonymousListener $listener
+//     *
+//     * @return WorkerInterface[]
+//     * @throws \InvalidArgumentException
+//     */
+//    private function createWorkersFromAnonymousListener(AnonymousListener $listener)
+//    {
+//        $closureReflection = new \ReflectionMethod($listener->getClosure(), '__invoke');
+//        $params = $closureReflection->getParameters();
+//
+//        if (isset($params[0])) {
+//            $param = $params[0];
+//            $eventClassName = $this->getEventClassNameFromParam($param);
+//
+//            if ($eventClassName === null) {
+//                $message = sprintf('First closure param (%s) must be a class implementing an EventInterface', $param->getName());
+//                throw new \InvalidArgumentException($message);
+//            }
+//
+//            return array(new Worker($this->generateWorkerId(), $listener, 'invoke', $eventClassName, $listener->getPriority()));
+//        }
+//
+//        return array();
+//    }
 
     /**
      * @param \ReflectionParameter $param
@@ -113,7 +108,7 @@ class WorkerFactory implements WorkerFactoryInterface
                 continue;
             }
 
-            $priority = Priority::getPriorityFromDocComment($method->getDocComment(), Priority::NORMAL);
+            $priority = PriorityResolver::getPriorityFromDocComment($method->getDocComment(), Priority::NORMAL);
             $workers[] = new Worker($this->generateWorkerId(), $listener, $method->getName(), $eventClassName, $priority);
         }
 
