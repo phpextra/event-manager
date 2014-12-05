@@ -15,30 +15,50 @@ use PHPExtra\EventManager\Listener\ListenerInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-interface ExceptionContext
+class ExceptionContext
 {
+    /**
+     * @var EventInterface
+     */
+    private $event;
+
+    /**
+     * @var ListenerInterface
+     */
+    private $listener;
+
+    /**
+     * @param EventInterface    $event
+     * @param ListenerInterface $listener
+     */
+    function __construct(EventInterface $event, ListenerInterface $listener)
+    {
+        $this->event = $event;
+        $this->listener = $listener;
+    }
+
     /**
      * Tell if current context has an event
      *
      * @return bool
      */
-    public function hasEvent();
+    public function hasEvent(){}
 
     /**
      * @return EventInterface
      */
-    public function getEvent();
+    public function getEvent(){}
 
     /**
      * Tell if current context has a listener
      *
      * @return bool
      */
-    public function hasListener();
+    public function hasListener(){}
 
     /**
      * @return ListenerInterface
      */
-    public function getListener();
+    public function getListener(){}
 
 } 

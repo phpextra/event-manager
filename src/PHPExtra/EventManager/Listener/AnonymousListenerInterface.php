@@ -7,14 +7,12 @@
 
 namespace PHPExtra\EventManager\Listener;
 
-use PHPExtra\EventManager\Event\EventInterface;
-
 /**
  * The InvokableListener interface
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-interface InvokableListener extends ListenerInterface
+interface AnonymousListenerInterface extends ListenerInterface
 {
     /**
      * @return int
@@ -22,11 +20,7 @@ interface InvokableListener extends ListenerInterface
     public function getPriority();
 
     /**
-     * Invoke listener
-     *
-     * @param EventInterface $event
-     *
-     * @return void
+     * @return \Closure
      */
-    public function invoke(EventInterface $event);
-} 
+    public function getClosure();
+}

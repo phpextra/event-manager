@@ -16,7 +16,7 @@ defined('PHPEXTRA_EM_PHP_INT_MAX') or define('PHPEXTRA_EM_PHP_INT_MAX', PHP_INT_
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class Priority
+final class Priority
 {
     /**
      * Lowest priority
@@ -59,5 +59,4 @@ class Priority
      * No changes should be made by listener using that priority
      */
     const MONITOR = PHPEXTRA_EM_PHP_INT_MIN;
-
 }

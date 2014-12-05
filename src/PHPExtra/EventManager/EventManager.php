@@ -8,6 +8,7 @@
 namespace PHPExtra\EventManager;
 
 use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Exception\ExceptionContext;
 use PHPExtra\EventManager\Exception\RuntimeException;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Worker\DefaultWorkerQueue;
@@ -134,11 +135,10 @@ class EventManager implements EventManagerInterface, LoggerAwareInterface
             if ($this->throwExceptions) {
                 $this->logger->debug(sprintf('Throwing exception (throwExceptions is set to true)', $worker));
 
-                $exception = new RuntimeException(sprintf('Worker #%s failed', $worker), 0, $result->getException());
-                $exception
-                    ->setEvent($event)
-                    ->setListener($worker->getListener())
-                ;
+                $exception = new RuntimeException(
+                    sprintf('Worker #%s failed', $worker->getId()),
+                    new ExceptionContext($event, $worker->getListener()), 0, $result->getException()
+                );
 
                 throw $exception;
             }
@@ -162,7 +162,7 @@ class EventManager implements EventManagerInterface, LoggerAwareInterface
      */
     public function addListener(ListenerInterface $listener, $priority = null)
     {
-        $workers = $this->getWorkerFactory()->createWorkers($listener);
+        $workers = $this->getWorkerFactory()->createWorkers($listener, $priority);
         $workersCount = 0;
 
         if ($priority !== null) {
