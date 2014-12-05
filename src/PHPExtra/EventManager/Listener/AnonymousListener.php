@@ -8,7 +8,6 @@
 namespace PHPExtra\EventManager\Listener;
 
 use Closure;
-use PHPExtra\EventManager\Event\EventInterface;
 
 /**
  * A wrapper for closure listener
@@ -16,7 +15,7 @@ use PHPExtra\EventManager\Event\EventInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class AnonymousListener implements ListenerInterface, InvokableListener
+class AnonymousListener implements ListenerInterface, AnonymousListenerInterface
 {
     /**
      * @var Closure
@@ -49,10 +48,10 @@ class AnonymousListener implements ListenerInterface, InvokableListener
     }
 
     /**
-     * {@inheritdoc}
+     * @return \Closure
      */
-    public function invoke(EventInterface $event)
+    public function getClosure()
     {
-        call_user_func($this->closure, $event);
+        return $this->closure;
     }
 }

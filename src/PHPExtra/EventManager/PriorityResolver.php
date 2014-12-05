@@ -12,7 +12,7 @@ namespace PHPExtra\EventManager;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class PriorityResolver 
+final class PriorityResolver
 {
     /**
      * Name to int mapping
@@ -29,15 +29,6 @@ class PriorityResolver
         'highest'   => Priority::HIGHEST,
         'monitor'   => Priority::MONITOR,
     );
-
-    /**
-     * @param string $name
-     * @param int $value
-     */
-    public static function addPriority($name, $value)
-    {
-        static::$nameToPriority[strtolower($name)] = $value;
-    }
 
     /**
      * Get human readable priority name

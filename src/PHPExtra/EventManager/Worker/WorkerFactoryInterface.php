@@ -20,8 +20,9 @@ interface WorkerFactoryInterface
      * Create workers from given listener
      *
      * @param ListenerInterface $listener
+     * @param int               $priority
      *
      * @return WorkerInterface[]
      */
-    public function createWorkers(ListenerInterface $listener);
+    public function createWorkers(ListenerInterface $listener, $priority = null);
 }

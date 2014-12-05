@@ -21,6 +21,8 @@ interface EventManagerInterface
      * Add event listener
      * Priority used in the listener can be overridden by setting the $priority
      *
+     * @see Priority
+     *
      * @param ListenerInterface $listener
      * @param int               $priority
      *

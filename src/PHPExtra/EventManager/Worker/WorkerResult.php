@@ -14,28 +14,28 @@ use PHPExtra\EventManager\Event\EventInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class WorkerResult
+final class WorkerResult
 {
     /**
      * @see WorkerResultStatus
      * @var int
      */
-    protected $status;
+    private $status;
 
     /**
      * @var \Exception
      */
-    protected $exception;
+    private $exception;
 
     /**
      * @var WorkerInterface
      */
-    protected $worker;
+    private $worker;
 
     /**
      * @var EventInterface
      */
-    protected $event;
+    private $event;
 
     /**
      * @param WorkerInterface $worker
