@@ -135,8 +135,10 @@ class EventManager implements EventManagerInterface, LoggerAwareInterface
             if ($this->throwExceptions) {
                 $this->logger->debug(sprintf('Throwing exception (throwExceptions is set to true)', $worker));
 
-                $context = new ExceptionContext($event, $worker->getListener());
-                $exception = new RuntimeException(sprintf('Worker #%s failed', $worker->getId()), $context, 0, $result->getException());
+                $exception = new RuntimeException(
+                    sprintf('Worker #%s failed', $worker->getId()),
+                    new ExceptionContext($event, $worker->getListener()), 0, $result->getException()
+                );
 
                 throw $exception;
             }
