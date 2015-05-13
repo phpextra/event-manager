@@ -10,7 +10,7 @@ namespace PHPExtra\EventManager;
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Exception\RuntimeException;
 use PHPExtra\EventManager\Listener\ListenerInterface;
-use PHPExtra\EventManager\Worker\SortableWorkerQueue;
+use PHPExtra\EventManager\Worker\DefaultWorkerQueue;
 use PHPExtra\EventManager\Worker\WorkerFactory;
 use PHPExtra\EventManager\Worker\WorkerFactoryInterface;
 use PHPExtra\EventManager\Worker\WorkerInterface;
@@ -32,9 +32,9 @@ class EventManager implements EventManagerInterface
     protected $workerFactory = null;
 
     /**
-     * @var WorkerQueueInterface
+     * @var WorkerQueueInterface|WorkerInterface[]
      */
-    protected $workerQueue = array();
+    protected $workerQueue;
 
     /**
      * Whenever to throw exceptions caught from listeners or not
@@ -61,7 +61,7 @@ class EventManager implements EventManagerInterface
     public function __construct()
     {
         $this->workerFactory = new WorkerFactory();
-        $this->workerQueue = new SortableWorkerQueue();
+        $this->workerQueue = new DefaultWorkerQueue();
         $this->logger = new NullLogger();
     }
 

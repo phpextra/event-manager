@@ -81,7 +81,7 @@ $listener = new AnonymousListener(function(UserLoginEvent $event){
 ```json
 {
     "require": {
-        "phpextra/event-manager":"~2.0"
+        "phpextra/event-manager":"~2.1"
     }
 }
 ```
@@ -106,6 +106,10 @@ If you would like to help take a look at the [list of issues](https://github.com
 See **composer.json** for a full list of dependencies.
 
 ##Changelog
+
+    2.1.0
+
+    - added SplPriorityQueue fixing wrong listener execution order
 
     2.0.0
 

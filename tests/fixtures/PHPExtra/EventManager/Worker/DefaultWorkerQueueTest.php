@@ -12,14 +12,14 @@ namespace PHPExtra\EventManager\Worker;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class SortableWorkerQueueTest extends \PHPUnit_Framework_TestCase
+class DefaultWorkerQueueTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @return WorkerQueueInterface
      */
     protected function createWorkerQueue()
     {
-        return new SortableWorkerQueue();
+        return new DefaultWorkerQueue();
     }
 
     public function testCreateEmptyQueueCreatesEmptyQueue()
@@ -74,7 +74,7 @@ class SortableWorkerQueueTest extends \PHPUnit_Framework_TestCase
 
         foreach($queue as $worker){
             /** @var WorkerInterface $worker */
-            $output[] = $worker->getMethod();
+            $output[] = $worker->getMethodName();
         }
 
         $this->assertEquals(array(
