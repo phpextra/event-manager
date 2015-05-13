@@ -7,9 +7,10 @@
 
 namespace PHPExtra\EventManager\Worker;
 
-use PHPExtra\EventManager\Listener\AnonymousListener;
+use PHPExtra\EventManager\Listener\AnonymousListenerInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
 use PHPExtra\EventManager\Priority;
+use PHPExtra\EventManager\PriorityResolver;
 
 /**
  * The WorkerFactory class
@@ -24,20 +25,6 @@ class WorkerFactory implements WorkerFactoryInterface
     private $nextWorkerId = 1000;
 
     /**
-     * {@inheritdoc}
-     */
-    public function createWorkers(ListenerInterface $listener)
-    {
-        if ($listener instanceof AnonymousListener) {
-            $worker = $this->createWorkersFromAnonymousListener($listener);
-        } else {
-            $worker = $this->createWorkersFromListener($listener);
-        }
-
-        return $worker;
-    }
-
-    /**
      * Generate ID for new worker created in the factory
      *
      * @return int
@@ -48,12 +35,59 @@ class WorkerFactory implements WorkerFactoryInterface
     }
 
     /**
-     * @param AnonymousListener $listener
+     * {@inheritdoc}
+     */
+    public function createWorkers(ListenerInterface $listener, $priority = null)
+    {
+        if($listener instanceof AnonymousListenerInterface){
+            $workers = $this->createWorkersFromAnonymousListener($listener, $priority);
+        }else{
+            $workers = $this->createWorkersFromStandardListener($listener, $priority);
+        }
+        return $workers;
+    }
+
+    /**
+     * @param ListenerInterface $listener
+     * @param int              $priority
+     *
+     * @return array
+     */
+    private function createWorkersFromStandardListener(ListenerInterface $listener, $priority = null)
+    {
+        $workers = array();
+        $reflectedListener = new \ReflectionClass($listenerClass = get_class($listener));
+        foreach ($reflectedListener->getMethods() as $method) {
+
+            if (!$method->isPublic() || ($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
+                continue;
+            }
+
+            if (($eventClassName = $this->getEventClassNameFromParam($param)) === null) {
+                continue;
+            }
+
+            if($priority === null){
+                $workerPriority = PriorityResolver::getPriorityFromDocComment($method->getDocComment(), Priority::NORMAL);
+            }else{
+                $workerPriority = $priority;
+            }
+
+            if($priority === null){}
+
+            $workers[] = new Worker($this->generateWorkerId(), $listener, $method->getName(), $eventClassName, $workerPriority);
+        }
+
+        return $workers;
+    }
+
+    /**
+     * @param AnonymousListenerInterface $listener
      *
      * @return WorkerInterface[]
      * @throws \InvalidArgumentException
      */
-    private function createWorkersFromAnonymousListener(AnonymousListener $listener)
+    private function createWorkersFromAnonymousListener(AnonymousListenerInterface $listener)
     {
         $closureReflection = new \ReflectionMethod($listener->getClosure(), '__invoke');
         $params = $closureReflection->getParameters();
@@ -92,31 +126,5 @@ class WorkerFactory implements WorkerFactoryInterface
         }
 
         return $eventClassName;
-    }
-
-    /**
-     * @param ListenerInterface $listener
-     *
-     * @return WorkerInterface[]
-     */
-    private function createWorkersFromListener(ListenerInterface $listener)
-    {
-        $workers = array();
-        $reflectedListener = new \ReflectionClass($listenerClass = get_class($listener));
-        foreach ($reflectedListener->getMethods() as $method) {
-
-            if (!$method->isPublic() || ($method->getNumberOfParameters() > 1) || !($param = current($method->getParameters()))) {
-                continue;
-            }
-
-            if (($eventClassName = $this->getEventClassNameFromParam($param)) === null) {
-                continue;
-            }
-
-            $priority = Priority::getPriorityFromDocComment($method->getDocComment(), Priority::NORMAL);
-            $workers[] = new Worker($this->generateWorkerId(), $listener, $method->getName(), $eventClassName, $priority);
-        }
-
-        return $workers;
     }
 }

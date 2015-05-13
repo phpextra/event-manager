@@ -7,74 +7,35 @@
 
 namespace PHPExtra\EventManager\Exception;
 
-use PHPExtra\EventManager\Event\EventInterface;
-use PHPExtra\EventManager\Listener\ListenerInterface;
-use RuntimeException as SplRuntimeException;
-
 /**
  * The RuntimeException class
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class RuntimeException extends SplRuntimeException
+class RuntimeException extends \RuntimeException
 {
     /**
-     * @var ListenerInterface
+     * @var ExceptionContext
      */
-    protected $listener;
+    private $context;
 
     /**
-     * @var EventInterface
+     * @param string           $message
+     * @param ExceptionContext $context
+     * @param int              $code
+     * @param \Exception       $previous
      */
-    protected $event;
-
-    /**
-     * @param string     $message
-     * @param int        $code
-     * @param \Exception $previous
-     */
-    public function __construct($message = "", $code = 0, \Exception $previous = null)
+    public function __construct($message = "", ExceptionContext $context, $code = 0, \Exception $previous = null)
     {
-        SplRuntimeException::__construct($message, $code, $previous);
+        $this->context = $context;
+        parent::__construct($message, $code, $previous);
     }
 
     /**
-     * @return ListenerInterface
+     * @return ExceptionContext
      */
-    public function getListener()
+    public function getContext()
     {
-        return $this->listener;
-    }
-
-    /**
-     * @param ListenerInterface $listener
-     *
-     * @return $this
-     */
-    public function setListener($listener)
-    {
-        $this->listener = $listener;
-
-        return $this;
-    }
-
-    /**
-     * @return EventInterface
-     */
-    public function getEvent()
-    {
-        return $this->event;
-    }
-
-    /**
-     * @param EventInterface $event
-     *
-     * @return $this
-     */
-    public function setEvent($event)
-    {
-        $this->event = $event;
-
-        return $this;
+        return $this->context;
     }
 }

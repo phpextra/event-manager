@@ -8,7 +8,7 @@
 namespace PHPExtra\EventManager\Event;
 
 /**
- * The EventInterface interface
+ * The EventInterface
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */

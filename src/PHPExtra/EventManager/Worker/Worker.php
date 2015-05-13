@@ -61,11 +61,10 @@ class Worker implements WorkerInterface
         }
 
         $this->id = $id;
-
-        $this->setListener($listener);
-        $this->setMethodName($methodName);
-        $this->setEventClass($eventClass);
-        $this->setPriority($priority);
+        $this->listener = $listener;
+        $this->methodName = $methodName;
+        $this->eventClass = $eventClass;
+        $this->priority = $priority;
     }
 
     /**
@@ -108,14 +107,6 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @param ListenerInterface $listener
-     */
-    public function setListener(ListenerInterface $listener)
-    {
-        $this->listener = $listener;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getMethod()
@@ -124,35 +115,11 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @deprecated use setMethodName
-     *
-     * @param string $method
-     *
-     * @return $this
-     */
-    public function setMethod($method)
-    {
-        return $this->setMethodName($method);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getMethodName()
     {
         return $this->methodName;
-    }
-
-    /**
-     * @param string $methodName
-     *
-     * @return $this
-     */
-    public function setMethodName($methodName)
-    {
-        $this->methodName = $methodName;
-
-        return $this;
     }
 
     /**
@@ -169,14 +136,6 @@ class Worker implements WorkerInterface
     public function getEventClass()
     {
         return $this->eventClass;
-    }
-
-    /**
-     * @param string $eventClass
-     */
-    public function setEventClass($eventClass)
-    {
-        $this->eventClass = $eventClass;
     }
 
     /**

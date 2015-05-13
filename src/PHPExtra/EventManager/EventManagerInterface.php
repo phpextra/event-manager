@@ -9,45 +9,19 @@ namespace PHPExtra\EventManager;
 
 use PHPExtra\EventManager\Event\EventInterface;
 use PHPExtra\EventManager\Listener\ListenerInterface;
-use Psr\Log\LoggerAwareInterface;
 
 /**
- * The EventManagerInterface interface
+ * The EventManagerInterface
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-interface EventManagerInterface extends LoggerAwareInterface
+interface EventManagerInterface
 {
-    /**
-     * Returns an event that is currently running or null if no event is running
-     *
-     * @return EventInterface|null
-     */
-    public function getRunningEvent();
-
-    /**
-     * Tell if current instance of event manager will break the queue
-     * if an exception will be thrown from listener.
-     *
-     * @return boolean
-     */
-    public function getThrowExceptions();
-
-    /**
-     * If this is set to true all exceptions will be thrown
-     * and the queue will be interrupted (incomplete)
-     *
-     * Defaults to false
-     *
-     * @param bool $throwExceptions
-     *
-     * @return EventManager
-     */
-    public function setThrowExceptions($throwExceptions);
-
     /**
      * Add event listener
      * Priority used in the listener can be overridden by setting the $priority
+     *
+     * @see Priority
      *
      * @param ListenerInterface $listener
      * @param int               $priority
@@ -62,7 +36,6 @@ interface EventManagerInterface extends LoggerAwareInterface
      * @param EventInterface $event
      *
      * @throws \RuntimeException
-     * @throws \Exception
      * @return $this
      */
     public function trigger(EventInterface $event);

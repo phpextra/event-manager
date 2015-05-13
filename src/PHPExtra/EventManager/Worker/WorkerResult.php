@@ -14,28 +14,28 @@ use PHPExtra\EventManager\Event\EventInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class WorkerResult
+final class WorkerResult
 {
     /**
      * @see WorkerResultStatus
      * @var int
      */
-    protected $status;
+    private $status;
 
     /**
      * @var \Exception
      */
-    protected $exception;
+    private $exception;
 
     /**
      * @var WorkerInterface
      */
-    protected $worker;
+    private $worker;
 
     /**
      * @var EventInterface
      */
-    protected $event;
+    private $event;
 
     /**
      * @param WorkerInterface $worker
@@ -91,21 +91,6 @@ class WorkerResult
     public function getException()
     {
         return $this->exception;
-    }
-
-    /**
-     * Returns null if no exception
-     *
-     * @deprecated
-     * @return string|null
-     */
-    public function getExceptionClass()
-    {
-        if ($this->getException()) {
-            return get_class($this->getException());
-        }
-
-        return null;
     }
 
     /**
