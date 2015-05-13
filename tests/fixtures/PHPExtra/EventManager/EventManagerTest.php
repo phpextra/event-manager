@@ -18,7 +18,6 @@ use PHPExtra\EventManager\Listener\AnonymousListener;
  */
 class EventManagerTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testCreateEventManagerCreatesEventManager()
     {
         new EventManager();
@@ -26,19 +25,15 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testAddAnonymousListenersAddsListeners()
     {
-        $this->markTestIncomplete();
         $em = new EventManager();
+
         $listener1 = new AnonymousListener(function(EventInterface $event){});
         $listener2 = new AnonymousListener(function(EventInterface $event){});
-
-        $this->assertEquals(0, $em->getWorkerQueue()->count());
 
         $em
             ->addListener($listener1)
             ->addListener($listener2)
         ;
-
-        $this->assertEquals(2, $em->getWorkerQueue()->count());
     }
 
     public function testExecuteListenersInProperOrderReturnsValidResult()

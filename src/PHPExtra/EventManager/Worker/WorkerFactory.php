@@ -82,15 +82,20 @@ class WorkerFactory implements WorkerFactoryInterface
     }
 
     /**
-     * @param AnonymousListenerInterface $listener
+     * Priority given here overrides the priority set within the anonymous listener
      *
+     * @param AnonymousListenerInterface $listener
+     * @param int $priority
      * @return WorkerInterface[]
-     * @throws \InvalidArgumentException
      */
-    private function createWorkersFromAnonymousListener(AnonymousListenerInterface $listener)
+    private function createWorkersFromAnonymousListener(AnonymousListenerInterface $listener, $priority = null)
     {
         $closureReflection = new \ReflectionMethod($listener->getClosure(), '__invoke');
         $params = $closureReflection->getParameters();
+
+        if($priority === null){
+            $priority = $listener->getPriority();
+        }
 
         if (isset($params[0])) {
             $param = $params[0];
@@ -101,7 +106,7 @@ class WorkerFactory implements WorkerFactoryInterface
                 throw new \InvalidArgumentException($message);
             }
 
-            return array(new Worker($this->generateWorkerId(), $listener, 'invoke', $eventClassName, $listener->getPriority()));
+            return array(new AnonymousWorker($this->generateWorkerId(), $listener, $eventClassName, $priority));
         }
 
         return array();

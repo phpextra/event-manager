@@ -3,6 +3,7 @@
 namespace fixtures\PHPExtra\EventManager;
 
 use PHPExtra\EventManager\Priority;
+use PHPExtra\EventManager\PriorityResolver;
 
 /**
  * The PriorityTest class
@@ -55,8 +56,7 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
      */
     public function testGivenPriorityValueReturnItsName($name, $expectedValue)
     {
-        $this->markTestIncomplete();
-        $value = Priority::getPriorityByName($name);
+        $value = PriorityResolver::getPriorityByName($name);
         $this->assertEquals($expectedValue, $value);
     }
 
@@ -68,8 +68,7 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
      */
     public function testGivenValidPriorityNameReturnItsIntegerValue($expectedName, $value)
     {
-        $this->markTestIncomplete();
-        $name = Priority::getPriorityName($value);
+        $name = PriorityResolver::getPriorityName($value);
         $this->assertEquals($expectedName, $name);
     }
 
@@ -81,8 +80,7 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
      */
     public function testGivenDocCommentReturnValidPriorityValue($comment, $expectedValue)
     {
-        $this->markTestIncomplete();
-        $value = Priority::getPriorityFromDocComment($comment, null);
+        $value = PriorityResolver::getPriorityFromDocComment($comment, null);
         $this->assertEquals($expectedValue, $value);
     }
 
@@ -91,14 +89,12 @@ class PriorityTest extends \PHPUnit_Framework_TestCase
      */
     public function testGivenInvalidNonEmptyDocCommentThrowInvalidArgumentException()
     {
-        $this->markTestIncomplete();
-        Priority::getPriorityFromDocComment('@priority awda4tw4tw', null);
+        PriorityResolver::getPriorityFromDocComment('@priority awda4tw4tw', null);
     }
 
     public function testGivenInvalidEmptyDocCommentThrowInvalidArgumentException()
     {
-        $this->markTestIncomplete();
-        $value = Priority::getPriorityFromDocComment('@priority', null);
+        $value = PriorityResolver::getPriorityFromDocComment('@priority', null);
         $this->assertNull($value);
     }
 }
