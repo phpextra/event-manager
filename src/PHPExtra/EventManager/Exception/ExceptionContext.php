@@ -42,23 +42,35 @@ class ExceptionContext
      *
      * @return bool
      */
-    public function hasEvent(){}
+    public function hasEvent()
+    {
+        return $this->event !== null;
+    }
 
     /**
      * @return EventInterface
      */
-    public function getEvent(){}
+    public function getEvent()
+    {
+        return $this->event;
+    }
 
     /**
      * Tell if current context has a listener
      *
      * @return bool
      */
-    public function hasListener(){}
+    public function hasListener()
+    {
+        return $this->listener !== null;
+    }
 
     /**
      * @return ListenerInterface
      */
-    public function getListener(){}
+    public function getListener()
+    {
+        return $this->listener;
+    }
 
 } 

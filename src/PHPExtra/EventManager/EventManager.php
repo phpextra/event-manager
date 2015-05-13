@@ -162,7 +162,7 @@ class EventManager implements EventManagerInterface, LoggerAwareInterface
      */
     public function addListener(ListenerInterface $listener, $priority = null)
     {
-        $workers = $this->getWorkerFactory()->createWorkers($listener, $priority);
+        $workers = $this->workerFactory->createWorkers($listener, $priority);
         $workersCount = 0;
 
         if ($priority !== null) {
@@ -179,16 +179,6 @@ class EventManager implements EventManagerInterface, LoggerAwareInterface
         }
 
         return $this;
-    }
-
-    /**
-     * Get worker factory
-     *
-     * @return WorkerFactoryInterface
-     */
-    private function getWorkerFactory()
-    {
-        return $this->workerFactory;
     }
 
     /**
