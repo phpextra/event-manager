@@ -19,11 +19,6 @@
             "PHPExtra\\EventManager": "src/"
         }
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0.x-dev"
-        }
-    },
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0",
