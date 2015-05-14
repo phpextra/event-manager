@@ -7,6 +7,8 @@
 
 namespace PHPExtra\EventManager\Listener;
 
+use PHPExtra\EventManager\Event\EventInterface;
+
 /**
  * The InvokableListener interface
  *
@@ -23,4 +25,11 @@ interface AnonymousListenerInterface extends ListenerInterface
      * @return \Closure
      */
     public function getClosure();
+
+    /**
+     * @param EventInterface $event
+     *
+     * @return void
+     */
+    public function invoke(EventInterface $event);
 }

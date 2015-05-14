@@ -106,7 +106,7 @@ class WorkerFactory implements WorkerFactoryInterface
                 throw new \InvalidArgumentException($message);
             }
 
-            return array(new AnonymousWorker($this->generateWorkerId(), $listener, $eventClassName, $priority));
+            return array(new Worker($this->generateWorkerId(), $listener, 'invoke', $eventClassName, $priority));
         }
 
         return array();
