@@ -31,10 +31,8 @@ class AnonymousListener implements ListenerInterface, AnonymousListenerInterface
     /**
      * @param Closure $closure
      * @param int     $priority
-     *
-     * @return AnonymousListener
      */
-    function __construct(Closure $closure, $priority = null)
+    public function __construct(Closure $closure, $priority = null)
     {
         $this->closure = $closure;
         $this->priority = $priority;
