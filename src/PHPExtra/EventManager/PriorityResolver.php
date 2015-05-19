@@ -12,7 +12,7 @@ namespace PHPExtra\EventManager;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-final class PriorityResolver
+class PriorityResolver
 {
     /**
      * Name to int mapping

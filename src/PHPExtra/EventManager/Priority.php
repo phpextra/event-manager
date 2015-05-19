@@ -16,7 +16,7 @@ defined('PHPEXTRA_EM_PHP_INT_MAX') or define('PHPEXTRA_EM_PHP_INT_MAX', PHP_INT_
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-final class Priority
+class Priority
 {
     /**
      * Lowest priority

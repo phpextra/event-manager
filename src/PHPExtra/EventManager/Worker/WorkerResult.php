@@ -43,7 +43,7 @@ final class WorkerResult
      * @param int             $status
      * @param \Exception      $exception
      */
-    function __construct(
+    public function __construct(
         WorkerInterface $worker,
         EventInterface $event,
         $status = WorkerResultStatus::FAILURE,

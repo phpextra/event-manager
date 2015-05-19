@@ -31,7 +31,7 @@ class ExceptionContext
      * @param EventInterface    $event
      * @param ListenerInterface $listener
      */
-    function __construct(EventInterface $event, ListenerInterface $listener)
+    public function __construct(EventInterface $event, ListenerInterface $listener)
     {
         $this->event = $event;
         $this->listener = $listener;
