@@ -28,7 +28,7 @@ class UserLoginEvent implements EventInterface
     (...)
 }
 
-class UserListener implements Listener
+class UserListener implements ListenerInterface
 {
     /**
      * Listen only UserLoginEvent
