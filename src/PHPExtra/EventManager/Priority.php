@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2016 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.md for copying permission.
  */
 
@@ -12,7 +12,7 @@ defined('PHPEXTRA_EM_PHP_INT_MIN') or define('PHPEXTRA_EM_PHP_INT_MIN', ~PHP_INT
 defined('PHPEXTRA_EM_PHP_INT_MAX') or define('PHPEXTRA_EM_PHP_INT_MAX', PHP_INT_MAX);
 
 /**
- * The Priority class
+ * A list of predefined constants of event importance.
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
@@ -56,86 +56,7 @@ class Priority
     /**
      * Special, lowest priority.
      * It should be used to monitor event results.
-     * No changes should be made by listener using that priority
+     * No changes should be made to any event by listener using that priority.
      */
     const MONITOR = PHPEXTRA_EM_PHP_INT_MIN;
-
-    /**
-     * Name to int mapping
-     *
-     * @var array
-     */
-    protected static $nameToPriority = array(
-        'lowest'    => self::LOWEST,
-        'lower'     => self::LOWER,
-        'low'       => self::LOW,
-        'normal'    => self::NORMAL,
-        'high'      => self::HIGH,
-        'higher'    => self::HIGHER,
-        'highest'   => self::HIGHEST,
-        'monitor'   => self::MONITOR,
-    );
-
-    /**
-     * Get human readable priority name
-     *
-     * @param int $priority
-     *
-     * @return string
-     * @throws \InvalidArgumentException If unable to find priority name
-     */
-    public static function getPriorityName($priority)
-    {
-        $priorityToName = array_flip(self::$nameToPriority);
-        if (!isset($priorityToName[$priority])) {
-            throw new \InvalidArgumentException(sprintf('Unknown priority given: "%s"', $priority));
-        }
-
-        return $priorityToName[$priority];
-    }
-
-    /**
-     * Get priority integer value by priority name
-     *
-     * @param string $priorityName
-     *
-     * @return int
-     * @throws \InvalidArgumentException If name is invalid
-     */
-    public static function getPriorityByName($priorityName)
-    {
-        $priorityName = strtolower($priorityName);
-        if (!isset(self::$nameToPriority[$priorityName])) {
-            throw new \InvalidArgumentException(sprintf('Unknown priority name given: "%s"', $priorityName));
-        }
-
-        return self::$nameToPriority[$priorityName];
-    }
-
-    /**
-     * Get priority from method comment or null if priority was not found in given string
-     *
-     * @param string $comment
-     * @param int $default
-     *
-     * @return int|null
-     */
-    public static function getPriorityFromDocComment($comment, $default = null)
-    {
-        $priority = null;
-        $pattern = '#@priority\\s+(\-?\d+|\w+)#i';
-
-        $matches = array();
-        preg_match($pattern, $comment, $matches);
-
-        if (isset($matches[1])) {
-            if (is_numeric($matches[1])) {
-                $priority = (int)$matches[1];
-            } else {
-                $priority = Priority::getPriorityByName($matches[1]);
-            }
-        }
-
-        return $priority === null ? $default : $priority;
-    }
 }

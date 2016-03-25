@@ -5,25 +5,22 @@
 [![Build Status](http://img.shields.io/travis/phpextra/event-manager.svg)](https://travis-ci.org/phpextra/event-manager)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/phpextra/event-manager/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/phpextra/event-manager/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/phpextra/event-manager/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/phpextra/event-manager/?branch=master)
-[![GitTip](http://img.shields.io/gittip/jkobus.svg)](https://www.gittip.com/jkobus)
 
 Library is under active development and it aims to be **simple** and **fast**. All pull requests and bug reports are welcome.
 
 ## How it works ?
 
-Both event and listener are interfaces.
-Events support inheritance. It means that listener can listen for event parents.
-If priority of workers is equal, **LIFO** order applies.
-
+Both event and listener are interfaces. Events support inheritance.
+If priority of listeners is equal, **LIFO** order applies.
 
 ## Examples
 
 ```php
-class UserLoginEvent implements EventInterface
+class UserLoginEvent implements Event
 {
-    protected $user;
+    public $user;
 
-    public function __construct($user){ ... }
+    public function __construct(User $user){ ... }
 
     (...)
 }
@@ -31,7 +28,7 @@ class UserLoginEvent implements EventInterface
 class UserListener implements Listener
 {
     /**
-     * Listen only UserLoginEvent
+     * Act on UserLoginEvent or its children with high priority
      *
      * @priority HIGH
      */
@@ -46,7 +43,7 @@ class UserListener implements Listener
      *
      * @priority NORMAL
      */
-    public function onAnyEvent(EventInterface $event)
+    public function onAnyEvent(Event $event)
     {
         if($event instanceof UserLoginEvent){
             $event->user ...
@@ -56,8 +53,8 @@ class UserListener implements Listener
 }
 
 $manager = new EventManager();
-$manager->addListener(new UserListener());
-$manager->trigger(new UserLoginEvent($user));
+$manager->add(new UserListener());
+$manager->emit(new UserLoginEvent($user));
 
 ```
 Result:
@@ -67,8 +64,7 @@ Result:
 > User listener 2
 ```
 
-Anonymous function can be a listener too. Priority in this case can be specified as a second constructor param in
-AnonymousListener class.
+Anonymous function can also be a listener. Priority in this case can be specified as a constructor param:
 
 ```php
 $listener = new AnonymousListener(function(UserLoginEvent $event){
@@ -76,12 +72,63 @@ $listener = new AnonymousListener(function(UserLoginEvent $event){
 }), Priority::LOWEST);
 ```
 
+## Integration with [Silex](http://silex.sensiolabs.org/)
+
+Service provider automatically extends the event dispatcher by replacing the ```$app['dispatcher_class']```.
+
+In the debug mode (```$app['debug'] = true```) the provider will:
+- automatically inject the ```$app['logger']``` into ```EventManager```'s instance,
+- grab a ```$app['stopwatch']``` instance (will use ```NullStopwatch``` if web profiler is not present),
+- set the ```EventManager::throwExceptions()``` flag to ```true```
+
+### Examples:
+
+```php
+
+$app = new Application();
+$app->register(new EventManagerServiceProvider());
+
+$app['event_manager']->add(new HomePageRequestListener());
+
+$app->get('/', function(Application $app){
+    $app['event_manager']->emit(new HomePageVisitedEvent());
+    return 'ok';
+});
+
+```
+
+Handling Symfony's events:
+
+```php
+
+use PHPExtra\EventManager\Silex\SilexEvent; // this class wraps the symfony events
+
+$listener = new AnonymousListener(function(SilexEvent $event){
+    $symfonyEvent = $event->getSymfonyEvent();
+
+    if($symfonyEvent instanceof GetResponseEvent){
+        $sfEvent->setResponse(new Response('Response from event listener !'));
+    }
+    
+    // or 
+    
+    if($symfonyEvent->getName() == 'kernel.request'){
+        if(!$symfonyEvent->isCancelled()){ // uses Symfony's "isPropagationStopped()"
+            $symfonyEvent->cancel(); // executes Symfony's "stopPropagation()"
+        }
+    }
+    
+});
+
+```
+
+
 ## Installation (Composer)
 
 ```json
 {
     "require": {
-        "phpextra/event-manager":"~2.1"
+        "phpextra/event-manager":"^4.0"
     }
 }
 ```
@@ -89,57 +136,23 @@ $listener = new AnonymousListener(function(UserLoginEvent $event){
 ##Running tests
 
 ```
-// Windows
-composer install & call ./vendor/bin/phpunit.bat ./tests
+phpunit ./tests
 ```
+
 
 ##Contributing
 
 All code contributions must go through a pull request.
 Fork the project, create a feature branch, and send me a pull request.
 To ensure a consistent code base, you should make sure the code follows
-the [coding standards](http://symfony.com/doc/2.0/contributing/code/standards.html).
-If you would like to help take a look at the [list of issues](https://github.com/phpextra/event-manager/issues).
+the [coding standards](http://www.php-fig.org/psr/).
+If you would like to help, take a look at the [list of issues](https://github.com/phpextra/event-manager/issues).
 
 ##Requirements
 
-See **composer.json** for a full list of dependencies.
-
-##Changelog
-
-    2.1.0
-
-    - added SplPriorityQueue fixing wrong listener execution order
-
-    2.0.0
-
-    - Fixed problem that caused phpDoc priorities to have wrong values
-    - Removed WorkerQueueInterface::getWorkers
-    - Worker factory now assigns an unique Id for each created worker
-    - Updated log messages sent from event manager
-    - Changed signature of EventManagerAwareInterface (**BC break**)
-    - Fixed manager trying to call private methods if its first param was implementing the EventInterface
-
-    1.0.2
-
-    - Modified WorkerQueue - now returns workers in LIFO order if priority of workers is equal
-    - Removed Zend Priority queue dependency
-
-    1.0.1
-
-    - Changed MONITOR priority value to ~PHP_INT_MAX
-    - Removed final keyword form Priority class
-
-    1.0.0
-
-    - First release
-
+    PHP >=5.3.0
 
 ##Authors
 
 Jacek Kobus - <kobus.jacek@gmail.com>
-
-## License information
-
-    See the file LICENSE.md for copying permission.
 

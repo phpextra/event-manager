@@ -1,9 +1,3 @@
-build/*
-!build/.gitkeep
-!build/phpcs.xml
-!build/phpmd.xml
-!build/sami-config.php
+build
 .idea
 vendor
-atlassian-ide-plugin.xml
-cache.properties

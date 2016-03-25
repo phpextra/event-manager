@@ -8,7 +8,7 @@
 namespace PHPExtra\EventManager;
 
 use DummyCancellableEvent;
-use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Event\Event;
 use PHPExtra\EventManager\Listener\AnonymousListener;
 
 /**
@@ -18,93 +18,130 @@ use PHPExtra\EventManager\Listener\AnonymousListener;
  */
 class EventManagerTest extends \PHPUnit_Framework_TestCase
 {
-
-    public function testCreateEventManagerCreatesEventManager()
+    public function testCreateNewInstance()
     {
         new EventManager();
     }
 
-    public function testAddAnonymousListenersAddsListeners()
+    public function testAddAnonymousListener()
     {
         $em = new EventManager();
-        $listener1 = new AnonymousListener(function(EventInterface $event){});
-        $listener2 = new AnonymousListener(function(EventInterface $event){});
 
-        $this->assertEquals(0, $em->getWorkerQueue()->count());
-
-        $em
-            ->addListener($listener1)
-            ->addListener($listener2)
-        ;
-
-        $this->assertEquals(2, $em->getWorkerQueue()->count());
+        $listener = new AnonymousListener(function(Event $event){});
+        $em->add($listener);
     }
 
-    public function testExecuteListenersInProperOrderReturnsValidResult()
+    public function testExceptionThrowingIsDisabledByDefault()
+    {
+        $em = new EventManager();
+
+        $event = new DummyCancellableEvent();
+        $listener = new AnonymousListener(function(Event $event){
+            throw new \Exception('test');
+        });
+
+        $em->add($listener)->emit($event);
+    }
+
+    /**
+     * @expectedException \PHPExtra\EventManager\Exception\EventException
+     */
+    public function testExceptionThrownDuringWorkerExecutionIsProperlyHandledAndRethrown()
+    {
+        $em = new EventManager();
+        $em->setThrowExceptions(true);
+
+        $event = new DummyCancellableEvent();
+        $listener = new AnonymousListener(function(Event $event){
+            throw new \Exception('test');
+        });
+
+        $em->add($listener)->emit($event);
+    }
+
+    public function testNotifiesAnonymousListener()
+    {
+        $event = $this->getMock('PHPExtra\EventManager\Event\Event');
+        $em = new EventManager();
+
+        $wasRun = false;
+
+        $listener = new AnonymousListener(function(Event $event) use (&$wasRun){
+            $wasRun = true;
+        });
+
+        $em->add($listener);
+        $em->emit($event);
+
+        $this->assertTrue($wasRun, 'Listener was NOT notified');
+
+    }
+
+    public function testEmittedEventRunsThroughAnonymousListenersInProperOrder()
     {
         $event = new \DummyEvent();
         $em = new EventManager();
 
         $calls = array();
 
-        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+        $listeners[] = new AnonymousListener(function(Event $event) use (&$calls){
             if($event instanceof \DummyEvent){
                 $event->calls[] = 'A';
             }
         });
 
-        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+        $listeners[] = new AnonymousListener(function(Event $event) use (&$calls){
             if($event instanceof \DummyEvent){
                 $event->calls[] = 'B';
             }
         });
 
-        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+        $listeners[] = new AnonymousListener(function(Event $event) use (&$calls){
             if($event instanceof \DummyEvent){
                 $event->calls[] = 'C';
             }
         });
 
-        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+        $listeners[] = new AnonymousListener(function(Event $event) use (&$calls){
             if($event instanceof \DummyEvent){
                 $event->calls[] = 'D';
             }
         });
 
-        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+        $listeners[] = new AnonymousListener(function(Event $event) use (&$calls){
             if($event instanceof \DummyEvent){
                 $event->calls[] = 'E';
             }
         });
 
-        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+        $listeners[] = new AnonymousListener(function(Event $event) use (&$calls){
             if($event instanceof \DummyEvent){
                 $event->calls[] = 'F';
             }
         });
 
-        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+        $listeners[] = new AnonymousListener(function(Event $event) use (&$calls){
             if($event instanceof \DummyEvent){
                 $event->calls[] = 'G';
             }
         });
 
-        $listeners[] = new AnonymousListener(function(EventInterface $event) use (&$calls){
+        $listeners[] = new AnonymousListener(function(Event $event) use (&$calls){
             if($event instanceof \DummyEvent){
                 $event->calls[] = 'H';
             }
         });
 
-        $em->addListener($listeners[3], Priority::HIGHEST);     // D
-        $em->addListener($listeners[4], Priority::HIGHER);      // E
-        $em->addListener($listeners[1], Priority::HIGH);        // B
-        $em->addListener($listeners[7], Priority::NORMAL);      // H
-        $em->addListener($listeners[2], Priority::LOW);         // C
-        $em->addListener($listeners[5], Priority::LOWER);       // F
-        $em->addListener($listeners[6], Priority::LOWEST);      // G
-        $em->addListener($listeners[0], Priority::MONITOR);     // A
+        $em->add($listeners[3], Priority::HIGHEST);     // D
+        $em->add($listeners[4], Priority::HIGHER);      // E
+        $em->add($listeners[1], Priority::HIGH);        // B
+        $em->add($listeners[7], Priority::NORMAL);      // H
+        $em->add($listeners[2], Priority::LOW);         // C
+        $em->add($listeners[5], Priority::LOWER);       // F
+        $em->add($listeners[6], Priority::LOWEST);      // G
+        $em->add($listeners[0], Priority::MONITOR);     // A
 
-        $em->trigger($event);
+        $em->emit($event);
 
         $expected = array('D', 'E', 'B', 'H', 'C', 'F', 'G', 'A');
 
@@ -112,14 +149,14 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testTriggerStandardListenersExecutesListenersInCorrectOrder()
+    public function testEmittedEventRunsThroughStandardListenersInProperOrder()
     {
         $em = new EventManager();
 
         $event = new DummyCancellableEvent();
         $listener = new \DummyListener1();
 
-        $em->addListener($listener)->trigger($event);
+        $em->add($listener)->emit($event);
 
         $expected = array(
             'Dummy 1.1',
@@ -129,34 +166,6 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($expected, $event->events);
-    }
-
-    public function testExceptionThrowingIsDisabledByDefault()
-    {
-        $em = new EventManager();
-
-        $event = new DummyCancellableEvent();
-        $listener = new AnonymousListener(function(EventInterface $event){
-                throw new \Exception('test');
-            });
-
-        $em->addListener($listener)->trigger($event);
-    }
-
-    /**
-     * @expectedException \PHPExtra\EventManager\Exception\RuntimeException
-     */
-    public function testExceptionThrownDuringWorkerExecutionIsProperlyHandledAndRethrown()
-    {
-        $em = new EventManager();
-        $em->setThrowExceptions(true);
-
-        $event = new DummyCancellableEvent();
-        $listener = new AnonymousListener(function(EventInterface $event){
-            throw new \Exception('test');
-        });
-
-        $em->addListener($listener)->trigger($event);
     }
 }
  

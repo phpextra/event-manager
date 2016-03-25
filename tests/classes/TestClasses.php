@@ -1,15 +1,15 @@
 <?php
 
-use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Event\Event;
 use PHPExtra\EventManager\EventManager;
-use PHPExtra\EventManager\Listener\ListenerInterface;
+use PHPExtra\EventManager\Listener\Listener;
 
-class DummyEvent implements EventInterface
+class DummyEvent implements Event
 {
     public $calls = array();
 }
 
-class DummyCancellableEvent implements EventInterface
+class DummyCancellableEvent implements Event
 {
     public $events = array();
 }
@@ -21,7 +21,7 @@ class DummyCancellableEvent2 extends DummyCancellableEvent
 /**
  * Class InfiniteLoopCauser
  */
-class InfiniteLoopCauser implements ListenerInterface
+class InfiniteLoopCauser implements Listener
 {
     /**
      * @var PHPExtra\EventManager\EventManager
@@ -47,7 +47,7 @@ class InfiniteLoopCauser implements ListenerInterface
 /**
  * Class DummyListener1
  */
-class DummyListener1 implements ListenerInterface
+class DummyListener1 implements Listener
 {
     /**
      * Short desc
@@ -88,7 +88,7 @@ class DummyListener1 implements ListenerInterface
 /**
  * Class DummyListener2
  */
-class DummyListener2 implements ListenerInterface
+class DummyListener2 implements Listener
 {
     /**
      * @priority -1000
@@ -118,7 +118,7 @@ class DummyListener2 implements ListenerInterface
 /**
  * Class DummyListener3
  */
-class DummyListener3 implements ListenerInterface
+class DummyListener3 implements Listener
 {
     /**
      * @priority -1000

@@ -14,20 +14,30 @@ namespace PHPExtra\EventManager\Event;
  */
 class CancellableEventTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreateCancellableEvent()
+    public function testCreateNewInstance()
     {
-        $event = new CancellableEvent();
+        $event = $this->getMockForAbstractClass('PHPExtra\EventManager\Event\CancellableEvent');
+        /** @var CancellableEvent $event */
+
         $this->assertFalse($event->isCancelled());
     }
 
-    public function testCancelCancellableEventMakesEventCancelled()
+    public function testCancelCancellableEvent()
     {
-        $event = new CancellableEvent();
-        $this->assertFalse($event->isCancelled());
+        $event = $this->getMockForAbstractClass('PHPExtra\EventManager\Event\CancellableEvent');
+        /** @var CancellableEvent $event */
 
-        $event->setIsCancelled();
-
+        $event->cancel();
         $this->assertTrue($event->isCancelled());
     }
+
+    public function testCancelCancellableEventWithReason()
+    {
+        $event = $this->getMockForAbstractClass('PHPExtra\EventManager\Event\CancellableEvent');
+        /** @var CancellableEvent $event */
+
+        $event->cancel('Some reason');
+        $this->assertTrue($event->isCancelled());
+        $this->assertEquals('Some reason', $event->getReason());
+    }
 }
- 

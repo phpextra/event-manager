@@ -1,62 +1,50 @@
 <?php
 
 /**
- * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2016 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.md for copying permission.
  */
 
 namespace PHPExtra\EventManager\Worker;
 
-use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Event\Event;
 
 /**
  * The WorkerResult class
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class WorkerResult
+final class WorkerResult
 {
-    /**
-     * @see WorkerResultStatus
-     * @var int
-     */
-    protected $status;
-
     /**
      * @var \Exception
      */
-    protected $exception;
+    private $exception;
 
     /**
-     * @var WorkerInterface
+     * @var Worker
      */
-    protected $worker;
+    private $worker;
 
     /**
-     * @var EventInterface
+     * @var Event
      */
-    protected $event;
+    private $event;
 
     /**
-     * @param WorkerInterface $worker
-     * @param EventInterface  $event
-     * @param int             $status
-     * @param \Exception      $exception
+     * @param Worker     $worker
+     * @param Event      $event
+     * @param \Exception $exception
      */
-    function __construct(
-        WorkerInterface $worker,
-        EventInterface $event,
-        $status = WorkerResultStatus::FAILURE,
-        \Exception $exception = null
-    ) {
+    public function __construct(Worker $worker, Event $event, \Exception $exception = null)
+    {
         $this->event = $event;
         $this->worker = $worker;
         $this->exception = $exception;
-        $this->status = $status;
     }
 
     /**
-     * @return EventInterface
+     * @return Event
      */
     public function getEvent()
     {
@@ -64,7 +52,7 @@ class WorkerResult
     }
 
     /**
-     * @return WorkerInterface
+     * @return Worker
      */
     public function getWorker()
     {
@@ -94,34 +82,10 @@ class WorkerResult
     }
 
     /**
-     * Returns null if no exception
-     *
-     * @deprecated
-     * @return string|null
-     */
-    public function getExceptionClass()
-    {
-        if ($this->getException()) {
-            return get_class($this->getException());
-        }
-
-        return null;
-    }
-
-    /**
      * @return bool
      */
     public function isSuccessful()
     {
-        return $this->getStatus() == 0;
-    }
-
-    /**
-     * @see WorkerResultStatus
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
+        return $this->getException() === null;
     }
 }

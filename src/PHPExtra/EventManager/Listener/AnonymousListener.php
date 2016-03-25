@@ -1,14 +1,15 @@
 <?php
 
 /**
- * Copyright (c) 2014 Jacek Kobus <kobus.jacek@gmail.com>
+ * Copyright (c) 2016 Jacek Kobus <kobus.jacek@gmail.com>
  * See the file LICENSE.md for copying permission.
  */
 
 namespace PHPExtra\EventManager\Listener;
 
 use Closure;
-use PHPExtra\EventManager\Event\EventInterface;
+use PHPExtra\EventManager\Event\Event;
+use PHPExtra\EventManager\Priority;
 
 /**
  * A wrapper for closure listener
@@ -16,36 +17,26 @@ use PHPExtra\EventManager\Event\EventInterface;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class AnonymousListener implements ListenerInterface
+class AnonymousListener implements Listener
 {
     /**
      * @var Closure
      */
-    protected $closure;
+    private $closure;
 
     /**
      * @var int
      */
-    protected $priority;
+    private $priority;
 
     /**
      * @param Closure $closure
      * @param int     $priority
-     *
-     * @return AnonymousListener
      */
-    function __construct(Closure $closure, $priority = null)
+    public function __construct(Closure $closure, $priority = Priority::NORMAL)
     {
         $this->closure = $closure;
         $this->priority = $priority;
-    }
-
-    /**
-     * @return Closure
-     */
-    public function getClosure()
-    {
-        return $this->closure;
     }
 
     /**
@@ -57,14 +48,18 @@ class AnonymousListener implements ListenerInterface
     }
 
     /**
-     * Invoke an event
-     *
-     * @param EventInterface $event
-     *
-     * @return void
+     * @return \Closure
      */
-    public function invoke(EventInterface $event)
+    public function getClosure()
     {
-        call_user_func($this->closure, $event);
+        return $this->closure;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function invoke(Event $event)
+    {
+        return call_user_func(array($this->closure, '__invoke'), $event);
     }
 }
