@@ -8,7 +8,7 @@
 namespace PHPExtra\EventManager;
 
 use PHPExtra\EventManager\Event\Event;
-use PHPExtra\EventManager\Exception\EventException;
+use PHPExtra\EventManager\Exception\ListenerException;
 
 /**
  * The EventEmitter interface
@@ -22,7 +22,7 @@ interface EventEmitter
      *
      * @param Event $event The event
      *
-     * @throws EventException Exception might be thrown during unsuccessful worker run
+     * @throws ListenerException Exception might be thrown during unsuccessful listener run
      *
      * @return void
      */

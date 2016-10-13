@@ -8,7 +8,7 @@
 namespace PHPExtra\EventManager;
 
 use PHPExtra\EventManager\Event\Event;
-use PHPExtra\EventManager\Exception\EventException;
+use PHPExtra\EventManager\Exception\ListenerException;
 use PHPExtra\EventManager\Listener\Listener;
 use PHPExtra\EventManager\Worker\ArrayWorkerQueue;
 use PHPExtra\EventManager\Worker\WorkerQueue;
@@ -56,6 +56,11 @@ class EventManager implements EventEmitter, LoggerAwareInterface
     private $logger;
 
     /**
+     * @var ListenerException[]
+     */
+    private $exceptions = array();
+
+    /**
      * Create new event manager
      */
     public function __construct()
@@ -70,22 +75,34 @@ class EventManager implements EventEmitter, LoggerAwareInterface
      */
     public function emit(Event $event)
     {
+        if($this->runningEvent === null){
+            $this->clearExceptions();
+        }
+
         $previousRunningEvent = $this->runningEvent;
         $this->runningEvent = $event;
 
         $workers = $this->workerQueue->getWorkersFor($event);
 
-        if (count($workers) > 0) {
-            foreach ($workers as $worker) {
-                $this->runWorker($worker, $event);
+        foreach ($workers as $worker) {
+            $result = $this->runWorker($worker, $event);
+
+            if (!$result->isSuccessful()) {
+
+                $message = sprintf('Listener "%s" failed: "%s"', $result->getWorker()->getName(), $result->getMessage());
+
+                $this->logger->warning($message);
+                $exception = new ListenerException($event, $worker->getListener(), $message, $result->getException());
+                $this->addException($exception);
+
+                if ($this->throwExceptions) {
+                    $this->logger->debug(sprintf('Throwing exception (throwExceptions is set to true)', $worker));
+                    throw $exception;
+                }
             }
-        } else {
-            $this->logger->debug(sprintf('Event %s has no workers', get_class($event)));
         }
 
         $this->runningEvent = $previousRunningEvent;
-
-        return $this;
     }
 
     /**
@@ -116,29 +133,54 @@ class EventManager implements EventEmitter, LoggerAwareInterface
      * @param Worker $worker
      * @param Event  $event
      *
-     * @throws EventException
+     * @throws ListenerException
      * @return WorkerResult
      */
     private function runWorker(Worker $worker, Event $event)
     {
-        $this->logger->debug(sprintf('Starting worker #%s with priority %s for event %s', $worker, $worker->getPriority(), get_class($event)));
+        $this->logger->debug(sprintf('Starting %s', $worker->getName()));
 
         $this->onWorkerStart($worker, $event);
         $result = $worker->run($event);
         $this->onWorkerStop($worker, $event);
 
-        if (!$result->isSuccessful()) {
-            $this->logger->warning(sprintf('Worker #%s failed: %s', $worker, $result->getMessage()));
-
-            if ($this->throwExceptions) {
-                $this->logger->debug(sprintf('Throwing exception (throwExceptions is set to true)', $worker));
-                $exception = new EventException($event, $worker->getListener(), sprintf('Worker #%s failed', $worker->getId()), $result->getException());
-
-                throw $exception;
-            }
-        }
-
         return $result;
+    }
+
+    /**
+     * Get all exceptions that occurred during emitting an event.
+     *
+     * @return ListenerException[]
+     */
+    public function getExceptions()
+    {
+        return $this->exceptions;
+    }
+
+    /**
+     * Tell if the manager has collected any exceptions after last emit call.
+     *
+     * @return bool
+     */
+    public function hasExceptions()
+    {
+        return !empty($this->exceptions);
+    }
+
+    /**
+     * @param ListenerException $exception
+     */
+    private function addException(ListenerException $exception)
+    {
+        $this->exceptions[] = $exception;
+    }
+
+    /**
+     * Clear all collected exceptions
+     */
+    private function clearExceptions()
+    {
+        $this->exceptions = array();
     }
 
     /**

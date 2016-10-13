@@ -15,7 +15,7 @@ use PHPExtra\EventManager\Listener\Listener;
  *
  * @author Jacek Kobus <kobus.jacek@gmail.com>
  */
-class EventException extends \RuntimeException
+class ListenerException extends \RuntimeException
 {
     /**
      * @var Event

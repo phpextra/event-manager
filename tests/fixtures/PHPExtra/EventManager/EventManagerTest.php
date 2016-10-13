@@ -9,7 +9,9 @@ namespace PHPExtra\EventManager;
 
 use DummyCancellableEvent;
 use PHPExtra\EventManager\Event\Event;
+use PHPExtra\EventManager\Exception\ListenerException;
 use PHPExtra\EventManager\Listener\AnonymousListener;
+use PHPExtra\EventManager\Listener\Listener;
 
 /**
  * The EventManagerTest class
@@ -43,8 +45,44 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
         $em->add($listener)->emit($event);
     }
 
+    public function testGetAllExceptionsCaughtDuringEmit()
+    {
+        $em = new EventManager();
+
+        $event = new DummyCancellableEvent();
+
+        $listener1 = new AnonymousListener(function(Event $event){
+            throw new \Exception('test1');
+        });
+
+        $listener2 = new AnonymousListener(function(Event $event){
+            throw new \Exception('test2');
+        });
+
+        $em->add($listener1);
+        $em->add($listener2);
+        $em->emit($event);
+
+        // lifo order, last in first out
+        $message2 = 'Listener "PHPExtra\EventManager\Listener\AnonymousListener::invoke()[P:0]" failed: "test1"';
+        $message1 = 'Listener "PHPExtra\EventManager\Listener\AnonymousListener::invoke()[P:0]" failed: "test2"';
+
+        $this->assertTrue($em->hasExceptions());
+        $this->assertCount(2, $em->getExceptions());
+
+        $this->assertInstanceOf(ListenerException::class, $em->getExceptions()[0]);
+        $this->assertInstanceOf(Listener::class, $em->getExceptions()[0]->getListener());
+        $this->assertInstanceOf(Event::class, $em->getExceptions()[0]->getEvent());
+        $this->assertEquals($message1, $em->getExceptions()[0]->getMessage());
+
+        $this->assertInstanceOf(ListenerException::class, $em->getExceptions()[1]);
+        $this->assertInstanceOf(Listener::class, $em->getExceptions()[1]->getListener());
+        $this->assertInstanceOf(Event::class, $em->getExceptions()[1]->getEvent());
+        $this->assertEquals($message2, $em->getExceptions()[1]->getMessage());
+    }
+
     /**
-     * @expectedException \PHPExtra\EventManager\Exception\EventException
+     * @expectedException \PHPExtra\EventManager\Exception\ListenerException
      */
     public function testExceptionThrownDuringWorkerExecutionIsProperlyHandledAndRethrown()
     {
@@ -61,7 +99,7 @@ class EventManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testNotifiesAnonymousListener()
     {
-        $event = $this->getMock('PHPExtra\EventManager\Event\Event');
+        $event = $this->createMock('PHPExtra\EventManager\Event\Event');
         $em = new EventManager();
 
         $wasRun = false;

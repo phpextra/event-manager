@@ -47,19 +47,14 @@ class Worker
      * Create new worker that will wake-up listener using event
      * If priority is null the default (normal) will be used
      *
-     * @param string            $id
+     * @param string   $id
      * @param Listener $listener
-     * @param string            $methodName
-     * @param string            $eventClass
-     * @param int               $priority
-     *
+     * @param string   $methodName
+     * @param string   $eventClass
+     * @param int      $priority
      */
-    public function __construct($id, Listener $listener, $methodName, $eventClass, $priority = null)
+    public function __construct($id, Listener $listener, $methodName, $eventClass, $priority = Priority::NORMAL)
     {
-        if ($priority === null) {
-            $priority = Priority::NORMAL;
-        }
-
         $this->id = $id;
         $this->listener = $listener;
         $this->methodName = $methodName;
@@ -68,7 +63,9 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * @param Event $event
+     *
+     * @return WorkerResult
      */
     public function run(Event $event)
     {
@@ -83,7 +80,7 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getId()
     {
@@ -91,7 +88,19 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * Get full worker name including class, method and priority.
+     */
+    public function getName()
+    {
+        return vsprintf('%s::%s()[P:%s]', array(
+            $this->getListenerClass(),
+            $this->getMethodName(),
+            $this->getPriority()
+        ));
+    }
+
+    /**
+     * @return Listener
      */
     public function getListener()
     {
@@ -99,7 +108,7 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getListenerClass()
     {
@@ -107,7 +116,7 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getMethod()
     {
@@ -115,7 +124,7 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getMethodName()
     {
@@ -123,7 +132,7 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getEventClass()
     {
@@ -131,7 +140,7 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * @return int
      */
     public function getPriority()
     {
@@ -139,7 +148,9 @@ class Worker
     }
 
     /**
-     * {@inheritdoc}
+     * @param $priority
+     *
+     * @return $this
      */
     public function setPriority($priority)
     {
@@ -153,6 +164,6 @@ class Worker
      */
     public function __toString()
     {
-        return (string)$this->getId();
+        return (string)$this->getName();
     }
 }
