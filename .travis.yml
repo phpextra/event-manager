@@ -3,7 +3,6 @@ language: php
 matrix:
   fast_finish: true
   include:
-    - php: 5.5
     - php: 5.6
     - php: 7
     - php: hhvm
@@ -11,7 +10,7 @@ matrix:
     - php: 7
     - php: hhvm
 
-script: ./vendor/bin/phpunit -c ./phpunit.xml.dist ./tests/fixtures
+script: phpunit ./tests
 before_script:
   - composer self-update
   - composer install --dev --prefer-source
