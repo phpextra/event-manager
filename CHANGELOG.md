@@ -1,3 +1,9 @@
+
+5.0.0
+
+- rewritten and simplified the way events are handled
+- added support for php 7.2
+
 4.0.0
 
 - redesigned external interfaces
